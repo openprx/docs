@@ -252,6 +252,451 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
   },
 ]
 
+const prxSdSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-sd/' },
+      { text: '安装', link: '/zh/prx-sd/getting-started/installation' },
+      { text: '快速开始', link: '/zh/prx-sd/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '扫描',
+    collapsed: false,
+    items: [
+      { text: '文件与目录扫描', link: '/zh/prx-sd/scanning/file-scan' },
+      { text: '进程内存扫描', link: '/zh/prx-sd/scanning/memory-scan' },
+      { text: 'Rootkit 检测', link: '/zh/prx-sd/scanning/rootkit' },
+      { text: 'USB 设备扫描', link: '/zh/prx-sd/scanning/usb-scan' },
+    ],
+  },
+  {
+    text: '检测引擎',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-sd/detection/' },
+      { text: '哈希匹配', link: '/zh/prx-sd/detection/hash-matching' },
+      { text: 'YARA 规则', link: '/zh/prx-sd/detection/yara-rules' },
+      { text: '启发式分析', link: '/zh/prx-sd/detection/heuristics' },
+      { text: '支持的文件类型', link: '/zh/prx-sd/detection/file-types' },
+    ],
+  },
+  {
+    text: '实时防护',
+    collapsed: true,
+    items: [
+      { text: '文件监控', link: '/zh/prx-sd/realtime/monitor' },
+      { text: '守护进程', link: '/zh/prx-sd/realtime/daemon' },
+      { text: '勒索软件防护', link: '/zh/prx-sd/realtime/ransomware' },
+    ],
+  },
+  {
+    text: '威胁情报',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-sd/signatures/' },
+      { text: '更新签名库', link: '/zh/prx-sd/signatures/update' },
+      { text: '情报源', link: '/zh/prx-sd/signatures/sources' },
+      { text: '导入哈希', link: '/zh/prx-sd/signatures/import' },
+      { text: '自定义 YARA 规则', link: '/zh/prx-sd/signatures/custom-rules' },
+    ],
+  },
+  {
+    text: '隔离区',
+    collapsed: true,
+    items: [
+      { text: '隔离管理', link: '/zh/prx-sd/quarantine/' },
+    ],
+  },
+  {
+    text: '威胁响应',
+    collapsed: true,
+    items: [
+      { text: '自动修复', link: '/zh/prx-sd/remediation/' },
+    ],
+  },
+  {
+    text: '告警与调度',
+    collapsed: true,
+    items: [
+      { text: 'Webhook 告警', link: '/zh/prx-sd/alerts/webhook' },
+      { text: '邮件告警', link: '/zh/prx-sd/alerts/email' },
+      { text: '定时扫描', link: '/zh/prx-sd/alerts/schedule' },
+    ],
+  },
+  {
+    text: '网络防护',
+    collapsed: true,
+    items: [
+      { text: '广告与恶意域名拦截', link: '/zh/prx-sd/network/adblock' },
+      { text: 'DNS 代理', link: '/zh/prx-sd/network/dns-proxy' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-sd/configuration/' },
+      { text: '完整参考', link: '/zh/prx-sd/configuration/reference' },
+    ],
+  },
+  {
+    text: 'CLI 命令参考',
+    collapsed: true,
+    items: [
+      { text: '命令总览', link: '/zh/prx-sd/cli/' },
+    ],
+  },
+  {
+    text: '插件 (WASM)',
+    collapsed: true,
+    items: [
+      { text: '插件开发', link: '/zh/prx-sd/plugins/' },
+    ],
+  },
+  {
+    text: '桌面应用',
+    collapsed: true,
+    items: [
+      { text: 'Tauri GUI', link: '/zh/prx-sd/gui/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/prx-sd/troubleshooting/' },
+    ],
+  },
+]
+
+const prxWafSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-waf/' },
+      { text: '安装', link: '/zh/prx-waf/getting-started/installation' },
+      { text: '快速开始', link: '/zh/prx-waf/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '规则引擎',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-waf/rules/' },
+      { text: 'YAML 语法', link: '/zh/prx-waf/rules/yaml-syntax' },
+      { text: '内置规则', link: '/zh/prx-waf/rules/builtin-rules' },
+      { text: '自定义规则', link: '/zh/prx-waf/rules/custom-rules' },
+    ],
+  },
+  {
+    text: '网关',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-waf/gateway/' },
+      { text: '反向代理', link: '/zh/prx-waf/gateway/reverse-proxy' },
+      { text: 'SSL / TLS', link: '/zh/prx-waf/gateway/ssl-tls' },
+    ],
+  },
+  {
+    text: '集群',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-waf/cluster/' },
+      { text: '部署', link: '/zh/prx-waf/cluster/deployment' },
+    ],
+  },
+  {
+    text: '管理界面',
+    collapsed: true,
+    items: [
+      { text: '仪表盘', link: '/zh/prx-waf/admin-ui/' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-waf/configuration/' },
+      { text: '完整参考', link: '/zh/prx-waf/configuration/reference' },
+    ],
+  },
+  {
+    text: 'CLI 命令参考',
+    collapsed: true,
+    items: [
+      { text: '命令总览', link: '/zh/prx-waf/cli/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/prx-waf/troubleshooting/' },
+    ],
+  },
+]
+
+const openprSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/openpr/' },
+      { text: '安装', link: '/zh/openpr/getting-started/installation' },
+      { text: '快速开始', link: '/zh/openpr/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '工作区',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/openpr/workspace/' },
+      { text: '项目', link: '/zh/openpr/workspace/projects' },
+      { text: '成员', link: '/zh/openpr/workspace/members' },
+    ],
+  },
+  {
+    text: '工作项',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/openpr/issues/' },
+      { text: '工作流', link: '/zh/openpr/issues/workflow' },
+      { text: '冲刺', link: '/zh/openpr/issues/sprints' },
+      { text: '标签', link: '/zh/openpr/issues/labels' },
+    ],
+  },
+  {
+    text: '治理',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/openpr/governance/' },
+      { text: '提案', link: '/zh/openpr/governance/proposals' },
+      { text: '投票', link: '/zh/openpr/governance/voting' },
+      { text: '信任分', link: '/zh/openpr/governance/trust-scores' },
+    ],
+  },
+  {
+    text: 'API',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/openpr/api/' },
+      { text: '认证', link: '/zh/openpr/api/authentication' },
+      { text: '端点', link: '/zh/openpr/api/endpoints' },
+    ],
+  },
+  {
+    text: 'MCP 服务',
+    collapsed: true,
+    items: [
+      { text: '集成', link: '/zh/openpr/mcp-server/' },
+    ],
+  },
+  {
+    text: '部署',
+    collapsed: true,
+    items: [
+      { text: 'Docker', link: '/zh/openpr/deployment/docker' },
+      { text: '生产环境', link: '/zh/openpr/deployment/production' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '参考', link: '/zh/openpr/configuration/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/openpr/troubleshooting/' },
+    ],
+  },
+]
+
+const prxMemorySidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-memory/' },
+      { text: '安装', link: '/zh/prx-memory/getting-started/installation' },
+      { text: '快速开始', link: '/zh/prx-memory/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '向量嵌入',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-memory/embedding/' },
+      { text: '模型', link: '/zh/prx-memory/embedding/models' },
+      { text: '批处理', link: '/zh/prx-memory/embedding/batch-processing' },
+    ],
+  },
+  {
+    text: '重排序',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-memory/reranking/' },
+      { text: '模型', link: '/zh/prx-memory/reranking/models' },
+    ],
+  },
+  {
+    text: '存储',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx-memory/storage/' },
+      { text: 'SQLite', link: '/zh/prx-memory/storage/sqlite' },
+      { text: '向量搜索', link: '/zh/prx-memory/storage/vector-search' },
+    ],
+  },
+  {
+    text: 'MCP 协议',
+    collapsed: true,
+    items: [
+      { text: '集成', link: '/zh/prx-memory/mcp/' },
+    ],
+  },
+  {
+    text: 'API 参考',
+    collapsed: true,
+    items: [
+      { text: 'Rust API', link: '/zh/prx-memory/api/' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '参考', link: '/zh/prx-memory/configuration/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/prx-memory/troubleshooting/' },
+    ],
+  },
+]
+
+const prxEmailSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-email/' },
+      { text: '安装', link: '/zh/prx-email/getting-started/installation' },
+      { text: '快速开始', link: '/zh/prx-email/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '邮箱账户',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/prx-email/accounts/' },
+      { text: 'IMAP', link: '/zh/prx-email/accounts/imap' },
+      { text: 'SMTP', link: '/zh/prx-email/accounts/smtp' },
+      { text: 'OAuth', link: '/zh/prx-email/accounts/oauth' },
+    ],
+  },
+  {
+    text: '存储',
+    collapsed: true,
+    items: [
+      { text: 'SQLite', link: '/zh/prx-email/storage/' },
+    ],
+  },
+  {
+    text: '插件',
+    collapsed: true,
+    items: [
+      { text: 'WASM 插件', link: '/zh/prx-email/plugins/' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '参考', link: '/zh/prx-email/configuration/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/prx-email/troubleshooting/' },
+    ],
+  },
+]
+
+const fenfaSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/fenfa/' },
+      { text: '安装', link: '/zh/fenfa/getting-started/installation' },
+      { text: '快速开始', link: '/zh/fenfa/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '产品管理',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/fenfa/products/' },
+      { text: '变体', link: '/zh/fenfa/products/variants' },
+      { text: '版本发布', link: '/zh/fenfa/products/releases' },
+    ],
+  },
+  {
+    text: '应用分发',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/fenfa/distribution/' },
+      { text: 'iOS', link: '/zh/fenfa/distribution/ios' },
+      { text: 'Android', link: '/zh/fenfa/distribution/android' },
+      { text: '桌面端', link: '/zh/fenfa/distribution/desktop' },
+    ],
+  },
+  {
+    text: 'API',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/fenfa/api/' },
+      { text: '上传 API', link: '/zh/fenfa/api/upload' },
+      { text: '管理 API', link: '/zh/fenfa/api/admin' },
+    ],
+  },
+  {
+    text: '部署',
+    collapsed: true,
+    items: [
+      { text: 'Docker', link: '/zh/fenfa/deployment/docker' },
+      { text: '生产环境', link: '/zh/fenfa/deployment/production' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '参考', link: '/zh/fenfa/configuration/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/fenfa/troubleshooting/' },
+    ],
+  },
+]
+
 const nav: DefaultTheme.NavItem[] = [
   {
     text: 'PRX',
@@ -263,6 +708,35 @@ const nav: DefaultTheme.NavItem[] = [
       { text: '配置', link: '/zh/prx/config/' },
     ],
   },
+  {
+    text: 'PRX-SD',
+    items: [
+      { text: '快速入门', link: '/zh/prx-sd/' },
+      { text: '扫描', link: '/zh/prx-sd/scanning/file-scan' },
+      { text: '检测引擎', link: '/zh/prx-sd/detection/' },
+      { text: '威胁情报', link: '/zh/prx-sd/signatures/' },
+      { text: '配置', link: '/zh/prx-sd/configuration/' },
+    ],
+  },
+  {
+    text: 'PRX-WAF',
+    items: [
+      { text: '快速入门', link: '/zh/prx-waf/' },
+      { text: '规则引擎', link: '/zh/prx-waf/rules/' },
+      { text: '网关', link: '/zh/prx-waf/gateway/' },
+      { text: '集群', link: '/zh/prx-waf/cluster/' },
+      { text: '配置', link: '/zh/prx-waf/configuration/' },
+    ],
+  },
+  {
+    text: '更多',
+    items: [
+      { text: 'OpenPR', link: '/zh/openpr/' },
+      { text: 'PRX-Memory', link: '/zh/prx-memory/' },
+      { text: 'PRX-Email', link: '/zh/prx-email/' },
+      { text: 'Fenfa', link: '/zh/fenfa/' },
+    ],
+  },
   { text: '更新日志', link: 'https://github.com/openprx/prx/blob/main/CHANGELOG.md' },
 ]
 
@@ -271,6 +745,12 @@ export const zhConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
     nav,
     sidebar: {
       '/zh/prx/': prxSidebar,
+      '/zh/prx-sd/': prxSdSidebar,
+      '/zh/prx-waf/': prxWafSidebar,
+      '/zh/openpr/': openprSidebar,
+      '/zh/prx-memory/': prxMemorySidebar,
+      '/zh/prx-email/': prxEmailSidebar,
+      '/zh/fenfa/': fenfaSidebar,
     },
     editLink: {
       pattern: 'https://github.com/openprx/docs/edit/main/site/:path',

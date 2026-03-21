@@ -252,6 +252,451 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
   },
 ]
 
+const prxSdSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-sd/' },
+      { text: 'Installation', link: '/en/prx-sd/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/prx-sd/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Scanning',
+    collapsed: false,
+    items: [
+      { text: 'File & Directory Scan', link: '/en/prx-sd/scanning/file-scan' },
+      { text: 'Memory Scan', link: '/en/prx-sd/scanning/memory-scan' },
+      { text: 'Rootkit Detection', link: '/en/prx-sd/scanning/rootkit' },
+      { text: 'USB Device Scan', link: '/en/prx-sd/scanning/usb-scan' },
+    ],
+  },
+  {
+    text: 'Detection Engine',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-sd/detection/' },
+      { text: 'Hash Matching', link: '/en/prx-sd/detection/hash-matching' },
+      { text: 'YARA Rules', link: '/en/prx-sd/detection/yara-rules' },
+      { text: 'Heuristic Analysis', link: '/en/prx-sd/detection/heuristics' },
+      { text: 'Supported File Types', link: '/en/prx-sd/detection/file-types' },
+    ],
+  },
+  {
+    text: 'Real-time Protection',
+    collapsed: true,
+    items: [
+      { text: 'File Monitor', link: '/en/prx-sd/realtime/monitor' },
+      { text: 'Daemon', link: '/en/prx-sd/realtime/daemon' },
+      { text: 'Ransomware Protection', link: '/en/prx-sd/realtime/ransomware' },
+    ],
+  },
+  {
+    text: 'Threat Intelligence',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-sd/signatures/' },
+      { text: 'Updating Signatures', link: '/en/prx-sd/signatures/update' },
+      { text: 'Intelligence Sources', link: '/en/prx-sd/signatures/sources' },
+      { text: 'Importing Hashes', link: '/en/prx-sd/signatures/import' },
+      { text: 'Custom YARA Rules', link: '/en/prx-sd/signatures/custom-rules' },
+    ],
+  },
+  {
+    text: 'Quarantine',
+    collapsed: true,
+    items: [
+      { text: 'Managing Quarantine', link: '/en/prx-sd/quarantine/' },
+    ],
+  },
+  {
+    text: 'Remediation',
+    collapsed: true,
+    items: [
+      { text: 'Threat Response', link: '/en/prx-sd/remediation/' },
+    ],
+  },
+  {
+    text: 'Alerts & Scheduling',
+    collapsed: true,
+    items: [
+      { text: 'Webhook Alerts', link: '/en/prx-sd/alerts/webhook' },
+      { text: 'Email Alerts', link: '/en/prx-sd/alerts/email' },
+      { text: 'Scheduled Scans', link: '/en/prx-sd/alerts/schedule' },
+    ],
+  },
+  {
+    text: 'Network Protection',
+    collapsed: true,
+    items: [
+      { text: 'Ad & Malware Blocking', link: '/en/prx-sd/network/adblock' },
+      { text: 'DNS Proxy', link: '/en/prx-sd/network/dns-proxy' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-sd/configuration/' },
+      { text: 'Full Reference', link: '/en/prx-sd/configuration/reference' },
+    ],
+  },
+  {
+    text: 'CLI Reference',
+    collapsed: true,
+    items: [
+      { text: 'Command Overview', link: '/en/prx-sd/cli/' },
+    ],
+  },
+  {
+    text: 'Plugins (WASM)',
+    collapsed: true,
+    items: [
+      { text: 'Plugin Development', link: '/en/prx-sd/plugins/' },
+    ],
+  },
+  {
+    text: 'Desktop App',
+    collapsed: true,
+    items: [
+      { text: 'Tauri GUI', link: '/en/prx-sd/gui/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/prx-sd/troubleshooting/' },
+    ],
+  },
+]
+
+const prxWafSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-waf/' },
+      { text: 'Installation', link: '/en/prx-waf/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/prx-waf/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Rules Engine',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-waf/rules/' },
+      { text: 'YAML Syntax', link: '/en/prx-waf/rules/yaml-syntax' },
+      { text: 'Built-in Rules', link: '/en/prx-waf/rules/builtin-rules' },
+      { text: 'Custom Rules', link: '/en/prx-waf/rules/custom-rules' },
+    ],
+  },
+  {
+    text: 'Gateway',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-waf/gateway/' },
+      { text: 'Reverse Proxy', link: '/en/prx-waf/gateway/reverse-proxy' },
+      { text: 'SSL / TLS', link: '/en/prx-waf/gateway/ssl-tls' },
+    ],
+  },
+  {
+    text: 'Cluster',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-waf/cluster/' },
+      { text: 'Deployment', link: '/en/prx-waf/cluster/deployment' },
+    ],
+  },
+  {
+    text: 'Admin UI',
+    collapsed: true,
+    items: [
+      { text: 'Dashboard', link: '/en/prx-waf/admin-ui/' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-waf/configuration/' },
+      { text: 'Full Reference', link: '/en/prx-waf/configuration/reference' },
+    ],
+  },
+  {
+    text: 'CLI Reference',
+    collapsed: true,
+    items: [
+      { text: 'Command Overview', link: '/en/prx-waf/cli/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/prx-waf/troubleshooting/' },
+    ],
+  },
+]
+
+const openprSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/openpr/' },
+      { text: 'Installation', link: '/en/openpr/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/openpr/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Workspace',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/openpr/workspace/' },
+      { text: 'Projects', link: '/en/openpr/workspace/projects' },
+      { text: 'Members', link: '/en/openpr/workspace/members' },
+    ],
+  },
+  {
+    text: 'Issues',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/openpr/issues/' },
+      { text: 'Workflow', link: '/en/openpr/issues/workflow' },
+      { text: 'Sprints', link: '/en/openpr/issues/sprints' },
+      { text: 'Labels', link: '/en/openpr/issues/labels' },
+    ],
+  },
+  {
+    text: 'Governance',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/openpr/governance/' },
+      { text: 'Proposals', link: '/en/openpr/governance/proposals' },
+      { text: 'Voting', link: '/en/openpr/governance/voting' },
+      { text: 'Trust Scores', link: '/en/openpr/governance/trust-scores' },
+    ],
+  },
+  {
+    text: 'API',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/openpr/api/' },
+      { text: 'Authentication', link: '/en/openpr/api/authentication' },
+      { text: 'Endpoints', link: '/en/openpr/api/endpoints' },
+    ],
+  },
+  {
+    text: 'MCP Server',
+    collapsed: true,
+    items: [
+      { text: 'Integration', link: '/en/openpr/mcp-server/' },
+    ],
+  },
+  {
+    text: 'Deployment',
+    collapsed: true,
+    items: [
+      { text: 'Docker', link: '/en/openpr/deployment/docker' },
+      { text: 'Production', link: '/en/openpr/deployment/production' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Reference', link: '/en/openpr/configuration/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/openpr/troubleshooting/' },
+    ],
+  },
+]
+
+const prxMemorySidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-memory/' },
+      { text: 'Installation', link: '/en/prx-memory/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/prx-memory/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Embedding',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-memory/embedding/' },
+      { text: 'Models', link: '/en/prx-memory/embedding/models' },
+      { text: 'Batch Processing', link: '/en/prx-memory/embedding/batch-processing' },
+    ],
+  },
+  {
+    text: 'Reranking',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-memory/reranking/' },
+      { text: 'Models', link: '/en/prx-memory/reranking/models' },
+    ],
+  },
+  {
+    text: 'Storage',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx-memory/storage/' },
+      { text: 'SQLite', link: '/en/prx-memory/storage/sqlite' },
+      { text: 'Vector Search', link: '/en/prx-memory/storage/vector-search' },
+    ],
+  },
+  {
+    text: 'MCP Protocol',
+    collapsed: true,
+    items: [
+      { text: 'Integration', link: '/en/prx-memory/mcp/' },
+    ],
+  },
+  {
+    text: 'API Reference',
+    collapsed: true,
+    items: [
+      { text: 'Rust API', link: '/en/prx-memory/api/' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Reference', link: '/en/prx-memory/configuration/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/prx-memory/troubleshooting/' },
+    ],
+  },
+]
+
+const prxEmailSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-email/' },
+      { text: 'Installation', link: '/en/prx-email/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/prx-email/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Accounts',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/prx-email/accounts/' },
+      { text: 'IMAP', link: '/en/prx-email/accounts/imap' },
+      { text: 'SMTP', link: '/en/prx-email/accounts/smtp' },
+      { text: 'OAuth', link: '/en/prx-email/accounts/oauth' },
+    ],
+  },
+  {
+    text: 'Storage',
+    collapsed: true,
+    items: [
+      { text: 'SQLite', link: '/en/prx-email/storage/' },
+    ],
+  },
+  {
+    text: 'Plugins',
+    collapsed: true,
+    items: [
+      { text: 'WASM Plugins', link: '/en/prx-email/plugins/' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Reference', link: '/en/prx-email/configuration/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/prx-email/troubleshooting/' },
+    ],
+  },
+]
+
+const fenfaSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/fenfa/' },
+      { text: 'Installation', link: '/en/fenfa/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/fenfa/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Products',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/fenfa/products/' },
+      { text: 'Variants', link: '/en/fenfa/products/variants' },
+      { text: 'Releases', link: '/en/fenfa/products/releases' },
+    ],
+  },
+  {
+    text: 'Distribution',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/fenfa/distribution/' },
+      { text: 'iOS', link: '/en/fenfa/distribution/ios' },
+      { text: 'Android', link: '/en/fenfa/distribution/android' },
+      { text: 'Desktop', link: '/en/fenfa/distribution/desktop' },
+    ],
+  },
+  {
+    text: 'API',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/fenfa/api/' },
+      { text: 'Upload API', link: '/en/fenfa/api/upload' },
+      { text: 'Admin API', link: '/en/fenfa/api/admin' },
+    ],
+  },
+  {
+    text: 'Deployment',
+    collapsed: true,
+    items: [
+      { text: 'Docker', link: '/en/fenfa/deployment/docker' },
+      { text: 'Production', link: '/en/fenfa/deployment/production' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Reference', link: '/en/fenfa/configuration/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/fenfa/troubleshooting/' },
+    ],
+  },
+]
+
 const nav: DefaultTheme.NavItem[] = [
   {
     text: 'PRX',
@@ -263,6 +708,35 @@ const nav: DefaultTheme.NavItem[] = [
       { text: 'Configuration', link: '/en/prx/config/' },
     ],
   },
+  {
+    text: 'PRX-SD',
+    items: [
+      { text: 'Getting Started', link: '/en/prx-sd/' },
+      { text: 'Scanning', link: '/en/prx-sd/scanning/file-scan' },
+      { text: 'Detection Engine', link: '/en/prx-sd/detection/' },
+      { text: 'Threat Intelligence', link: '/en/prx-sd/signatures/' },
+      { text: 'Configuration', link: '/en/prx-sd/configuration/' },
+    ],
+  },
+  {
+    text: 'PRX-WAF',
+    items: [
+      { text: 'Getting Started', link: '/en/prx-waf/' },
+      { text: 'Rules Engine', link: '/en/prx-waf/rules/' },
+      { text: 'Gateway', link: '/en/prx-waf/gateway/' },
+      { text: 'Cluster', link: '/en/prx-waf/cluster/' },
+      { text: 'Configuration', link: '/en/prx-waf/configuration/' },
+    ],
+  },
+  {
+    text: 'More',
+    items: [
+      { text: 'OpenPR', link: '/en/openpr/' },
+      { text: 'PRX-Memory', link: '/en/prx-memory/' },
+      { text: 'PRX-Email', link: '/en/prx-email/' },
+      { text: 'Fenfa', link: '/en/fenfa/' },
+    ],
+  },
   { text: 'Changelog', link: 'https://github.com/openprx/prx/blob/main/CHANGELOG.md' },
 ]
 
@@ -271,6 +745,12 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
     nav,
     sidebar: {
       '/en/prx/': prxSidebar,
+      '/en/prx-sd/': prxSdSidebar,
+      '/en/prx-waf/': prxWafSidebar,
+      '/en/openpr/': openprSidebar,
+      '/en/prx-memory/': prxMemorySidebar,
+      '/en/prx-email/': prxEmailSidebar,
+      '/en/fenfa/': fenfaSidebar,
     },
     editLink: {
       pattern: 'https://github.com/openprx/docs/edit/main/site/:path',
