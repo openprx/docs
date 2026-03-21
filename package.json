@@ -1,0 +1,16 @@
+{
+  "name": "@openprx/docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "OpenPRX Documentation",
+  "scripts": {
+    "dev": "vitepress dev site",
+    "build": "vitepress build site",
+    "preview": "vitepress preview site"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.30"
+  }
+}

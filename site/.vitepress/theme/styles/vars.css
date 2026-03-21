@@ -1,0 +1,109 @@
+/**
+ * OpenPRX Brand Theme
+ * Indigo-based cold tech aesthetic
+ */
+
+:root {
+  /* Brand Colors */
+  --vp-c-brand-1: #6366F1;
+  --vp-c-brand-2: #818CF8;
+  --vp-c-brand-3: #4F46E5;
+  --vp-c-brand-soft: rgba(99, 102, 241, 0.14);
+
+  /* Typography */
+  --vp-font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular,
+    'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+
+  /* Layout */
+  --vp-layout-max-width: 1440px;
+}
+
+.dark {
+  --vp-c-bg: #0F0F23;
+  --vp-c-bg-soft: #1A1A2E;
+  --vp-c-bg-mute: #16213E;
+  --vp-c-bg-elv: #1A1A2E;
+
+  --vp-c-text-1: #E2E8F0;
+  --vp-c-text-2: #94A3B8;
+  --vp-c-text-3: #64748B;
+
+  --vp-c-divider: rgba(99, 102, 241, 0.12);
+  --vp-c-gutter: #0F0F23;
+
+  --vp-code-block-bg: #131328;
+  --vp-code-tab-active-bar-color: #6366F1;
+}
+
+/* Light mode refinements */
+:root:not(.dark) {
+  --vp-c-bg: #FFFFFF;
+  --vp-c-bg-soft: #F8FAFC;
+  --vp-c-bg-mute: #F1F5F9;
+}
+
+/* Custom component styles */
+.VPHero .name {
+  background: linear-gradient(135deg, #6366F1 0%, #818CF8 50%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.VPHero .tagline {
+  font-size: 1.2rem !important;
+  opacity: 0.85;
+}
+
+/* Feature cards */
+.VPFeature {
+  border: 1px solid var(--vp-c-divider) !important;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
+}
+
+/* Sidebar active item */
+.VPSidebarItem.is-active > .item .link > .text {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* Custom tip/warning containers */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+.custom-block.warning {
+  border-color: #F59E0B;
+}
+
+/* Nav bar blur */
+.VPNav {
+  backdrop-filter: blur(12px) !important;
+}
+
+/* Code group tabs */
+.vp-code-group .tabs label.active {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* Scrollbar styling for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 3px;
+}
