@@ -410,6 +410,13 @@ const prxWafSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'CrowdSec',
+    collapsed: true,
+    items: [
+      { text: '集成', link: '/zh/prx-waf/crowdsec/' },
+    ],
+  },
+  {
     text: '管理界面',
     collapsed: true,
     items: [
@@ -504,6 +511,13 @@ const openprSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'CLI 命令参考',
+    collapsed: true,
+    items: [
+      { text: '命令总览', link: '/zh/openpr/cli/' },
+    ],
+  },
+  {
     text: '配置',
     collapsed: true,
     items: [
@@ -515,6 +529,47 @@ const openprSidebar: DefaultTheme.SidebarItem[] = [
     collapsed: true,
     items: [
       { text: '常见问题', link: '/zh/openpr/troubleshooting/' },
+    ],
+  },
+]
+
+const openprWebhookSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '快速入门',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/openpr-webhook/' },
+      { text: '安装', link: '/zh/openpr-webhook/getting-started/installation' },
+      { text: '快速开始', link: '/zh/openpr-webhook/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: '代理',
+    collapsed: false,
+    items: [
+      { text: '概述', link: '/zh/openpr-webhook/agents/' },
+      { text: '执行器', link: '/zh/openpr-webhook/agents/executors' },
+    ],
+  },
+  {
+    text: 'WSS 隧道',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/openpr-webhook/tunnel/' },
+    ],
+  },
+  {
+    text: '配置',
+    collapsed: true,
+    items: [
+      { text: '参考', link: '/zh/openpr-webhook/configuration/' },
+    ],
+  },
+  {
+    text: '故障排除',
+    collapsed: true,
+    items: [
+      { text: '常见问题', link: '/zh/openpr-webhook/troubleshooting/' },
     ],
   },
 ]
@@ -732,12 +787,12 @@ const nav: DefaultTheme.NavItem[] = [
     text: '更多',
     items: [
       { text: 'OpenPR', link: '/zh/openpr/' },
+      { text: 'OpenPR-Webhook', link: '/zh/openpr-webhook/' },
       { text: 'PRX-Memory', link: '/zh/prx-memory/' },
       { text: 'PRX-Email', link: '/zh/prx-email/' },
       { text: 'Fenfa', link: '/zh/fenfa/' },
     ],
   },
-  { text: '更新日志', link: 'https://github.com/openprx/prx/blob/main/CHANGELOG.md' },
 ]
 
 export const zhConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
@@ -748,6 +803,7 @@ export const zhConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
       '/zh/prx-sd/': prxSdSidebar,
       '/zh/prx-waf/': prxWafSidebar,
       '/zh/openpr/': openprSidebar,
+      '/zh/openpr-webhook/': openprWebhookSidebar,
       '/zh/prx-memory/': prxMemorySidebar,
       '/zh/prx-email/': prxEmailSidebar,
       '/zh/fenfa/': fenfaSidebar,

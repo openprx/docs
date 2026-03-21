@@ -410,6 +410,13 @@ const prxWafSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'CrowdSec',
+    collapsed: true,
+    items: [
+      { text: 'Integration', link: '/en/prx-waf/crowdsec/' },
+    ],
+  },
+  {
     text: 'Admin UI',
     collapsed: true,
     items: [
@@ -504,6 +511,13 @@ const openprSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'CLI Reference',
+    collapsed: true,
+    items: [
+      { text: 'Command Overview', link: '/en/openpr/cli/' },
+    ],
+  },
+  {
     text: 'Configuration',
     collapsed: true,
     items: [
@@ -515,6 +529,47 @@ const openprSidebar: DefaultTheme.SidebarItem[] = [
     collapsed: true,
     items: [
       { text: 'Common Issues', link: '/en/openpr/troubleshooting/' },
+    ],
+  },
+]
+
+const openprWebhookSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Getting Started',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/openpr-webhook/' },
+      { text: 'Installation', link: '/en/openpr-webhook/getting-started/installation' },
+      { text: 'Quick Start', link: '/en/openpr-webhook/getting-started/quickstart' },
+    ],
+  },
+  {
+    text: 'Agents',
+    collapsed: false,
+    items: [
+      { text: 'Overview', link: '/en/openpr-webhook/agents/' },
+      { text: 'Executors', link: '/en/openpr-webhook/agents/executors' },
+    ],
+  },
+  {
+    text: 'WSS Tunnel',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/openpr-webhook/tunnel/' },
+    ],
+  },
+  {
+    text: 'Configuration',
+    collapsed: true,
+    items: [
+      { text: 'Reference', link: '/en/openpr-webhook/configuration/' },
+    ],
+  },
+  {
+    text: 'Troubleshooting',
+    collapsed: true,
+    items: [
+      { text: 'Common Issues', link: '/en/openpr-webhook/troubleshooting/' },
     ],
   },
 ]
@@ -732,12 +787,12 @@ const nav: DefaultTheme.NavItem[] = [
     text: 'More',
     items: [
       { text: 'OpenPR', link: '/en/openpr/' },
+      { text: 'OpenPR-Webhook', link: '/en/openpr-webhook/' },
       { text: 'PRX-Memory', link: '/en/prx-memory/' },
       { text: 'PRX-Email', link: '/en/prx-email/' },
       { text: 'Fenfa', link: '/en/fenfa/' },
     ],
   },
-  { text: 'Changelog', link: 'https://github.com/openprx/prx/blob/main/CHANGELOG.md' },
 ]
 
 export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
@@ -748,6 +803,7 @@ export const enConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
       '/en/prx-sd/': prxSdSidebar,
       '/en/prx-waf/': prxWafSidebar,
       '/en/openpr/': openprSidebar,
+      '/en/openpr-webhook/': openprWebhookSidebar,
       '/en/prx-memory/': prxMemorySidebar,
       '/en/prx-email/': prxEmailSidebar,
       '/en/fenfa/': fenfaSidebar,
