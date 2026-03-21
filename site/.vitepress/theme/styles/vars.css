@@ -89,6 +89,18 @@
   backdrop-filter: blur(12px) !important;
 }
 
+/* Logo + siteTitle spacing */
+.VPNavBarTitle .logo {
+  margin-right: 4px !important;
+  width: 28px;
+  height: 28px;
+}
+
+.VPNavBarTitle .title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
 /* Code group tabs */
 .vp-code-group .tabs label.active {
   color: var(--vp-c-brand-1) !important;
