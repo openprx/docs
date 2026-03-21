@@ -69,6 +69,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Remote Nodes', link: '/en/prx/tools/nodes' },
       { text: 'Media', link: '/en/prx/tools/media' },
       { text: 'MCP Integration', link: '/en/prx/tools/mcp' },
+      { text: 'Hooks', link: '/en/prx/tools/hooks' },
     ],
   },
   {

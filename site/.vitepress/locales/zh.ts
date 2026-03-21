@@ -69,6 +69,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '远程节点', link: '/zh/prx/tools/nodes' },
       { text: '媒体', link: '/zh/prx/tools/media' },
       { text: 'MCP 集成', link: '/zh/prx/tools/mcp' },
+      { text: 'Hooks', link: '/zh/prx/tools/hooks' },
     ],
   },
   {
