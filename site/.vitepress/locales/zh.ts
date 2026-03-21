@@ -30,6 +30,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Mattermost', link: '/zh/prx/channels/mattermost' },
       { text: 'Nextcloud Talk', link: '/zh/prx/channels/nextcloud-talk' },
       { text: 'IRC', link: '/zh/prx/channels/irc' },
+      { text: 'QQ', link: '/zh/prx/channels/qq' },
       { text: 'LINQ', link: '/zh/prx/channels/linq' },
       { text: '命令行', link: '/zh/prx/channels/cli' },
     ],
@@ -69,6 +70,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '远程节点', link: '/zh/prx/tools/nodes' },
       { text: '媒体', link: '/zh/prx/tools/media' },
       { text: 'MCP 集成', link: '/zh/prx/tools/mcp' },
+      { text: 'SkillForge', link: '/zh/prx/tools/skillforge' },
       { text: 'Hooks', link: '/zh/prx/tools/hooks' },
     ],
   },
@@ -80,6 +82,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Agent 循环', link: '/zh/prx/agent/loop' },
       { text: '子代理', link: '/zh/prx/agent/subagents' },
       { text: '会话工作进程', link: '/zh/prx/agent/session-worker' },
+      { text: '运行时后端', link: '/zh/prx/agent/runtime-backends' },
+      { text: '多模态', link: '/zh/prx/agent/multimodal' },
     ],
   },
   {
@@ -92,6 +96,9 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'PostgreSQL 后端', link: '/zh/prx/memory/postgres' },
       { text: '向量嵌入', link: '/zh/prx/memory/embeddings' },
       { text: '记忆清理', link: '/zh/prx/memory/hygiene' },
+      { text: 'RAG', link: '/zh/prx/memory/rag' },
+      { text: 'Lucid.so', link: '/zh/prx/memory/lucid' },
+      { text: '向量搜索', link: '/zh/prx/memory/vector-search' },
     ],
   },
   {
@@ -104,6 +111,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'L3: 策略进化', link: '/zh/prx/self-evolution/l3-strategy' },
       { text: '流水线', link: '/zh/prx/self-evolution/pipeline' },
       { text: '安全机制', link: '/zh/prx/self-evolution/safety' },
+      { text: '决策日志', link: '/zh/prx/self-evolution/decision-log' },
+      { text: '实验系统', link: '/zh/prx/self-evolution/experiments' },
     ],
   },
   {
@@ -126,6 +135,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '宿主函数', link: '/zh/prx/plugins/host-functions' },
       { text: 'PDK', link: '/zh/prx/plugins/pdk' },
       { text: '示例', link: '/zh/prx/plugins/examples' },
+      { text: '事件总线', link: '/zh/prx/plugins/event-bus' },
     ],
   },
   {
@@ -137,6 +147,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'WebSocket', link: '/zh/prx/gateway/websocket' },
       { text: 'Webhooks', link: '/zh/prx/gateway/webhooks' },
       { text: '中间件', link: '/zh/prx/gateway/middleware' },
+      { text: 'API 参考', link: '/zh/prx/gateway/api-reference' },
     ],
   },
   {
@@ -149,6 +160,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '沙箱', link: '/zh/prx/security/sandbox' },
       { text: '密钥存储', link: '/zh/prx/security/secrets' },
       { text: '威胁模型', link: '/zh/prx/security/threat-model' },
+      { text: '审批工作流', link: '/zh/prx/security/approval' },
+      { text: '审计日志', link: '/zh/prx/security/audit' },
     ],
   },
   {
@@ -186,6 +199,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '概述', link: '/zh/prx/auth/' },
       { text: 'OAuth2 流程', link: '/zh/prx/auth/oauth2' },
       { text: '认证配置', link: '/zh/prx/auth/profiles' },
+      { text: '身份管理', link: '/zh/prx/auth/identity' },
     ],
   },
   {
@@ -215,6 +229,17 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: '概述', link: '/zh/prx/observability/' },
       { text: 'Prometheus', link: '/zh/prx/observability/prometheus' },
       { text: 'OpenTelemetry', link: '/zh/prx/observability/opentelemetry' },
+      { text: '费用追踪', link: '/zh/prx/observability/cost-tracking' },
+    ],
+  },
+  {
+    text: '隧道',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx/tunnel/' },
+      { text: 'Cloudflare Tunnel', link: '/zh/prx/tunnel/cloudflare' },
+      { text: 'Tailscale Funnel', link: '/zh/prx/tunnel/tailscale' },
+      { text: 'ngrok', link: '/zh/prx/tunnel/ngrok' },
     ],
   },
   {

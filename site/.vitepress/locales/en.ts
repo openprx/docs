@@ -30,6 +30,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Mattermost', link: '/en/prx/channels/mattermost' },
       { text: 'Nextcloud Talk', link: '/en/prx/channels/nextcloud-talk' },
       { text: 'IRC', link: '/en/prx/channels/irc' },
+      { text: 'QQ', link: '/en/prx/channels/qq' },
       { text: 'LINQ', link: '/en/prx/channels/linq' },
       { text: 'CLI', link: '/en/prx/channels/cli' },
     ],
@@ -69,6 +70,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Remote Nodes', link: '/en/prx/tools/nodes' },
       { text: 'Media', link: '/en/prx/tools/media' },
       { text: 'MCP Integration', link: '/en/prx/tools/mcp' },
+      { text: 'SkillForge', link: '/en/prx/tools/skillforge' },
       { text: 'Hooks', link: '/en/prx/tools/hooks' },
     ],
   },
@@ -80,6 +82,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Agent Loop', link: '/en/prx/agent/loop' },
       { text: 'Sub-agents', link: '/en/prx/agent/subagents' },
       { text: 'Session Worker', link: '/en/prx/agent/session-worker' },
+      { text: 'Runtime Backends', link: '/en/prx/agent/runtime-backends' },
+      { text: 'Multimodal', link: '/en/prx/agent/multimodal' },
     ],
   },
   {
@@ -92,6 +96,9 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'PostgreSQL Backend', link: '/en/prx/memory/postgres' },
       { text: 'Embeddings', link: '/en/prx/memory/embeddings' },
       { text: 'Memory Hygiene', link: '/en/prx/memory/hygiene' },
+      { text: 'RAG', link: '/en/prx/memory/rag' },
+      { text: 'Lucid.so', link: '/en/prx/memory/lucid' },
+      { text: 'Vector Search', link: '/en/prx/memory/vector-search' },
     ],
   },
   {
@@ -104,6 +111,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'L3: Strategy Evolution', link: '/en/prx/self-evolution/l3-strategy' },
       { text: 'Pipeline', link: '/en/prx/self-evolution/pipeline' },
       { text: 'Safety', link: '/en/prx/self-evolution/safety' },
+      { text: 'Decision Log', link: '/en/prx/self-evolution/decision-log' },
+      { text: 'Experiments', link: '/en/prx/self-evolution/experiments' },
     ],
   },
   {
@@ -126,6 +135,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Host Functions', link: '/en/prx/plugins/host-functions' },
       { text: 'PDK', link: '/en/prx/plugins/pdk' },
       { text: 'Examples', link: '/en/prx/plugins/examples' },
+      { text: 'Event Bus', link: '/en/prx/plugins/event-bus' },
     ],
   },
   {
@@ -137,6 +147,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'WebSocket', link: '/en/prx/gateway/websocket' },
       { text: 'Webhooks', link: '/en/prx/gateway/webhooks' },
       { text: 'Middleware', link: '/en/prx/gateway/middleware' },
+      { text: 'API Reference', link: '/en/prx/gateway/api-reference' },
     ],
   },
   {
@@ -149,6 +160,8 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Sandbox', link: '/en/prx/security/sandbox' },
       { text: 'Secrets Store', link: '/en/prx/security/secrets' },
       { text: 'Threat Model', link: '/en/prx/security/threat-model' },
+      { text: 'Approval Workflow', link: '/en/prx/security/approval' },
+      { text: 'Audit Logging', link: '/en/prx/security/audit' },
     ],
   },
   {
@@ -186,6 +199,7 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Overview', link: '/en/prx/auth/' },
       { text: 'OAuth2 Flow', link: '/en/prx/auth/oauth2' },
       { text: 'Auth Profiles', link: '/en/prx/auth/profiles' },
+      { text: 'Identity Management', link: '/en/prx/auth/identity' },
     ],
   },
   {
@@ -215,6 +229,17 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
       { text: 'Overview', link: '/en/prx/observability/' },
       { text: 'Prometheus', link: '/en/prx/observability/prometheus' },
       { text: 'OpenTelemetry', link: '/en/prx/observability/opentelemetry' },
+      { text: 'Cost Tracking', link: '/en/prx/observability/cost-tracking' },
+    ],
+  },
+  {
+    text: 'Tunnel',
+    collapsed: true,
+    items: [
+      { text: 'Overview', link: '/en/prx/tunnel/' },
+      { text: 'Cloudflare Tunnel', link: '/en/prx/tunnel/cloudflare' },
+      { text: 'Tailscale Funnel', link: '/en/prx/tunnel/tailscale' },
+      { text: 'ngrok', link: '/en/prx/tunnel/ngrok' },
     ],
   },
   {
