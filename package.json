@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vitepress dev site",
     "build": "vitepress build site",
-    "preview": "vitepress preview site"
+    "preview": "vitepress preview site",
+    "deploy": "vitepress build site && wrangler pages deploy site/.vitepress/dist --project-name=openprx-docs"
   },
   "devDependencies": {
     "vitepress": "^1.6.4",
