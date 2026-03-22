@@ -27,6 +27,8 @@ jobs:
       - run: npm ci
 
       - run: npm run build
+        env:
+          NODE_OPTIONS: '--max-old-space-size=8192'
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'
