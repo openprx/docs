@@ -2,7 +2,7 @@
 
 Official documentation for the [OpenPRX](https://github.com/openprx) ecosystem.
 
-**Live site:** [docs.openprx.dev](https://docs.openprx.dev)
+**Live site:** [docs.openprx.dev](https://docs.openprx.dev) · **Community:** [community.openprx.dev](https://community.openprx.dev)
 
 ## Products
 
