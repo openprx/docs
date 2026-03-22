@@ -1,64 +1,64 @@
 ---
 title: გადაწყვეტილების ჟურნალი
-description: Decision logging during self-evolution cycles -- what gets recorded, format, analysis, and rollback tracing.
+description: გადაწყვეტილებების ჟურნალირება თვით-ევოლუციის ციკლებში -- რა აღირიცხება, ფორმატი, ანალიზი და უკუქცევის თვალთვალი.
 ---
 
-# Decision Log
+# გადაწყვეტილების ჟურნალი
 
-Every decision made during a self-evolution cycle is recorded in a structured decision log. This log provides a complete audit trail of what the evolution system decided, why it decided it, and what happened as a result -- enabling post-hoc analysis, debugging, and safe rollback.
+თვით-ევოლუციის ციკლის დროს მიღებული ყოველი გადაწყვეტილება სტრუქტურირებულ გადაწყვეტილების ჟურნალში აღირიცხება. ეს ჟურნალი სრულ აუდიტის კვალს უზრუნველყოფს იმის შესახებ, რა გადაწყვიტა ევოლუციის სისტემამ, რატომ გადაწყვიტა და რა შედეგი მოჰყვა -- რაც შემდგომ ანალიზს, გამართვასა და უსაფრთხო უკუქცევას შესაძლებელს ხდის.
 
 ## მიმოხილვა
 
-The decision log captures the full lifecycle of evolution decisions:
+გადაწყვეტილების ჟურნალი ევოლუციის გადაწყვეტილებების სრულ სიცოცხლის ციკლს იჭერს:
 
-- **Proposal generation** -- what improvement was proposed and why
-- **Evaluation** -- how the proposal was scored against safety and fitness criteria
-- **Verdict** -- whether the proposal was approved, rejected, or deferred
-- **Execution** -- what changes were applied and their immediate effects
-- **Outcome** -- measured results after the change, including any regressions
+- **წინადადების გენერაცია** -- რა გაუმჯობესება იქნა შემოთავაზებული და რატომ
+- **შეფასება** -- როგორ შეფასდა წინადადება უსაფრთხოებისა და ვარგისიანობის კრიტერიუმების მიხედვით
+- **განაჩენი** -- წინადადება დამტკიცდა, უარყოფილ იქნა თუ გადაიდო
+- **შესრულება** -- რა ცვლილებები გამოიყენა და მათი უშუალო ეფექტები
+- **შედეგი** -- ცვლილების შემდეგ გაზომილი შედეგები, მათ შორის ნებისმიერი რეგრესია
 
-Unlike the security audit log (which records all security events), the decision log is specifically focused on the self-evolution system's reasoning process.
+უსაფრთხოების აუდიტის ჟურნალისგან (რომელიც ყველა უსაფრთხოების მოვლენას აღრიცხავს) განსხვავებით, გადაწყვეტილების ჟურნალი კონკრეტულად თვით-ევოლუციის სისტემის მსჯელობის პროცესზეა ფოკუსირებული.
 
-## Decision Record Structure
+## გადაწყვეტილების ჩანაწერის სტრუქტურა
 
-Each decision is stored as a structured record:
+ყოველი გადაწყვეტილება სტრუქტურირებულ ჩანაწერად ინახება:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `decision_id` | `String` | Unique identifier (UUIDv7, time-ordered) |
-| `cycle_id` | `String` | The evolution cycle that produced this decision |
-| `layer` | `Layer` | Evolution layer: `L1` (memory), `L2` (prompt), or `L3` (strategy) |
-| `timestamp` | `DateTime<Utc>` | When the decision was recorded |
-| `proposal` | `Proposal` | The proposed change (type, description, parameters) |
-| `rationale` | `String` | Explanation of why this change was proposed |
-| `data_points` | `usize` | Number of data samples that informed the decision |
-| `fitness_before` | `f64` | Fitness score before the change |
-| `fitness_after` | `Option<f64>` | Fitness score after the change (populated post-execution) |
-| `verdict` | `Verdict` | `approved`, `rejected`, `deferred`, or `auto_approved` |
-| `verdict_reason` | `String` | Why the verdict was reached (e.g., safety check result) |
-| `executed` | `bool` | Whether the change was actually applied |
-| `rollback_id` | `Option<String>` | Reference to the rollback snapshot, if one was created |
-| `outcome` | `Option<Outcome>` | Post-execution outcome: `improved`, `neutral`, `regressed`, or `rolled_back` |
+| ველი | ტიპი | აღწერა |
+|------|------|--------|
+| `decision_id` | `String` | უნიკალური იდენტიფიკატორი (UUIDv7, დროით დალაგებული) |
+| `cycle_id` | `String` | ევოლუციის ციკლი, რომელმაც ეს გადაწყვეტილება წარმოქმნა |
+| `layer` | `Layer` | ევოლუციის ფენა: `L1` (მეხსიერება), `L2` (პრომპტი) ან `L3` (სტრატეგია) |
+| `timestamp` | `DateTime<Utc>` | გადაწყვეტილების ჩაწერის დრო |
+| `proposal` | `Proposal` | შემოთავაზებული ცვლილება (ტიპი, აღწერა, პარამეტრები) |
+| `rationale` | `String` | ახსნა, რატომ იქნა ეს ცვლილება შემოთავაზებული |
+| `data_points` | `usize` | მონაცემთა ნიმუშების რაოდენობა, რომლებმაც გადაწყვეტილება წარმართა |
+| `fitness_before` | `f64` | ვარგისიანობის ქულა ცვლილებამდე |
+| `fitness_after` | `Option<f64>` | ვარგისიანობის ქულა ცვლილების შემდეგ (შესრულების შემდეგ ივსება) |
+| `verdict` | `Verdict` | `approved`, `rejected`, `deferred` ან `auto_approved` |
+| `verdict_reason` | `String` | რატომ იქნა მიღებული ეს განაჩენი (მაგ., უსაფრთხოების შემოწმების შედეგი) |
+| `executed` | `bool` | ცვლილება რეალურად გამოყენებულ იქნა თუ არა |
+| `rollback_id` | `Option<String>` | უკუქცევის სნეპშოტის მითითება, თუ შეიქმნა |
+| `outcome` | `Option<Outcome>` | შესრულების შემდგომი შედეგი: `improved`, `neutral`, `regressed` ან `rolled_back` |
 
-### Verdict Types
+### განაჩენის ტიპები
 
-| Verdict | Description | Trigger |
-|---------|-------------|---------|
-| `auto_approved` | Approved automatically by the pipeline | L1 changes with risk score below threshold |
-| `approved` | Approved after evaluation | L2/L3 changes that pass safety checks |
-| `rejected` | Rejected by the safety pipeline | Failed sanity checks, risk too high, or conflicts detected |
-| `deferred` | Postponed for later evaluation | Insufficient data or system health concerns |
+| განაჩენი | აღწერა | გამომწვევი |
+|----------|--------|-----------|
+| `auto_approved` | ავტომატურად დამტკიცებული პაიპლაინის მიერ | L1 ცვლილებები რისკის ქულით ზღურბლზე ქვემოთ |
+| `approved` | დამტკიცებული შეფასების შემდეგ | L2/L3 ცვლილებები, რომლებიც უსაფრთხოების შემოწმებებს გაივლიან |
+| `rejected` | უარყოფილი უსაფრთხოების პაიპლაინის მიერ | წარუმატებელი საღი აზრის შემოწმებები, ზედმეტად მაღალი რისკი ან კონფლიქტების აღმოჩენა |
+| `deferred` | გადავადებული შემდგომი შეფასებისთვის | არასაკმარისი მონაცემები ან სისტემის ჯანმრთელობის პრობლემები |
 
 ## კონფიგურაცია
 
 ```toml
 [self_evolution.decision_log]
 enabled = true
-storage = "file"                # "file" or "database"
+storage = "file"                # "file" ან "database"
 path = "~/.local/share/openprx/decisions/"
-format = "jsonl"                # "jsonl" or "json" (pretty-printed)
-retention_days = 180            # auto-delete entries older than 180 days
-max_entries = 10000             # maximum entries before rotation
+format = "jsonl"                # "jsonl" ან "json" (ფორმატირებული)
+retention_days = 180            # 180 დღეზე ძველი ჩანაწერების ავტო-წაშლა
+max_entries = 10000             # მაქსიმალური ჩანაწერები როტაციამდე
 
 [self_evolution.decision_log.database]
 backend = "sqlite"
@@ -68,17 +68,17 @@ path = "~/.local/share/openprx/decisions.db"
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
-|-------|------|---------|-------------|
-| `enabled` | `bool` | `true` | Enable or disable decision logging |
-| `storage` | `String` | `"file"` | Storage backend: `"file"` or `"database"` |
-| `path` | `String` | `"~/.local/share/openprx/decisions/"` | Directory for log files (file mode) |
-| `format` | `String` | `"jsonl"` | File format: `"jsonl"` (compact) or `"json"` (human-readable) |
-| `retention_days` | `u64` | `180` | Auto-delete entries older than N days. 0 = keep forever |
-| `max_entries` | `usize` | `10000` | Maximum entries per file before rotation |
-| `database.backend` | `String` | `"sqlite"` | Database backend: `"sqlite"` or `"postgres"` |
-| `database.path` | `String` | `""` | Database path (SQLite) or connection URL (PostgreSQL) |
+|------|------|-------------|--------|
+| `enabled` | `bool` | `true` | გადაწყვეტილებების ჟურნალირების ჩართვა ან გამორთვა |
+| `storage` | `String` | `"file"` | შენახვის ბექენდი: `"file"` ან `"database"` |
+| `path` | `String` | `"~/.local/share/openprx/decisions/"` | ჟურნალის ფაილების დირექტორია (ფაილის რეჟიმი) |
+| `format` | `String` | `"jsonl"` | ფაილის ფორმატი: `"jsonl"` (კომპაქტური) ან `"json"` (ადამიანისთვის წაკითხვადი) |
+| `retention_days` | `u64` | `180` | N დღეზე ძველი ჩანაწერების ავტო-წაშლა. 0 = სამუდამოდ შენახვა |
+| `max_entries` | `usize` | `10000` | მაქსიმალური ჩანაწერები ფაილზე როტაციამდე |
+| `database.backend` | `String` | `"sqlite"` | მონაცემთა ბაზის ბექენდი: `"sqlite"` ან `"postgres"` |
+| `database.path` | `String` | `""` | მონაცემთა ბაზის ბილიკი (SQLite) ან კავშირის URL (PostgreSQL) |
 
-## Example Decision Record
+## გადაწყვეტილების ჩანაწერის მაგალითი
 
 ```json
 {
@@ -107,57 +107,57 @@ path = "~/.local/share/openprx/decisions.db"
 }
 ```
 
-## Querying the Decision Log
+## გადაწყვეტილების ჟურნალის მოთხოვნები
 
-### CLI Commands
+### CLI ბრძანებები
 
 ```bash
-# View recent decisions
+# ბოლო გადაწყვეტილებების ნახვა
 prx evolution decisions --tail 20
 
-# Filter by layer
+# ფენის მიხედვით ფილტრაცია
 prx evolution decisions --layer L2 --last 30d
 
-# Filter by verdict
+# განაჩენის მიხედვით ფილტრაცია
 prx evolution decisions --verdict rejected --last 7d
 
-# Filter by outcome
+# შედეგის მიხედვით ფილტრაცია
 prx evolution decisions --outcome regressed
 
-# Show a specific decision with full details
+# კონკრეტული გადაწყვეტილების სრული დეტალებით ნახვა
 prx evolution decisions --id 019520b0-5678-7000-8000-000000000042
 
-# Export decisions for analysis
+# გადაწყვეტილებების ექსპორტი ანალიზისთვის
 prx evolution decisions --last 90d --format json > decisions_q1.json
 ```
 
-### Programmatic Access
+### პროგრამული წვდომა
 
-The decision log is accessible via the gateway API:
+გადაწყვეტილების ჟურნალი გეითვეის API-ით ხელმისაწვდომია:
 
 ```bash
-# List recent decisions
+# ბოლო გადაწყვეტილებების ჩამონათვალი
 curl -H "Authorization: Bearer <token>" \
   http://localhost:3120/api/v1/evolution/decisions?limit=20
 
-# Get a specific decision
+# კონკრეტული გადაწყვეტილების მიღება
 curl -H "Authorization: Bearer <token>" \
   http://localhost:3120/api/v1/evolution/decisions/019520b0-5678-7000-8000-000000000042
 ```
 
-## Analyzing Decision Patterns
+## გადაწყვეტილებების შაბლონების ანალიზი
 
-The decision log enables several types of analysis:
+გადაწყვეტილების ჟურნალი ანალიზის რამდენიმე ტიპს შესაძლებელს ხდის:
 
-### Approval Rate by Layer
+### დამტკიცების მაჩვენებელი ფენის მიხედვით
 
-Track what percentage of proposals are approved at each layer to understand the evolution system's effectiveness:
+თვალყურის ადევნეთ წინადადებების რა პროცენტი მტკიცდება ყოველ ფენაზე ევოლუციის სისტემის ეფექტურობის გასაგებად:
 
 ```bash
 prx evolution stats --last 90d
 ```
 
-Example output:
+გამოტანის მაგალითი:
 
 ```
 Layer   Proposed  Approved  Rejected  Deferred  Approval Rate
@@ -166,58 +166,58 @@ L2      28        19        6         3         67.9%
 L3      5         2         3         0         40.0%
 ```
 
-### Regression Detection
+### რეგრესიის აღმოჩენა
 
-Identify decisions that led to regressions:
+იდენტიფიცირეთ გადაწყვეტილებები, რომლებმაც რეგრესია გამოიწვია:
 
 ```bash
 prx evolution decisions --outcome regressed --last 90d
 ```
 
-Each regressed decision includes the `fitness_before` and `fitness_after` values, making it straightforward to measure the impact and correlate with the change.
+ყოველი რეგრესიული გადაწყვეტილება შეიცავს `fitness_before` და `fitness_after` მნიშვნელობებს, რაც გავლენის გაზომვასა და ცვლილებასთან კორელაციას მარტივს ხდის.
 
-### Rollback Tracing
+### უკუქცევის თვალთვალი
 
-When a decision is rolled back, the log records:
+გადაწყვეტილების უკუქცევისას ჟურნალი აღრიცხავს:
 
-1. The original decision with `outcome = "rolled_back"`
-2. A new decision record for the rollback action itself
-3. The `rollback_id` links back to the snapshot that was restored
+1. თავდაპირველ გადაწყვეტილებას `outcome = "rolled_back"`-ით
+2. ახალ გადაწყვეტილების ჩანაწერს თავად უკუქცევის მოქმედებისთვის
+3. `rollback_id` აბრუნებს აღდგენილ სნეპშოტთან კავშირს
 
-This chain allows you to trace the full lifecycle: proposal, execution, regression detection, and rollback.
+ეს ჯაჭვი სრული სიცოცხლის ციკლის თვალთვალის საშუალებას გაძლევთ: წინადადება, შესრულება, რეგრესიის აღმოჩენა და უკუქცევა.
 
-## Rollback from Decision Log
+## უკუქცევა გადაწყვეტილების ჟურნალიდან
 
-To manually roll back a specific decision:
+კონკრეტული გადაწყვეტილების ხელით უკუქცევისთვის:
 
 ```bash
-# View the decision and its rollback snapshot
+# გადაწყვეტილებისა და მისი უკუქცევის სნეპშოტის ნახვა
 prx evolution decisions --id <decision_id>
 
-# Restore the snapshot
+# სნეპშოტის აღდგენა
 prx evolution rollback --snapshot <rollback_id>
 ```
 
-The rollback operation creates a new decision record documenting the manual intervention.
+უკუქცევის ოპერაცია ქმნის ახალ გადაწყვეტილების ჩანაწერს, რომელიც ხელით ჩარევას დოკუმენტირებს.
 
-## Integration with Safety System
+## ინტეგრაცია უსაფრთხოების სისტემასთან
 
-The decision log integrates with the safety pipeline:
+გადაწყვეტილების ჟურნალი უსაფრთხოების პაიპლაინთანაა ინტეგრირებული:
 
-- **Pre-execution** -- the safety pipeline reads past decisions to detect patterns (e.g., repeated failures in the same area)
-- **Post-execution** -- regression signals trigger automatic rollback, which is recorded in the log
-- **Rate limiting** -- the pipeline checks the log to enforce maximum changes per time window
+- **შესრულებამდე** -- უსაფრთხოების პაიპლაინი კითხულობს წარსულ გადაწყვეტილებებს შაბლონების აღმოსაჩენად (მაგ., განმეორებითი წარუმატებლობები იმავე სფეროში)
+- **შესრულების შემდეგ** -- რეგრესიის სიგნალები ავტომატურ უკუქცევას იწვევს, რაც ჟურნალში აღირიცხება
+- **სიჩქარის შეზღუდვა** -- პაიპლაინი ჟურნალს ამოწმებს დროის ფანჯარაზე მაქსიმალური ცვლილებების აღსრულებისთვის
 
 ## შეზღუდვები
 
-- Decision logs are local to the PRX instance; multi-node deployments require external log aggregation
-- The file backend does not support indexed queries; use the database backend for large-scale analysis
-- Fitness scores are only populated after the observation window completes (configurable per layer)
-- Deferred decisions may never resolve if the deferral condition is not re-evaluated
+- გადაწყვეტილების ჟურნალები PRX ინსტანციის ლოკალურია; მრავალ-კვანძიან განთავსებებში გარე ჟურნალის აგრეგაცია საჭიროა
+- ფაილის ბექენდი ინდექსირებულ მოთხოვნებს არ უჭერს მხარს; ფართომასშტაბიანი ანალიზისთვის მონაცემთა ბაზის ბექენდი გამოიყენეთ
+- ვარგისიანობის ქულები მხოლოდ დაკვირვების ფანჯრის დასრულების შემდეგ ივსება (ფენის მიხედვით კონფიგურირებადი)
+- გადავადებული გადაწყვეტილებები შეიძლება არასდროს გადაწყდეს, თუ გადავადების პირობა ხელახლა არ შეფასდა
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [Evolution Pipeline](./pipeline) -- the 4-stage pipeline that produces decisions
-- [Experiments & Fitness](./experiments) -- A/B testing and fitness scoring
-- [Safety & Rollback](./safety) -- safety checks and automatic rollback
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [ევოლუციის პაიპლაინი](./pipeline) -- 4-საფეხურიანი პაიპლაინი, რომელიც გადაწყვეტილებებს წარმოქმნის
+- [ექსპერიმენტები და ვარგისიანობა](./experiments) -- A/B ტესტირება და ვარგისიანობის ქულირება
+- [უსაფრთხოება და უკუქცევა](./safety) -- უსაფრთხოების შემოწმებები და ავტომატური უკუქცევა

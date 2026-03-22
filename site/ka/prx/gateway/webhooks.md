@@ -1,20 +1,20 @@
 ---
 title: Webhook-ები
-description: Outbound webhook notifications for PRX events and integrations.
+description: გამავალი webhook შეტყობინებები PRX-ის მოვლენებისა და ინტეგრაციებისთვის.
 ---
 
-# Webhooks
+# Webhook-ები
 
-PRX supports outbound webhooks to notify external services of agent events. Webhooks enable integrations with CI/CD systems, monitoring tools, and custom workflows.
+PRX გამავალ webhook-ებს უჭერს მხარს გარე სერვისების აგენტის მოვლენების შესახებ შეტყობინებისთვის. Webhook-ები CI/CD სისტემებთან, მონიტორინგის ინსტრუმენტებთან და მორგებულ სამუშაო პროცესებთან ინტეგრაციას უზრუნველყოფს.
 
 ## მიმოხილვა
 
-When configured, PRX sends HTTP POST requests to registered webhook URLs when specific events occur:
+კონფიგურაციის შემთხვევაში PRX HTTP POST მოთხოვნებს აგზავნის რეგისტრირებულ webhook URL-ებზე კონკრეტული მოვლენების დროს:
 
-- **session.created** -- a new agent session was started
-- **session.completed** -- an agent session finished
-- **tool.executed** -- a tool was called and completed
-- **error.occurred** -- an error was encountered
+- **session.created** -- ახალი აგენტის სესია დაიწყო
+- **session.completed** -- აგენტის სესია დასრულდა
+- **tool.executed** -- ინსტრუმენტი გამოძახებულ იქნა და დასრულდა
+- **error.occurred** -- შეცდომა აღმოჩნდა
 
 ## კონფიგურაცია
 
@@ -27,9 +27,9 @@ timeout_secs = 10
 max_retries = 3
 ```
 
-## Payload Format
+## დატვირთვის ფორმატი
 
-Webhook payloads are JSON objects with standard fields:
+Webhook დატვირთვები JSON ობიექტებია სტანდარტული ველებით:
 
 ```json
 {
@@ -39,11 +39,11 @@ Webhook payloads are JSON objects with standard fields:
 }
 ```
 
-## Signature Verification
+## ხელმოწერის ვერიფიკაცია
 
-Each webhook request includes an `X-PRX-Signature` header containing an HMAC-SHA256 signature of the payload using the configured secret.
+ყოველი webhook მოთხოვნა `X-PRX-Signature` ჰედერს შეიცავს, რომელიც კონფიგურირებული საიდუმლოს გამოყენებით დატვირთვის HMAC-SHA256 ხელმოწერას წარმოადგენს.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Gateway Overview](./)
+- [გეითვეის მიმოხილვა](./)
 - [HTTP API](./http-api)

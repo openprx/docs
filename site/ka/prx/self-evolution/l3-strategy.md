@@ -1,28 +1,28 @@
 ---
-title: "L3: Strategy Evolution"
-description: Layer 3 self-evolution in PRX covering tool policies, routing optimization, and governance tuning.
+title: "L3: სტრატეგიის ევოლუცია"
+description: PRX-ში ფენა 3 თვით-ევოლუცია ინსტრუმენტების პოლიტიკის, მარშრუტიზაციის ოპტიმიზაციისა და მმართველობის ტუნინგის მოცვით.
 ---
 
-# L3: Strategy Evolution
+# L3: სტრატეგიის ევოლუცია
 
-Layer 3 is the highest-impact and lowest-frequency evolution layer. It modifies the agent's strategic behavior -- tool access policies, LLM routing rules, and governance parameters. Due to its broad impact, L3 changes always require explicit approval.
+ფენა 3 ყველაზე მაღალი გავლენისა და ყველაზე დაბალი სიხშირის ევოლუციის ფენაა. იგი აგენტის სტრატეგიულ ქცევას ცვლის -- ინსტრუმენტებზე წვდომის პოლიტიკები, LLM მარშრუტიზაციის წესები და მმართველობის პარამეტრები. ფართო გავლენის გამო, L3 ცვლილებები ყოველთვის ცალსახ დამტკიცებას მოითხოვს.
 
 ## მიმოხილვა
 
-L3 evolution addresses:
+L3 ევოლუცია მიმართავს:
 
-- **Tool policy tuning** -- adjust which tools are available and their permission levels
-- **Routing optimization** -- refine model selection heuristics based on performance data
-- **Governance parameters** -- tune safety thresholds, rate limits, and approval workflows
-- **Cost optimization** -- balance quality against resource usage
+- **ინსტრუმენტის პოლიტიკის ტუნინგი** -- ხელმისაწვდომი ინსტრუმენტებისა და მათი ნებართვების დონეების კორექტირება
+- **მარშრუტიზაციის ოპტიმიზაცია** -- მოდელის შერჩევის ევრისტიკების დახვეწა წარმადობის მონაცემების საფუძველზე
+- **მმართველობის პარამეტრები** -- უსაფრთხოების ზღურბლების, სიჩქარის ლიმიტებისა და დამტკიცების სამუშაო პროცესების ტუნინგი
+- **ხარჯების ოპტიმიზაცია** -- ხარისხისა და რესურსების გამოყენების ბალანსირება
 
 ## როგორ მუშაობს
 
-1. L3 collects aggregate performance data over weeks/months
-2. It identifies patterns (e.g., a cheaper model handles 80% of queries adequately)
-3. It proposes strategic changes with expected impact analysis
-4. Changes are queued for human approval
-5. Approved changes are applied with automatic rollback capability
+1. L3 კვირების/თვეების განმავლობაში აგრეგირებულ წარმადობის მონაცემებს აგროვებს
+2. ადგენს შაბლონებს (მაგ., უფრო იაფი მოდელი შეკითხვების 80%-ს ადეკვატურად ამუშავებს)
+3. სთავაზობს სტრატეგიულ ცვლილებებს მოსალოდნელი გავლენის ანალიზით
+4. ცვლილებები ადამიანის დამტკიცების რიგში ჩადგება
+5. დამტკიცებული ცვლილებები ავტომატური უკუქცევის შესაძლებლობით გამოიყენება
 
 ## კონფიგურაცია
 
@@ -31,13 +31,13 @@ L3 evolution addresses:
 enabled = false
 schedule = "monthly"
 require_approval = true
-rollback_window_hours = 168  # 7 days
+rollback_window_hours = 168  # 7 დღე
 max_policy_changes_per_cycle = 3
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [L2: Prompt Optimization](./l2-prompt)
-- [Evolution Pipeline](./pipeline)
-- [Safety & Rollback](./safety)
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [L2: პრომპტის ოპტიმიზაცია](./l2-prompt)
+- [ევოლუციის პაიპლაინი](./pipeline)
+- [უსაფრთხოება და უკუქცევა](./safety)

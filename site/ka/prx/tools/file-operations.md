@@ -1,41 +1,35 @@
 ---
 title: ფაილის ოპერაციები
-description: The file_read and file_write tools provide filesystem access with path validation, memory ACL enforcement, and security policy integration.
+description: file_read და file_write ინსტრუმენტები ფაილურ სისტემაზე წვდომას უზრუნველყოფს ბილიკის ვალიდაციით, მეხსიერების ACL აღსრულებითა და უსაფრთხოების პოლიტიკის ინტეგრაციით.
 ---
 
-# File Operations
+# ფაილის ოპერაციები
 
-PRX provides two core file operation tools -- `file_read` and `file_write` -- that are part of the minimal `default_tools()` set. These tools are always available, require no additional configuration, and form the foundation of the agent's ability to interact with the local filesystem.
+PRX ორ ძირითად ფაილის ოპერაციის ინსტრუმენტს გთავაზობთ -- `file_read` და `file_write` -- რომლებიც მინიმალური `default_tools()` ნაკრების ნაწილია. ეს ინსტრუმენტები ყოველთვის ხელმისაწვდომია, დამატებითი კონფიგურაცია არ სჭირდება და აგენტის ლოკალურ ფაილურ სისტემასთან ურთიერთქმედების საფუძველს ქმნის.
 
-Both tools are subject to the security policy engine. Path validation ensures the agent can only access files within allowed directories. When memory ACL is enabled, `file_read` additionally blocks access to memory markdown files to prevent the agent from bypassing access control by reading memory storage directly.
+ორივე ინსტრუმენტი უსაფრთხოების პოლიტიკის ძრავის ქვეშ მოქმედებს. ბილიკის ვალიდაცია უზრუნველყოფს, რომ აგენტს მხოლოდ ნებადართულ დირექტორიებში ფაილებზე წვდომა ჰქონდეს. მეხსიერების ACL-ის ჩართვისას `file_read` დამატებით ბლოკავს მეხსიერების markdown ფაილებზე წვდომას.
 
-Unlike the `shell` tool, file operations do not spawn external processes. They are implemented as direct Rust I/O operations within the PRX process, making them faster and easier to audit than equivalent shell commands like `cat` or `echo >`.
+`shell` ინსტრუმენტისგან განსხვავებით, ფაილის ოპერაციები გარე პროცესებს არ იწყებს. ისინი PRX პროცესში პირდაპირი Rust I/O ოპერაციების სახით არის განხორციელებული.
 
 ## კონფიგურაცია
 
-File operations do not have a dedicated configuration section. Their behavior is controlled through the security policy engine and memory ACL settings:
+ფაილის ოპერაციებს გამოყოფილი კონფიგურაციის სექცია არ აქვს. მათი ქცევა უსაფრთხოების პოლიტიკის ძრავითა და მეხსიერების ACL პარამეტრებით კონტროლდება:
 
 ```toml
-# Memory ACL affects file_read behavior
+# მეხსიერების ACL გავლენას ახდენს file_read-ის ქცევაზე
 [memory]
-acl_enabled = false    # When true, file_read blocks access to memory files
+acl_enabled = false    # true-ზე, file_read ბლოკავს მეხსიერების ფაილებზე წვდომას
 
-# Security policy can restrict file access paths
+# უსაფრთხოების პოლიტიკით ფაილებზე წვდომის ბილიკების შეზღუდვა
 [security.tool_policy.tools]
 file_read = "allow"    # "allow" | "deny" | "supervised"
 file_write = "allow"
 
-# Path-based policy rules
+# ბილიკზე დაფუძნებული პოლიტიკის წესები
 [[security.policy.rules]]
 name = "allow-workspace-read"
 action = "allow"
 tools = ["file_read"]
-paths = ["/home/user/workspace/**"]
-
-[[security.policy.rules]]
-name = "allow-workspace-write"
-action = "allow"
-tools = ["file_write"]
 paths = ["/home/user/workspace/**"]
 
 [[security.policy.rules]]
@@ -49,7 +43,7 @@ paths = ["/etc/shadow", "/root/**", "**/.ssh/**", "**/.env"]
 
 ### file_read
 
-The `file_read` tool reads file contents and returns them as a string. It is the primary way the agent inspects files during its reasoning loop.
+`file_read` ინსტრუმენტი ფაილის შინაარსს კითხულობს და სტრიქონად აბრუნებს.
 
 ```json
 {
@@ -60,16 +54,9 @@ The `file_read` tool reads file contents and returns them as a string. It is the
 }
 ```
 
-The agent typically uses `file_read` to:
-
-- Inspect source code before making modifications
-- Read configuration files to understand system state
-- Check log files for error messages
-- Review documentation or README files
-
 ### file_write
 
-The `file_write` tool writes content to a file, creating it if it does not exist or overwriting its contents if it does.
+`file_write` ინსტრუმენტი ფაილში კონტენტს ჩაწერს, ქმნის თუ არ არსებობს, ან გადაწერს არსებულს.
 
 ```json
 {
@@ -81,126 +68,57 @@ The `file_write` tool writes content to a file, creating it if it does not exist
 }
 ```
 
-The agent typically uses `file_write` to:
+## პარამეტრები
 
-- Create new source files or configuration files
-- Modify existing files (after reading them with `file_read`)
-- Write generated reports or summaries
-- Save processed data to disk
+### file_read პარამეტრები
 
-## Parameters
-
-### file_read Parameters
-
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `path` | `string` | Yes | -- | Absolute or relative path to the file to read |
+| `path` | `string` | დიახ | -- | ფაილის აბსოლუტური ან ფარდობითი ბილიკი წასაკითხად |
 
-**Returns:**
+### file_write პარამეტრები
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `bool` | `true` if the file was read successfully |
-| `output` | `string` | The file contents as a UTF-8 string |
-| `error` | `string?` | Error message if the read failed (file not found, permission denied, ACL blocked, etc.) |
-
-### file_write Parameters
-
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `path` | `string` | Yes | -- | Absolute or relative path to the file to write |
-| `content` | `string` | Yes | -- | The content to write to the file |
+| `path` | `string` | დიახ | -- | ფაილის აბსოლუტური ან ფარდობითი ბილიკი ჩასაწერად |
+| `content` | `string` | დიახ | -- | ფაილში ჩასაწერი კონტენტი |
 
-**Returns:**
+## ბილიკის ვალიდაცია
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `bool` | `true` if the file was written successfully |
-| `output` | `string` | Confirmation message (e.g., "File written: /path/to/file") |
-| `error` | `string?` | Error message if the write failed (permission denied, path blocked, etc.) |
+ორივე ინსტრუმენტი I/O ოპერაციის შესრულებამდე ბილიკის ვალიდაციას ახორციელებს:
 
-## Path Validation
+1. **ბილიკის ნორმალიზაცია** -- ფარდობითი ბილიკები მიმდინარე სამუშაო დირექტორიის მიმართ იხსნება. სიმბოლური ბმულები იხსნება ბილიკის გადახრის გამოსავლენად.
+2. **პოლიტიკის შემოწმება** -- გადაწყვეტილი ბილიკი უსაფრთხოების პოლიტიკის წესებთან მოწმდება.
+3. **სპეციალური ბილიკების ბლოკირება** -- გარკვეული ბილიკები ყოველთვის დაბლოკილია პოლიტიკის მიუხედავად:
+   - `/proc/`, `/sys/` (Linux ბირთვის ინტერფეისები)
+   - მოწყობილობის ფაილები `/dev/`-ში (`/dev/null`, `/dev/urandom`-ის გარდა)
+   - მეხსიერების შენახვის ფაილები, როცა `memory.acl_enabled = true`
 
-Both tools perform path validation before executing the I/O operation:
+## მეხსიერების ACL აღსრულება
 
-1. **Path normalization** -- relative paths are resolved against the current working directory. Symlinks are resolved to detect path traversal.
-2. **Policy check** -- the resolved path is checked against the security policy rules. If no rule explicitly allows the path and the default action is `deny`, the operation is blocked.
-3. **Special path blocking** -- certain paths are always blocked regardless of policy:
-   - `/proc/`, `/sys/` (Linux kernel interfaces)
-   - Device files in `/dev/` (except `/dev/null`, `/dev/urandom`)
-   - Memory storage files when `memory.acl_enabled = true`
+როცა `memory.acl_enabled = true`, `file_read` დამატებით შეზღუდვებს აღასრულებს:
 
-### Path Traversal Prevention
-
-The tools resolve symlinks and normalize `..` components before checking policies. This prevents an attacker from using symlinks or relative path tricks to escape allowed directories:
-
-```
-# These are all resolved and checked:
-/home/user/workspace/../../../etc/passwd  →  /etc/passwd  →  DENIED
-/home/user/workspace/link-to-etc          →  /etc/        →  DENIED (if symlink)
-```
-
-## Memory ACL Enforcement
-
-When `memory.acl_enabled = true` in the configuration, the `file_read` tool enforces additional restrictions:
-
-- **Memory files blocked**: `file_read` refuses to read markdown files stored in the memory directory (typically `~/.local/share/openprx/memory/`). This prevents the agent from bypassing memory access control by reading the raw storage files.
-- **Memory recall disabled**: The `memory_recall` tool is removed from the tool registry entirely when ACL is enabled.
-- **Targeted access only**: The agent must use `memory_get` or `memory_search` with proper ACL checks to access memory content.
-
-```toml
-[memory]
-acl_enabled = true    # Activates file_read restrictions on memory paths
-```
-
-This separation ensures that even if the agent knows the physical location of memory files, it cannot read them outside the controlled memory API.
+- **მეხსიერების ფაილები დაბლოკილია**: `file_read` უარს ამბობს მეხსიერების დირექტორიაში შენახული markdown ფაილების წაკითხვაზე
+- **მეხსიერების გამოძახება გამორთულია**: `memory_recall` ინსტრუმენტი მთლიანად ამოიშლება რეესტრიდან
+- **მხოლოდ მიზნობრივი წვდომა**: აგენტი უნდა გამოიყენოს `memory_get` ან `memory_search` სათანადო ACL შემოწმებებით
 
 ## უსაფრთხოება
 
-### Policy Engine Integration
+### პოლიტიკის ძრავის ინტეგრაცია
 
-Every `file_read` and `file_write` call passes through the security policy engine before execution. The policy engine evaluates rules in order:
+ყოველი `file_read` და `file_write` გამოძახება უსაფრთხოების პოლიტიკის ძრავას გადის შესრულებამდე.
 
-1. Per-tool policy (`security.tool_policy.tools.file_read`)
-2. Path-based rules (`security.policy.rules` with matching `paths` patterns)
-3. Default action (`security.policy.default_action`)
+### აუდიტის ჟურნალირება
 
-### Audit Logging
+აუდიტის ჟურნალირების ჩართვისას, ყოველი ფაილის ოპერაცია იწერება: დროის ნიშნული, ინსტრუმენტის სახელი, გადაწყვეტილი ბილიკი, წარმატების/წარუმატებლობის სტატუსი.
 
-When audit logging is enabled, every file operation is recorded with:
+### მგრძნობიარე ფაილების დაცვა
 
-- Timestamp
-- Tool name (`file_read` or `file_write`)
-- Resolved file path
-- Success/failure status
-- Error reason (if denied or failed)
+ნაგულისხმევი უსაფრთხოების პოლიტიკა ბლოკავს წვდომას გავრცელებულ მგრძნობიარე ბილიკებზე: SSH გასაღებები (`~/.ssh/`), გარემოს ფაილები (`.env`), Git ავტორიზაციის მონაცემები, shell ისტორია, სისტემის პაროლის ფაილები.
 
-```toml
-[security.audit]
-enabled = true
-log_path = "audit.log"
-```
+## დაკავშირებული გვერდები
 
-### Sensitive File Protection
-
-The default security policy blocks access to common sensitive paths:
-
-- SSH keys (`~/.ssh/`)
-- Environment files (`.env`, `.env.local`)
-- Git credentials (`.git-credentials`)
-- Shell history (`.bash_history`, `.zsh_history`)
-- System password files (`/etc/shadow`)
-
-These defaults can be overridden with explicit allow rules, but this is strongly discouraged in production.
-
-### Binary File Handling
-
-The `file_read` tool reads files as UTF-8 strings. Binary files will produce garbled output or encoding errors. The agent is expected to use the `shell` tool with appropriate commands (e.g., `xxd`, `file`, `hexdump`) for binary file inspection.
-
-## დაკავშირებული
-
-- [Shell Execution](/ka/prx/tools/shell) -- command execution tool (alternative for binary files)
-- [Memory Tools](/ka/prx/tools/memory) -- controlled memory access with ACL
-- [Policy Engine](/ka/prx/security/policy-engine) -- path-based access control rules
-- [Configuration Reference](/ka/prx/config/reference) -- memory and security settings
-- [Tools Overview](/ka/prx/tools/) -- all tools and registry system
+- [Shell-ის შესრულება](/ka/prx/tools/shell) -- ბრძანების შესრულების ინსტრუმენტი
+- [მეხსიერების ინსტრუმენტები](/ka/prx/tools/memory) -- ACL-ით კონტროლირებული მეხსიერების წვდომა
+- [პოლიტიკის ძრავი](/ka/prx/security/policy-engine) -- ბილიკზე დაფუძნებული წვდომის კონტროლის წესები
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა ინსტრუმენტი და რეესტრის სისტემა

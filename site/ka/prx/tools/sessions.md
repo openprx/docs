@@ -1,31 +1,31 @@
 ---
-title: Sessions & Agents
-description: Multi-agent orchestration tools for spawning sub-agents, delegating tasks, and managing concurrent sessions in PRX.
+title: სესიები და აგენტები
+description: მულტი-აგენტის ორკესტრაციის ინსტრუმენტები ქვე-აგენტების გაშვების, ამოცანების დელეგირებისა და ერთდროული სესიების მართვისთვის PRX-ში.
 ---
 
-# Sessions & Agents
+# სესიები და აგენტები
 
-PRX provides eight tools for multi-agent orchestration, enabling a parent agent to spawn child agents, delegate tasks to specialized agents, and manage concurrent sessions. This is the foundation of PRX's parallel task decomposition architecture, where complex tasks are broken into subtasks handled by independent agent instances.
+PRX რვა ინსტრუმენტს გთავაზობთ მულტი-აგენტის ორკესტრაციისთვის, რომელიც მშობელ აგენტს შვილი აგენტების გაშვების, სპეციალიზებული აგენტებისთვის ამოცანების დელეგირებისა და ერთდროული სესიების მართვის საშუალებას აძლევს. ეს PRX-ის პარალელური ამოცანების დეკომპოზიციის არქიტექტურის საფუძველია, სადაც რთული ამოცანები ქვეამოცანებად იშლება და დამოუკიდებელი აგენტის ინსტანციები ამუშავებს.
 
-The sessions tools (`sessions_spawn`, `sessions_send`, `sessions_list`, `sessions_history`, `session_status`, `subagents`) manage the lifecycle of sub-agent sessions. The agent delegation tools (`delegate`, `agents_list`) enable task routing to named agents with their own provider, model, and tool configuration.
+სესიების ინსტრუმენტები (`sessions_spawn`, `sessions_send`, `sessions_list`, `sessions_history`, `session_status`, `subagents`) ქვე-აგენტის სესიების სასიცოცხლო ციკლს მართავს. აგენტის დელეგაციის ინსტრუმენტები (`delegate`, `agents_list`) ამოცანების მარშრუტიზაციას უზრუნველყოფს დასახელებულ აგენტებზე საკუთარი პროვაიდერით, მოდელითა და ინსტრუმენტების კონფიგურაციით.
 
-Sessions tools are registered in the `all_tools()` registry and are always available. The `delegate` and `agents_list` tools are conditionally registered only when agent definitions exist in the configuration.
+სესიების ინსტრუმენტები `all_tools()` რეესტრში რეგისტრირებულია და ყოველთვის ხელმისაწვდომია. `delegate` და `agents_list` ინსტრუმენტები პირობითად რეგისტრირდება მხოლოდ კონფიგურაციაში აგენტის განსაზღვრებების არსებობისას.
 
 ## კონფიგურაცია
 
-### Sub-agent Concurrency
+### ქვე-აგენტის ერთდროულობა
 
 ```toml
 [agent.subagents]
-max_concurrent = 4          # Maximum simultaneous sub-agents
-max_depth = 3               # Maximum nesting depth (sub-agents spawning sub-agents)
-max_total_spawns = 20       # Total spawn budget per root session
-child_timeout_secs = 300    # Timeout for individual child execution
+max_concurrent = 4          # მაქსიმალური ერთდროული ქვე-აგენტები
+max_depth = 3               # მაქსიმალური ჩადგმის სიღრმე (ქვე-აგენტების მიერ ქვე-აგენტების გაშვება)
+max_total_spawns = 20       # გაშვების მთლიანი ბიუჯეტი ძირეული სესიისთვის
+child_timeout_secs = 300    # ინდივიდუალური შვილი აგენტის შესრულების დროის ამოწურვა
 ```
 
-### Delegate Agent Definitions
+### დელეგატი აგენტების განსაზღვრებები
 
-Named agents are defined under `[agents.*]` sections:
+დასახელებული აგენტები `[agents.*]` სექციებში განისაზღვრება:
 
 ```toml
 [agents.researcher]
@@ -53,11 +53,11 @@ max_iterations = 5
 allowed_tools = ["file_read", "shell"]
 ```
 
-## Tool Reference
+## ინსტრუმენტების მითითება
 
 ### sessions_spawn
 
-Spawns an asynchronous sub-agent that runs in the background. Returns immediately with a run ID. The parent is automatically notified when the child completes.
+ასინქრონული ქვე-აგენტის გაშვება, რომელიც ფონში მუშაობს. დაუყოვნებლივ აბრუნებს შესრულების ID-ს. მშობელი ავტომატურად ეცნობება შვილის დასრულებისას.
 
 ```json
 {
@@ -69,15 +69,15 @@ Spawns an asynchronous sub-agent that runs in the background. Returns immediatel
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `task` | `string` | Yes | -- | Task description / system prompt for the sub-agent |
-| `action` | `string` | No | `"spawn"` | Action: `"spawn"`, `"history"` (view log), or `"steer"` (redirect) |
-| `allowed_tools` | `array` | No | Parent's tools | Subset of tools the sub-agent can access |
+| `task` | `string` | დიახ | -- | ქვე-აგენტის ამოცანის აღწერა / სისტემური პრომპტი |
+| `action` | `string` | არა | `"spawn"` | მოქმედება: `"spawn"`, `"history"` (ჟურნალის ნახვა) ან `"steer"` (გადამისამართება) |
+| `allowed_tools` | `array` | არა | მშობლის ინსტრუმენტები | ქვე-აგენტისთვის ხელმისაწვდომი ინსტრუმენტების ქვესიმრავლე |
 
 ### sessions_send
 
-Sends a message to a running sub-agent session, enabling interactive communication between parent and child.
+მიმდინარე ქვე-აგენტის სესიაზე შეტყობინების გაგზავნა, რაც მშობელსა და შვილს შორის ინტერაქტიულ კომუნიკაციას უზრუნველყოფს.
 
 ```json
 {
@@ -89,14 +89,14 @@ Sends a message to a running sub-agent session, enabling interactive communicati
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `session_id` | `string` | Yes | -- | The run ID of the target sub-agent |
-| `message` | `string` | Yes | -- | Message to send to the sub-agent |
+| `session_id` | `string` | დიახ | -- | სამიზნე ქვე-აგენტის შესრულების ID |
+| `message` | `string` | დიახ | -- | ქვე-აგენტისთვის გასაგზავნი შეტყობინება |
 
 ### sessions_list
 
-Lists all active sub-agent sessions with their status, task description, and elapsed time.
+ყველა აქტიური ქვე-აგენტის სესიის სია მათი სტატუსით, ამოცანის აღწერითა და გასულ დროით.
 
 ```json
 {
@@ -105,11 +105,11 @@ Lists all active sub-agent sessions with their status, task description, and ela
 }
 ```
 
-No parameters required. Returns a list of active sessions.
+პარამეტრები არ არის საჭირო. აბრუნებს აქტიური სესიების სიას.
 
 ### sessions_history
 
-Views the conversation log of a sub-agent run, including all tool calls and LLM responses.
+ქვე-აგენტის შესრულების საუბრის ჟურნალის ნახვა, ყველა ინსტრუმენტის გამოძახებისა და LLM პასუხის ჩათვლით.
 
 ```json
 {
@@ -120,13 +120,13 @@ Views the conversation log of a sub-agent run, including all tool calls and LLM 
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `session_id` | `string` | Yes | -- | The run ID to retrieve history for |
+| `session_id` | `string` | დიახ | -- | შესრულების ID ისტორიის მისაღებად |
 
 ### session_status
 
-Checks the status of a specific session (running, completed, failed, timed out).
+კონკრეტული სესიის სტატუსის შემოწმება (მიმდინარე, დასრულებული, მარცხი, დროის ამოწურვა).
 
 ```json
 {
@@ -137,13 +137,13 @@ Checks the status of a specific session (running, completed, failed, timed out).
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `session_id` | `string` | Yes | -- | The run ID to check |
+| `session_id` | `string` | დიახ | -- | შესამოწმებელი შესრულების ID |
 
 ### subagents
 
-Manages the sub-agent pool -- list, stop, or inspect running sub-agents.
+ქვე-აგენტების პულის მართვა -- მიმდინარე ქვე-აგენტების სიის ნახვა, შეჩერება ან შემოწმება.
 
 ```json
 {
@@ -154,14 +154,14 @@ Manages the sub-agent pool -- list, stop, or inspect running sub-agents.
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `action` | `string` | Yes | -- | Action: `"list"`, `"stop"`, `"inspect"` |
-| `session_id` | `string` | Conditional | -- | Required for `"stop"` and `"inspect"` actions |
+| `action` | `string` | დიახ | -- | მოქმედება: `"list"`, `"stop"`, `"inspect"` |
+| `session_id` | `string` | პირობითი | -- | სავალდებულოა `"stop"` და `"inspect"` მოქმედებებისთვის |
 
 ### agents_list
 
-Lists all configured delegate agents with their models, capabilities, and allowed tools. Only registered when `[agents.*]` sections are defined.
+ყველა კონფიგურირებული დელეგატი აგენტის სია მათი მოდელებით, შესაძლებლობებითა და ნებადართული ინსტრუმენტებით. რეგისტრირებულია მხოლოდ `[agents.*]` სექციების განსაზღვრისას.
 
 ```json
 {
@@ -170,11 +170,11 @@ Lists all configured delegate agents with their models, capabilities, and allowe
 }
 ```
 
-No parameters required. Returns agent definitions from the configuration.
+პარამეტრები არ არის საჭირო. აბრუნებს კონფიგურაციიდან აგენტის განსაზღვრებებს.
 
 ### delegate
 
-Delegates a task to a named agent with its own provider, model, and tool set. The delegate agent runs an isolated agentic loop and returns the result.
+ამოცანის დელეგირება დასახელებულ აგენტზე საკუთარი პროვაიდერით, მოდელითა და ინსტრუმენტების ნაკრებით. დელეგატი აგენტი იზოლირებულ აგენტურ ციკლს ასრულებს და შედეგს აბრუნებს.
 
 ```json
 {
@@ -186,68 +186,68 @@ Delegates a task to a named agent with its own provider, model, and tool set. Th
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `agent` | `string` | Yes | -- | Name of the configured agent (from `[agents.*]`) |
-| `task` | `string` | Yes | -- | Task description for the delegate agent |
+| `agent` | `string` | დიახ | -- | კონფიგურირებული აგენტის სახელი (`[agents.*]`-დან) |
+| `task` | `string` | დიახ | -- | დელეგატი აგენტის ამოცანის აღწერა |
 
-## Usage Patterns
+## გამოყენების შაბლონები
 
-### Parallel Research
+### პარალელური კვლევა
 
-Spawn multiple sub-agents to research different topics simultaneously:
+მრავალი ქვე-აგენტის ერთდროულად გაშვება სხვადასხვა თემის კვლევისთვის:
 
 ```
-Parent: I need a comparison of 3 database engines for our project.
+მშობელი: მჭირდება 3 მონაცემთა ბაზის ძრავის შედარება ჩვენი პროექტისთვის.
 
   [sessions_spawn] task="Research PostgreSQL strengths, weaknesses, and use cases"
   [sessions_spawn] task="Research SQLite strengths, weaknesses, and use cases"
   [sessions_spawn] task="Research DuckDB strengths, weaknesses, and use cases"
 
-  [waits for all three to complete]
-  [synthesizes results into a comparison table]
+  [ელოდება სამივეს დასრულებას]
+  [შედეგებს შედარების ცხრილად აერთიანებს]
 ```
 
-### Delegated Code Review
+### დელეგირებული კოდის განხილვა
 
-Use specialized delegate agents for specific tasks:
+სპეციალიზებული დელეგატი აგენტების გამოყენება კონკრეტული ამოცანებისთვის:
 
 ```
-Parent: Review this pull request for security issues.
+მშობელი: განიხილეთ ეს pull request უსაფრთხოების პრობლემებზე.
 
   [delegate] agent="reviewer", task="Review the diff in /tmp/pr-42.patch for security vulnerabilities"
 
-  [reviewer agent runs with file_read and shell tools]
-  [returns detailed security review]
+  [reviewer აგენტი file_read და shell ინსტრუმენტებით მუშაობს]
+  [აბრუნებს დეტალურ უსაფრთხოების განხილვას]
 ```
 
-### Hierarchical Task Decomposition
+### იერარქიული ამოცანების დეკომპოზიცია
 
-Sub-agents can spawn their own sub-agents (up to `max_depth`):
+ქვე-აგენტებს შეუძლიათ საკუთარი ქვე-აგენტების გაშვება (`max_depth`-მდე):
 
 ```
-Parent Agent
-  ├── Research Agent
-  │     ├── Web Search Sub-agent
-  │     └── Document Analysis Sub-agent
-  ├── Code Generation Agent
-  └── Testing Agent
+მშობელი აგენტი
+  ├── კვლევის აგენტი
+  │     ├── ვებ ძიების ქვე-აგენტი
+  │     └── დოკუმენტის ანალიზის ქვე-აგენტი
+  ├── კოდის გენერაციის აგენტი
+  └── ტესტირების აგენტი
 ```
 
 ## უსაფრთხოება
 
-### Depth and Concurrency Limits
+### სიღრმისა და ერთდროულობის ლიმიტები
 
-PRX enforces hard limits on sub-agent spawning to prevent resource exhaustion:
+PRX ქვე-აგენტების გაშვებაზე მკაცრ ლიმიტებს აღასრულებს რესურსების ამოწურვის თავიდან ასაცილებლად:
 
-- **max_concurrent**: Limits simultaneous running sub-agents (default: 4)
-- **max_depth**: Limits nesting depth (default: 3). At maximum depth, the `sessions_spawn` tool is removed from the child's available tools.
-- **max_total_spawns**: Limits the total number of spawns per root session (default: 20)
-- **child_timeout_secs**: Kills sub-agents that exceed the timeout (default: 300 seconds)
+- **max_concurrent**: ერთდროულად მიმდინარე ქვე-აგენტების შეზღუდვა (ნაგულისხმევი: 4)
+- **max_depth**: ჩადგმის სიღრმის შეზღუდვა (ნაგულისხმევი: 3). მაქსიმალური სიღრმისას `sessions_spawn` ინსტრუმენტი შვილის ხელმისაწვდომი ინსტრუმენტებიდან ამოიშლება.
+- **max_total_spawns**: გაშვებების მთლიანი რაოდენობის შეზღუდვა ძირეულ სესიაზე (ნაგულისხმევი: 20)
+- **child_timeout_secs**: დროის ამოწურვის გადამეტებული ქვე-აგენტების გაჩერება (ნაგულისხმევი: 300 წამი)
 
-### Tool Restrictions
+### ინსტრუმენტების შეზღუდვები
 
-Sub-agents inherit the parent's sandbox policy but can have a restricted tool set:
+ქვე-აგენტები მშობლის სენდბოქსის პოლიტიკას მემკვიდრეობით იღებს, მაგრამ შეზღუდული ინსტრუმენტების ნაკრები შეიძლება ჰქონდეთ:
 
 ```json
 {
@@ -259,38 +259,38 @@ Sub-agents inherit the parent's sandbox policy but can have a restricted tool se
 }
 ```
 
-Delegate agents have their tools explicitly defined in the configuration. They cannot access tools outside their `allowed_tools` list.
+დელეგატი აგენტებს ინსტრუმენტები ექსპლიციტურად აქვთ განსაზღვრული კონფიგურაციაში. მათ `allowed_tools` სიის მიღმა ინსტრუმენტებზე წვდომა არ შეუძლიათ.
 
-### Credential Isolation
+### ავტორიზაციის იზოლაცია
 
-Delegate agents can use different providers and API keys from the parent:
+დელეგატი აგენტებს მშობლისგან განსხვავებული პროვაიდერები და API გასაღებები შეუძლიათ გამოიყენონ:
 
 ```toml
 [agents.researcher]
 provider = "anthropic"
 model = "claude-sonnet-4-20250514"
-# Uses the provider's configured API key
+# იყენებს პროვაიდერის კონფიგურირებულ API გასაღებს
 ```
 
-This allows routing tasks to different LLM providers based on the task requirements, with each provider's credentials isolated.
+ეს საშუალებას იძლევა ამოცანების სხვადასხვა LLM პროვაიდერზე გადამისამართება ამოცანის მოთხოვნების მიხედვით, თითოეული პროვაიდერის ავტორიზაციის იზოლაციით.
 
-### Policy Engine
+### პოლიტიკის ძრავი
 
-Session and agent tools are governed by the policy engine:
+სესიისა და აგენტის ინსტრუმენტები პოლიტიკის ძრავის ქვეშ მოქმედებს:
 
 ```toml
 [security.tool_policy.groups]
 sessions = "allow"
 
 [security.tool_policy.tools]
-delegate = "supervised"    # Require approval for delegation
+delegate = "supervised"    # დელეგირებისთვის დამტკიცების მოთხოვნა
 ```
 
-## დაკავშირებული
+## დაკავშირებული გვერდები
 
-- [Sub-agents](/ka/prx/agent/subagents) -- sub-agent architecture and spawning model
-- [Agent Runtime](/ka/prx/agent/runtime) -- agent execution architecture
-- [Agent Loop](/ka/prx/agent/loop) -- core execution cycle
-- [Session Worker](/ka/prx/agent/session-worker) -- process isolation for sessions
-- [Configuration Reference](/ka/prx/config/reference) -- agent and subagent settings
-- [Tools Overview](/ka/prx/tools/) -- all tools and registry system
+- [ქვე-აგენტები](/ka/prx/agent/subagents) -- ქვე-აგენტის არქიტექტურა და გაშვების მოდელი
+- [აგენტის Runtime](/ka/prx/agent/runtime) -- აგენტის შესრულების არქიტექტურა
+- [აგენტის ციკლი](/ka/prx/agent/loop) -- ბირთვული შესრულების ციკლი
+- [სესიის Worker](/ka/prx/agent/session-worker) -- სესიების პროცესის იზოლაცია
+- [კონფიგურაციის მითითება](/ka/prx/config/reference) -- აგენტისა და ქვე-აგენტის პარამეტრები
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა ინსტრუმენტი და რეესტრის სისტემა

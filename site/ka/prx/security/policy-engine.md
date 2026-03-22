@@ -1,21 +1,21 @@
 ---
 title: პოლიტიკის ძრავა
-description: Declarative security policy engine for controlling agent tool access and data flow in PRX.
+description: დეკლარაციული უსაფრთხოების პოლიტიკის ძრავა PRX-ში აგენტის ინსტრუმენტებზე წვდომისა და მონაცემთა ნაკადის კონტროლისთვის.
 ---
 
-# Policy Engine
+# პოლიტიკის ძრავა
 
-The policy engine is a declarative rule system that controls what tools an agent can use, what files it can access, and what network requests it can make. Policies are evaluated before every tool call.
+პოლიტიკის ძრავა დეკლარაციული წესების სისტემაა, რომელიც აკონტროლებს რა ინსტრუმენტები შეუძლია აგენტს, რა ფაილებზე აქვს წვდომა და რა ქსელის მოთხოვნები შეუძლია. პოლიტიკები ყოველი ინსტრუმენტის გამოძახებამდე ფასდება.
 
 ## მიმოხილვა
 
-Policies are defined as rules with conditions and actions:
+პოლიტიკები განისაზღვრება წესებით პირობებითა და მოქმედებებით:
 
-- **Allow rules** -- explicitly permit specific operations
-- **Deny rules** -- explicitly block specific operations
-- **Default action** -- applied when no rule matches (deny by default)
+- **ნებართვის წესები** -- ცალსახად უშვებს კონკრეტულ ოპერაციებს
+- **აკრძალვის წესები** -- ცალსახად ბლოკავს კონკრეტულ ოპერაციებს
+- **ნაგულისხმევი მოქმედება** -- გამოიყენება წესის დაუმთხვევლობისას (ნაგულისხმევად აკრძალვა)
 
-## Policy Format
+## პოლიტიკის ფორმატი
 
 ```toml
 [security.policy]
@@ -40,21 +40,21 @@ tools = ["http_request"]
 domains = ["api.github.com", "api.openai.com"]
 ```
 
-## Rule Evaluation
+## წესების შეფასება
 
-Rules are evaluated in order. The first matching rule determines the action. If no rule matches, the default action is applied.
+წესები თანმიმდევრობით ფასდება. პირველი დამთხვეული წესი განსაზღვრავს მოქმედებას. წესის დაუმთხვევლობისას ნაგულისხმევი მოქმედება გამოიყენება.
 
-## Built-in Policies
+## ჩაშენებული პოლიტიკები
 
-PRX ships with sensible default policies that:
+PRX გონივრულ ნაგულისხმევ პოლიტიკებს მოყვება, რომლებიც:
 
-- Block access to system directories and sensitive files
-- Require explicit approval for destructive operations
-- Rate-limit network requests
-- Log all tool executions for audit
+- ბლოკავს სისტემის დირექტორიებსა და მგრძნობიარე ფაილებზე წვდომას
+- დესტრუქციული ოპერაციებისთვის ცალსახა დამტკიცებას მოითხოვს
+- ქსელის მოთხოვნებს სიჩქარით ზღუდავს
+- ყველა ინსტრუმენტის შესრულებას აუდიტისთვის აღრიცხავს
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Security Overview](./)
-- [Sandbox](./sandbox)
-- [Threat Model](./threat-model)
+- [უსაფრთხოების მიმოხილვა](./)
+- [სენდბოქსი](./sandbox)
+- [საფრთხის მოდელი](./threat-model)

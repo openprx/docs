@@ -1,30 +1,30 @@
 ---
 title: დანამატის დეველოპერის სახელმძღვანელო
-description: Step-by-step guide to developing PRX plugins using the Plugin Development Kit.
+description: ნაბიჯ-ნაბიჯ სახელმძღვანელო PRX დანამატების შესაქმნელად დანამატის განვითარების ნაკრებით.
 ---
 
-# Plugin Developer Guide
+# დანამატის დეველოპერის სახელმძღვანელო
 
-This guide walks you through creating a PRX plugin from scratch. By the end, you will have a working tool plugin that can be loaded into PRX.
+ეს სახელმძღვანელო PRX დანამატის ნულიდან შექმნის პროცესს გაგივლით. დასრულებისას, გექნებათ მომუშავე ინსტრუმენტის დანამატი, რომელიც PRX-ში ჩაიტვირთება.
 
 ## წინაპირობები
 
-- Rust toolchain with the `wasm32-wasi` target
-- PRX CLI installed
-- Basic familiarity with WASM concepts
+- Rust ინსტრუმენტარიუმი `wasm32-wasi` სამიზნით
+- PRX CLI დაყენებული
+- WASM კონცეფციების ბაზისური ცოდნა
 
-## Project Setup
+## პროექტის დაყენება
 
 ```bash
-# Install the WASM target
+# WASM სამიზნის დაყენება
 rustup target add wasm32-wasi
 
-# Create a new plugin project
+# ახალი დანამატის პროექტის შექმნა
 cargo new --lib my-plugin
 cd my-plugin
 ```
 
-Add the PRX PDK to your `Cargo.toml`:
+დაამატეთ PRX PDK თქვენს `Cargo.toml`-ში:
 
 ```toml
 [dependencies]
@@ -34,9 +34,9 @@ prx-pdk = "0.1"
 crate-type = ["cdylib"]
 ```
 
-## Writing a Tool Plugin
+## ინსტრუმენტის დანამატის დაწერა
 
-A minimal tool plugin implements the `Tool` trait:
+მინიმალური ინსტრუმენტის დანამატი `Tool` თვისებას ახორციელებს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -47,28 +47,28 @@ fn hello(name: String) -> Result<String, PluginError> {
 }
 ```
 
-## Building
+## აწყობა
 
 ```bash
 cargo build --target wasm32-wasi --release
 ```
 
-The compiled plugin will be at `target/wasm32-wasi/release/my_plugin.wasm`.
+კომპილირებული დანამატი `target/wasm32-wasi/release/my_plugin.wasm` ბილიკზე იქნება.
 
-## Testing Locally
+## ლოკალური ტესტირება
 
 ```bash
 prx plugin install ./target/wasm32-wasi/release/my_plugin.wasm
 prx plugin test my-plugin
 ```
 
-## Publishing
+## გამოქვეყნება
 
-Plugins can be shared as `.wasm` files or published to a plugin registry (coming soon).
+დანამატების გაზიარება `.wasm` ფაილებით ან დანამატის რეესტრში გამოქვეყნებით შეიძლება (მალე).
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Plugin System Overview](./)
-- [PDK Reference](./pdk)
-- [Host Functions](./host-functions)
-- [Examples](./examples)
+- [დანამატის სისტემის მიმოხილვა](./)
+- [PDK მითითება](./pdk)
+- [ჰოსტ ფუნქციები](./host-functions)
+- [მაგალითები](./examples)

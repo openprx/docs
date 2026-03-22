@@ -1,63 +1,63 @@
 ---
 title: საფრთხის მოდელი
-description: PRX threat model covering adversarial inputs, prompt injection, tool abuse, and data exfiltration.
+description: PRX საფრთხის მოდელი, რომელიც მოიცავს მტრულ შეტანებს, პრომპტის ინექციას, ინსტრუმენტის ბოროტად გამოყენებასა და მონაცემთა ექსფილტრაციას.
 ---
 
-# Threat Model
+# საფრთხის მოდელი
 
-This page documents the PRX threat model -- the set of threats we consider, our security assumptions, and the mitigations in place.
+ეს გვერდი PRX-ის საფრთხის მოდელს აღწერს -- საფრთხეების ნაკრებს, რომლებსაც განვიხილავთ, ჩვენს უსაფრთხოების დაშვებებსა და არსებულ შემარბილებელ ზომებს.
 
-## Threat Categories
+## საფრთხის კატეგორიები
 
-### 1. Prompt Injection
+### 1. პრომპტის ინექცია
 
-**Threat**: Adversarial content in user input or retrieved data manipulates the agent into performing unintended actions.
+**საფრთხე**: მომხმარებლის შეტანაში ან მოძიებულ მონაცემებში არსებული მტრული შინაარსი აგენტს არასასურველი მოქმედებების შესრულებისკენ მანიპულირებს.
 
-**Mitigations**:
-- Tool call approval workflow
-- Policy engine restricts available actions
-- Input sanitization for known injection patterns
+**შემარბილებელი ზომები**:
+- ინსტრუმენტის გამოძახების დამტკიცების სამუშაო პროცესი
+- პოლიტიკის ძრავა ხელმისაწვდომი მოქმედებების შეზღუდვით
+- შეტანის სანიტარიზაცია ცნობილი ინექციის შაბლონებისთვის
 
-### 2. Tool Abuse
+### 2. ინსტრუმენტის ბოროტად გამოყენება
 
-**Threat**: The agent uses tools in unintended ways (e.g., reading sensitive files, making unauthorized network requests).
+**საფრთხე**: აგენტი ინსტრუმენტებს არადანიშნულებისამებრ იყენებს (მაგ., მგრძნობიარე ფაილების წაკითხვა, არაავტორიზებული ქსელის მოთხოვნები).
 
-**Mitigations**:
-- Sandbox isolation for tool execution
-- Policy engine with deny-by-default rules
-- Per-tool rate limiting
-- Audit logging of all tool calls
+**შემარბილებელი ზომები**:
+- ინსტრუმენტის შესრულების სენდბოქსის იზოლაცია
+- ნაგულისხმევად-აკრძალვის წესებით პოლიტიკის ძრავა
+- ინსტრუმენტის დონის სიჩქარის შეზღუდვა
+- ყველა ინსტრუმენტის გამოძახების აუდიტის ჟურნალი
 
-### 3. Data Exfiltration
+### 3. მონაცემთა ექსფილტრაცია
 
-**Threat**: Sensitive data from the local system is sent to external services via LLM context or tool calls.
+**საფრთხე**: ლოკალური სისტემის მგრძნობიარე მონაცემები LLM კონტექსტის ან ინსტრუმენტის გამოძახებების მეშვეობით გარე სერვისებზე იგზავნება.
 
-**Mitigations**:
-- Network allowlisting in sandbox
-- Content filtering for sensitive patterns (API keys, passwords)
-- Policy rules restricting data flow
+**შემარბილებელი ზომები**:
+- ქსელის ნებართვების სია სენდბოქსში
+- მგრძნობიარე შაბლონების შინაარსის ფილტრაცია (API გასაღებები, პაროლები)
+- მონაცემთა ნაკადის შემზღუდველი პოლიტიკის წესები
 
-### 4. Supply Chain
+### 4. მიწოდების ჯაჭვი
 
-**Threat**: Malicious plugins or dependencies compromise the agent.
+**საფრთხე**: მავნე დანამატები ან დამოკიდებულებები აგენტს კომპრომეტირებს.
 
-**Mitigations**:
-- WASM sandbox for plugins
-- Plugin permission manifests
-- Dependency auditing (cargo audit)
+**შემარბილებელი ზომები**:
+- დანამატების WASM სენდბოქსი
+- დანამატის ნებართვების მანიფესტები
+- დამოკიდებულებების აუდიტი (cargo audit)
 
-## Security Assumptions
+## უსაფრთხოების დაშვებები
 
-- The host operating system is trusted
-- LLM providers handle API keys securely
-- The user is responsible for reviewing agent actions when approval is required
+- ჰოსტი ოპერაციული სისტემა სანდოა
+- LLM პროვაიდერები API გასაღებებს უსაფრთხოდ ამუშავებს
+- მომხმარებელი პასუხისმგებელია აგენტის მოქმედებების გადახედვაზე, როდესაც დამტკიცება საჭიროა
 
-## Reporting Vulnerabilities
+## სისუსტეების მოხსენება
 
-If you discover a security vulnerability, please report it to `security@openprx.dev`.
+თუ უსაფრთხოების სისუსტე აღმოაჩინეთ, გთხოვთ მოახსენოთ `security@openprx.dev`-ზე.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Security Overview](./)
-- [Policy Engine](./policy-engine)
-- [Sandbox](./sandbox)
+- [უსაფრთხოების მიმოხილვა](./)
+- [პოლიტიკის ძრავა](./policy-engine)
+- [სენდბოქსი](./sandbox)

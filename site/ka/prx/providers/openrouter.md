@@ -5,19 +5,19 @@ description: OpenRouter-ის კონფიგურაცია PRX-ში L
 
 # OpenRouter
 
-> Access 200+ models from multiple providers (OpenAI, Anthropic, Google, Meta, Mistral, and more) through a single API key and unified interface.
+> 200+ მოდელზე წვდომა მრავალი პროვაიდერიდან (OpenAI, Anthropic, Google, Meta, Mistral და სხვები) ერთი API გასაღებითა და ერთიანი ინტერფეისით.
 
 ## წინაპირობები
 
-- An OpenRouter API key from [openrouter.ai](https://openrouter.ai/)
+- OpenRouter API გასაღები [openrouter.ai](https://openrouter.ai/)-დან
 
 ## სწრაფი დაყენება
 
-### 1. Get API Key
+### 1. API გასაღების მიღება
 
-1. Sign up at [openrouter.ai](https://openrouter.ai/)
-2. Go to **Keys** in your dashboard
-3. Click **Create Key** and copy it (starts with `sk-or-`)
+1. დარეგისტრირდით [openrouter.ai](https://openrouter.ai/)-ზე
+2. გადახვიდეთ **Keys** განყოფილებაში სამართავ პანელზე
+3. დააჭირეთ **Create Key**-ს და დააკოპირეთ (იწყება `sk-or-`-ით)
 
 ### 2. კონფიგურაცია
 
@@ -30,7 +30,7 @@ model = "anthropic/claude-sonnet-4"
 api_key = "${OPENROUTER_API_KEY}"
 ```
 
-Or set the environment variable:
+ან დააყენეთ გარემოს ცვლადი:
 
 ```bash
 export OPENROUTER_API_KEY="sk-or-..."
@@ -42,64 +42,64 @@ export OPENROUTER_API_KEY="sk-or-..."
 prx doctor models
 ```
 
-## Available Models
+## ხელმისაწვდომი მოდელები
 
-OpenRouter provides access to hundreds of models. Some popular options:
+OpenRouter ასობით მოდელზე წვდომას უზრუნველყოფს. რამდენიმე პოპულარული ვარიანტი:
 
-| Model | Provider | Context | Vision | Tool Use | Notes |
+| მოდელი | პროვაიდერი | კონტექსტი | ვიზუალი | ინსტრუმენტები | შენიშვნები |
 |-------|----------|---------|--------|----------|-------|
-| `anthropic/claude-sonnet-4` | Anthropic | 200K | Yes | Yes | Claude Sonnet 4 |
-| `anthropic/claude-opus-4` | Anthropic | 200K | Yes | Yes | Claude Opus 4 |
-| `openai/gpt-4o` | OpenAI | 128K | Yes | Yes | GPT-4o |
-| `openai/o3` | OpenAI | 128K | Yes | Yes | Reasoning model |
-| `google/gemini-2.5-pro` | Google | 1M | Yes | Yes | Gemini Pro |
-| `google/gemini-2.5-flash` | Google | 1M | Yes | Yes | Gemini Flash |
-| `meta-llama/llama-3.1-405b-instruct` | Meta | 128K | No | Yes | Largest open model |
-| `deepseek/deepseek-chat` | DeepSeek | 128K | No | Yes | DeepSeek V3 |
-| `mistralai/mistral-large` | Mistral | 128K | No | Yes | Mistral Large |
-| `x-ai/grok-2` | xAI | 128K | No | Yes | Grok 2 |
+| `anthropic/claude-sonnet-4` | Anthropic | 200K | დიახ | დიახ | Claude Sonnet 4 |
+| `anthropic/claude-opus-4` | Anthropic | 200K | დიახ | დიახ | Claude Opus 4 |
+| `openai/gpt-4o` | OpenAI | 128K | დიახ | დიახ | GPT-4o |
+| `openai/o3` | OpenAI | 128K | დიახ | დიახ | მსჯელობის მოდელი |
+| `google/gemini-2.5-pro` | Google | 1M | დიახ | დიახ | Gemini Pro |
+| `google/gemini-2.5-flash` | Google | 1M | დიახ | დიახ | Gemini Flash |
+| `meta-llama/llama-3.1-405b-instruct` | Meta | 128K | არა | დიახ | ყველაზე დიდი ღია მოდელი |
+| `deepseek/deepseek-chat` | DeepSeek | 128K | არა | დიახ | DeepSeek V3 |
+| `mistralai/mistral-large` | Mistral | 128K | არა | დიახ | Mistral Large |
+| `x-ai/grok-2` | xAI | 128K | არა | დიახ | Grok 2 |
 
-Browse the full model list at [openrouter.ai/models](https://openrouter.ai/models).
+სრული მოდელების სია იხილეთ [openrouter.ai/models](https://openrouter.ai/models)-ზე.
 
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
 |-------|------|---------|-------------|
-| `api_key` | string | required | OpenRouter API key (`sk-or-...`) |
-| `model` | string | required | Model ID in `provider/model` format |
+| `api_key` | string | სავალდებულო | OpenRouter API გასაღები (`sk-or-...`) |
+| `model` | string | სავალდებულო | მოდელის ID `პროვაიდერი/მოდელი` ფორმატში |
 
 ## ფუნქციები
 
-### Unified Multi-Provider Access
+### ერთიანი მრავალ-პროვაიდერული წვდომა
 
-With a single OpenRouter API key, you can access models from OpenAI, Anthropic, Google, Meta, Mistral, Cohere, and many more. This eliminates the need to manage multiple API keys.
+ერთი OpenRouter API გასაღებით შეგიძლიათ მოდელებზე წვდომა OpenAI-დან, Anthropic-დან, Google-დან, Meta-დან, Mistral-დან, Cohere-დან და სხვა მრავალიდან. ეს მრავალი API გასაღების მართვის აუცილებლობას აქარწყლებს.
 
-### OpenAI-Compatible API
+### OpenAI-თავსებადი API
 
-OpenRouter exposes an OpenAI-compatible Chat Completions API at `https://openrouter.ai/api/v1/chat/completions`. PRX sends requests with:
+OpenRouter OpenAI-თავსებად Chat Completions API-ს ავრცელებს მისამართზე `https://openrouter.ai/api/v1/chat/completions`. PRX მოთხოვნებს აგზავნის შემდეგით:
 
-- `Authorization: Bearer <key>` for authentication
-- `HTTP-Referer: https://github.com/theonlyhennygod/openprx` for app identification
-- `X-Title: OpenPRX` for app name attribution
+- `Authorization: Bearer <key>` ავტენტიფიკაციისთვის
+- `HTTP-Referer: https://github.com/theonlyhennygod/openprx` აპლიკაციის იდენტიფიკაციისთვის
+- `X-Title: OpenPRX` აპლიკაციის სახელის ატრიბუციისთვის
 
-### Native Tool Calling
+### მშობლიური ინსტრუმენტების გამოძახება
 
-Tools are sent in OpenAI's native function-calling format. The provider supports `tool_choice: "auto"` and properly handles structured tool call responses including `tool_call_id` mapping for multi-turn tool interactions.
+ინსტრუმენტები OpenAI-ის მშობლიურ ფუნქციების გამოძახების ფორმატში იგზავნება. პროვაიდერი მხარს უჭერს `tool_choice: "auto"`-ს და სწორად ამუშავებს სტრუქტურირებულ ინსტრუმენტის გამოძახების პასუხებს `tool_call_id` შესაბამისობის ჩათვლით მრავალბიჯიანი ინსტრუმენტების ინტერაქციებისთვის.
 
-### Multi-Turn Conversation History
+### მრავალბიჯიანი საუბრის ისტორია
 
-Full conversation history is preserved with proper structured formatting:
-- Assistant messages with tool calls are serialized with `tool_calls` arrays
-- Tool result messages include `tool_call_id` references
-- System, user, and assistant messages are passed through directly
+საუბრის სრული ისტორია ინახება სათანადო სტრუქტურირებული ფორმატირებით:
+- ასისტენტის შეტყობინებები ინსტრუმენტების გამოძახებებით სერიალიზდება `tool_calls` მასივებით
+- ინსტრუმენტის შედეგის შეტყობინებები მოიცავს `tool_call_id` მითითებებს
+- სისტემური, მომხმარებლის და ასისტენტის შეტყობინებები პირდაპირ გადადის
 
-### Connection Warmup
+### კავშირის გახურება
 
-On startup, PRX sends a lightweight request to `https://openrouter.ai/api/v1/auth/key` to verify the API key and establish TLS/HTTP2 connection pooling.
+გაშვებისას PRX მსუბუქ მოთხოვნას აგზავნის `https://openrouter.ai/api/v1/auth/key`-ზე API გასაღების შესამოწმებლად და TLS/HTTP2 კავშირების პულის შესაქმნელად.
 
-### Model Routing
+### მოდელების მარშრუტიზაცია
 
-OpenRouter supports model routing and fallback at the API level. You can also use PRX's built-in `fallback_providers` for client-side fallback:
+OpenRouter მხარს უჭერს მოდელების მარშრუტიზაციასა და სარეზერვო ვარიანტს API დონეზე. ასევე შეგიძლიათ PRX-ის ჩაშენებული `fallback_providers` გამოყენება კლიენტის მხრიდან სარეზერვო ვარიანტისთვის:
 
 ```toml
 [default]
@@ -110,39 +110,39 @@ model = "anthropic/claude-sonnet-4"
 fallback_providers = ["openai"]
 ```
 
-## Default Provider
+## ნაგულისხმევი პროვაიდერი
 
-OpenRouter is PRX's default provider. If no `provider` is specified in your configuration, PRX defaults to OpenRouter.
+OpenRouter არის PRX-ის ნაგულისხმევი პროვაიდერი. თუ თქვენს კონფიგურაციაში `provider` მითითებული არ არის, PRX ნაგულისხმევად OpenRouter-ს იყენებს.
 
 ## პრობლემების მოგვარება
 
 ### "OpenRouter API key not set"
 
-Set the `OPENROUTER_API_KEY` environment variable or add `api_key` under `[providers.openrouter]` in your `config.toml`. You can also run `prx onboard` for interactive setup.
+დააყენეთ `OPENROUTER_API_KEY` გარემოს ცვლადი ან დაამატეთ `api_key` თქვენს `config.toml`-ში `[providers.openrouter]` სექციაში. ასევე შეგიძლიათ `prx onboard`-ის გაშვება ინტერაქტიული კონფიგურაციისთვის.
 
 ### 402 Payment Required
 
-Your OpenRouter account has insufficient credits. Add credits at [openrouter.ai/credits](https://openrouter.ai/credits).
+თქვენს OpenRouter ანგარიშზე არასაკმარისი კრედიტია. დაამატეთ კრედიტები [openrouter.ai/credits](https://openrouter.ai/credits)-ზე.
 
-### Model-specific errors
+### მოდელის სპეციფიკური შეცდომები
 
-Different models on OpenRouter have different capabilities and rate limits. If a specific model returns errors:
-- Check if the model supports tool calling (not all do)
-- Verify the model is not deprecated on OpenRouter
-- Try a different model variant
+OpenRouter-ზე სხვადასხვა მოდელს სხვადასხვა შესაძლებლობები და ლიმიტები აქვს. თუ კონკრეტული მოდელი შეცდომებს აბრუნებს:
+- შეამოწმეთ, უჭერს თუ არა მოდელი მხარს ინსტრუმენტების გამოძახებას (ყველა არ უჭერს)
+- დარწმუნდით, რომ მოდელი არ არის მოძველებული OpenRouter-ზე
+- სცადეთ სხვა მოდელის ვარიანტი
 
-### Slow responses
+### ნელი პასუხები
 
-OpenRouter routes to the underlying provider. Response time depends on:
-- The model provider's current load
-- Your geographic distance from the provider
-- The model size and context length
+OpenRouter მოთხოვნებს ძირითად პროვაიდერზე მარშრუტიზებს. პასუხის დრო დამოკიდებულია:
+- მოდელის პროვაიდერის მიმდინარე დატვირთვაზე
+- თქვენს გეოგრაფიულ დაშორებულობაზე პროვაიდერთან
+- მოდელის ზომასა და კონტექსტის სიგრძეზე
 
-Consider using `fallback_providers` to fail over to a direct provider connection if OpenRouter is slow.
+გაითვალისწინეთ `fallback_providers`-ის გამოყენება პროვაიდერთან პირდაპირ კავშირზე გადასართავად, თუ OpenRouter ნელია.
 
-### Rate limiting
+### შეზღუდვა
 
-OpenRouter has its own rate limits in addition to underlying provider limits. If rate-limited:
-- Check your usage at [openrouter.ai/usage](https://openrouter.ai/usage)
-- Upgrade your plan for higher limits
-- Use PRX's reliable provider wrapper for automatic retry with backoff
+OpenRouter-ს აქვს საკუთარი ლიმიტები ძირითადი პროვაიდერის ლიმიტების გარდა. შეზღუდვის შემთხვევაში:
+- შეამოწმეთ თქვენი გამოყენება [openrouter.ai/usage](https://openrouter.ai/usage)-ზე
+- განაახლეთ თქვენი გეგმა უფრო მაღალი ლიმიტებისთვის
+- გამოიყენეთ PRX-ის სანდო პროვაიდერის შემფუთველი ავტომატური ხელახალი ცდისთვის უკუსვლით

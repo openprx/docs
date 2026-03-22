@@ -1,63 +1,63 @@
 ---
 title: Cron ინსტრუმენტები
-description: Nine tools for creating, managing, and executing scheduled tasks with cron expressions and the Xin autonomous task engine.
+description: ცხრა ინსტრუმენტი დაგეგმილი ამოცანების შესაქმნელად, სამართავად და შესასრულებლად cron გამოსახულებებითა და Xin ავტონომიური ამოცანების ძრავით.
 ---
 
-# Cron Tools
+# Cron ინსტრუმენტები
 
-PRX provides nine tools for time-based task automation, spanning traditional cron job management and the advanced Xin scheduling engine. These tools let the agent create scheduled tasks, inspect job history, trigger manual runs, and orchestrate background operations on recurring schedules.
+PRX ცხრა ინსტრუმენტს გთავაზობთ დროზე დაფუძნებული ამოცანების ავტომატიზაციისთვის, რომლებიც ტრადიციულ cron სამუშაოების მართვასა და მოწინავე Xin დაგეგმვის ძრავს მოიცავს. ეს ინსტრუმენტები აგენტს დაგეგმილი ამოცანების შექმნის, სამუშაოების ისტორიის შემოწმების, ხელით გაშვებისა და ფონური ოპერაციების ციკლური გრაფიკით ორკესტრაციის საშუალებას აძლევს.
 
-The cron tools are divided into two systems: the **cron subsystem** for standard scheduled jobs using cron expressions, and the **Xin engine** for advanced task scheduling with dependency chains, conditional execution, and integration with the self-evolution pipeline.
+Cron ინსტრუმენტები ორ სისტემად იყოფა: **cron ქვესისტემა** სტანდარტული დაგეგმილი სამუშაოებისთვის cron გამოსახულებების გამოყენებით, და **Xin ძრავი** მოწინავე ამოცანების დაგეგმვისთვის დამოკიდებულებების ჯაჭვებით, პირობითი შესრულებითა და თვითევოლუციის პაიპლაინთან ინტეგრაციით.
 
-All cron and scheduling tools are registered in the `all_tools()` registry and are available whenever the daemon is running.
+ყველა cron და დაგეგმვის ინსტრუმენტი `all_tools()` რეესტრში რეგისტრირებულია და ხელმისაწვდომია დემონის მუშაობისას.
 
 ## კონფიგურაცია
 
-### Cron System
+### Cron სისტემა
 
 ```toml
 [cron]
 enabled = true
-timezone = "UTC"           # Timezone for cron expressions
+timezone = "UTC"           # დროის ზონა cron გამოსახულებებისთვის
 
-# Define built-in scheduled tasks
+# ჩაშენებული დაგეგმილი ამოცანების განსაზღვრა
 [[cron.tasks]]
 name = "daily-report"
-schedule = "0 9 * * *"     # Every day at 09:00 UTC
+schedule = "0 9 * * *"     # ყოველდღე 09:00 UTC-ზე
 action = "agent"
 prompt = "Generate a daily summary report and send it to the user."
 
 [[cron.tasks]]
 name = "memory-cleanup"
-schedule = "0 3 * * *"     # Every day at 03:00 UTC
+schedule = "0 3 * * *"     # ყოველდღე 03:00 UTC-ზე
 action = "agent"
 prompt = "Run memory hygiene: archive old daily entries and compact core memories."
 
 [[cron.tasks]]
 name = "repo-check"
-schedule = "*/30 * * * *"  # Every 30 minutes
+schedule = "*/30 * * * *"  # ყოველ 30 წუთში
 action = "shell"
 command = "cd /home/user/project && git fetch --all"
 ```
 
-### Xin Engine
+### Xin ძრავი
 
 ```toml
 [xin]
 enabled = true
-interval_minutes = 5            # Tick interval in minutes (minimum 1)
-max_concurrent = 4              # Maximum concurrent task executions per tick
-max_tasks = 128                 # Maximum total tasks in the store
-stale_timeout_minutes = 60      # Minutes before a running task is marked stale
-builtin_tasks = true            # Auto-register built-in system tasks
-evolution_integration = false   # Let Xin manage evolution/fitness scheduling
+interval_minutes = 5            # ტიკის ინტერვალი წუთებში (მინიმუმ 1)
+max_concurrent = 4              # მაქსიმალური ერთდროული ამოცანების შესრულება ტიკზე
+max_tasks = 128                 # მაქსიმალური ამოცანების რაოდენობა საცავში
+stale_timeout_minutes = 60      # წუთები, რის შემდეგაც მიმდინარე ამოცანა მოძველებულად აღინიშნება
+builtin_tasks = true            # ჩაშენებული სისტემური ამოცანების ავტომატური რეგისტრაცია
+evolution_integration = false   # Xin-ს ევოლუციის/ფიტნესის დაგეგმვის მართვის ნება
 ```
 
-## Tool Reference
+## ინსტრუმენტების მითითება
 
 ### cron_add
 
-Adds a new cron job with a cron expression, command or prompt, and optional description.
+ახალი cron სამუშაოს დამატება cron გამოსახულებით, ბრძანებით ან პრომპტით და არასავალდებულო აღწერილობით.
 
 ```json
 {
@@ -72,18 +72,18 @@ Adds a new cron job with a cron expression, command or prompt, and optional desc
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `name` | `string` | Yes | -- | Unique name for the cron job |
-| `schedule` | `string` | Yes | -- | Cron expression (5-field: minute hour day month weekday) |
-| `action` | `string` | Yes | -- | Action type: `"shell"` (run command) or `"agent"` (run agent prompt) |
-| `command` | `string` | Conditional | -- | Shell command (required when `action = "shell"`) |
-| `prompt` | `string` | Conditional | -- | Agent prompt (required when `action = "agent"`) |
-| `description` | `string` | No | -- | Human-readable description |
+| `name` | `string` | დიახ | -- | Cron სამუშაოს უნიკალური სახელი |
+| `schedule` | `string` | დიახ | -- | Cron გამოსახულება (5-ველიანი: წუთი საათი დღე თვე კვირის_დღე) |
+| `action` | `string` | დიახ | -- | მოქმედების ტიპი: `"shell"` (ბრძანების შესრულება) ან `"agent"` (აგენტის პრომპტის შესრულება) |
+| `command` | `string` | პირობითი | -- | Shell ბრძანება (სავალდებულოა `action = "shell"` შემთხვევაში) |
+| `prompt` | `string` | პირობითი | -- | აგენტის პრომპტი (სავალდებულოა `action = "agent"` შემთხვევაში) |
+| `description` | `string` | არა | -- | ადამიანისთვის წასაკითხი აღწერილობა |
 
 ### cron_list
 
-Lists all registered cron jobs with their schedules, status, and next run time.
+ყველა რეგისტრირებული cron სამუშაოს სიის ჩვენება მათი გრაფიკით, სტატუსითა და შემდეგი გაშვების დროით.
 
 ```json
 {
@@ -92,11 +92,11 @@ Lists all registered cron jobs with their schedules, status, and next run time.
 }
 ```
 
-No parameters required. Returns a table of all cron jobs.
+პარამეტრები არ არის საჭირო. აბრუნებს ყველა cron სამუშაოს ცხრილს.
 
 ### cron_remove
 
-Removes a cron job by its name or ID.
+Cron სამუშაოს წაშლა სახელით ან ID-ით.
 
 ```json
 {
@@ -107,13 +107,13 @@ Removes a cron job by its name or ID.
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `name` | `string` | Yes | -- | Name or ID of the cron job to remove |
+| `name` | `string` | დიახ | -- | წასაშლელი cron სამუშაოს სახელი ან ID |
 
 ### cron_update
 
-Updates an existing cron job's schedule, command, or settings.
+არსებული cron სამუშაოს გრაფიკის, ბრძანების ან პარამეტრების განახლება.
 
 ```json
 {
@@ -126,17 +126,17 @@ Updates an existing cron job's schedule, command, or settings.
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `name` | `string` | Yes | -- | Name of the cron job to update |
-| `schedule` | `string` | No | -- | New cron expression |
-| `command` | `string` | No | -- | New shell command |
-| `prompt` | `string` | No | -- | New agent prompt |
-| `description` | `string` | No | -- | New description |
+| `name` | `string` | დიახ | -- | განსახლებელი cron სამუშაოს სახელი |
+| `schedule` | `string` | არა | -- | ახალი cron გამოსახულება |
+| `command` | `string` | არა | -- | ახალი shell ბრძანება |
+| `prompt` | `string` | არა | -- | ახალი აგენტის პრომპტი |
+| `description` | `string` | არა | -- | ახალი აღწერილობა |
 
 ### cron_run
 
-Manually triggers a cron job immediately, outside its normal schedule.
+Cron სამუშაოს ხელით გაშვება დაუყოვნებლივ, ჩვეულებრივი გრაფიკის მიღმა.
 
 ```json
 {
@@ -147,13 +147,13 @@ Manually triggers a cron job immediately, outside its normal schedule.
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `name` | `string` | Yes | -- | Name of the cron job to trigger |
+| `name` | `string` | დიახ | -- | გასაშვები cron სამუშაოს სახელი |
 
 ### cron_runs
 
-Views execution history and logs of cron job runs. Shows past executions with timestamps, status, and output.
+Cron სამუშაოების შესრულების ისტორიისა და ჟურნალების ნახვა. აჩვენებს წარსულ შესრულებებს დროის შტამპებით, სტატუსითა და გამოსავალით.
 
 ```json
 {
@@ -165,14 +165,14 @@ Views execution history and logs of cron job runs. Shows past executions with ti
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `name` | `string` | No | -- | Filter by job name. If omitted, shows all recent runs. |
-| `limit` | `integer` | No | `20` | Maximum number of history entries to return |
+| `name` | `string` | არა | -- | სამუშაოს სახელით ფილტრაცია. გამოტოვებისას ყველა ბოლო შესრულებას აჩვენებს. |
+| `limit` | `integer` | არა | `20` | დასაბრუნებელი ისტორიის ჩანაწერების მაქსიმალური რაოდენობა |
 
 ### schedule
 
-Schedules a one-shot or recurring task with natural language time expressions. This is a higher-level interface than raw cron expressions.
+ერთჯერადი ან პერიოდული ამოცანის დაგეგმვა ბუნებრივი ენის დროითი გამოსახულებებით. ეს უფრო მაღალი დონის ინტერფეისია, ვიდრე ნედლი cron გამოსახულებები.
 
 ```json
 {
@@ -185,16 +185,16 @@ Schedules a one-shot or recurring task with natural language time expressions. T
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `when` | `string` | Yes | -- | Natural language time expression (e.g., `"in 30 minutes"`, `"tomorrow at 9am"`, `"every Monday at 10:00"`) |
-| `action` | `string` | Yes | -- | Action type: `"shell"` or `"agent"` |
-| `command` | `string` | Conditional | -- | Shell command (for `"shell"` action) |
-| `prompt` | `string` | Conditional | -- | Agent prompt (for `"agent"` action) |
+| `when` | `string` | დიახ | -- | ბუნებრივი ენის დროითი გამოსახულება (მაგ., `"in 30 minutes"`, `"tomorrow at 9am"`, `"every Monday at 10:00"`) |
+| `action` | `string` | დიახ | -- | მოქმედების ტიპი: `"shell"` ან `"agent"` |
+| `command` | `string` | პირობითი | -- | Shell ბრძანება (`"shell"` მოქმედებისთვის) |
+| `prompt` | `string` | პირობითი | -- | აგენტის პრომპტი (`"agent"` მოქმედებისთვის) |
 
-### cron (Legacy)
+### cron (ძველი)
 
-Legacy cron entry point for backward compatibility. Routes to the appropriate cron tool based on the action argument.
+ძველი cron შესვლის წერტილი უკუთავსებადობისთვის. მოქმედების არგუმენტის მიხედვით შესაბამის cron ინსტრუმენტზე გადამისამართებს.
 
 ```json
 {
@@ -207,7 +207,7 @@ Legacy cron entry point for backward compatibility. Routes to the appropriate cr
 
 ### xin
 
-The Xin scheduling engine for advanced task automation with dependency chains and conditional execution.
+Xin დაგეგმვის ძრავი მოწინავე ამოცანების ავტომატიზაციისთვის დამოკიდებულებების ჯაჭვებითა და პირობითი შესრულებით.
 
 ```json
 {
@@ -218,114 +218,114 @@ The Xin scheduling engine for advanced task automation with dependency chains an
 }
 ```
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `action` | `string` | Yes | -- | Action: `"status"`, `"tasks"`, `"run"`, `"pause"`, `"resume"` |
+| `action` | `string` | დიახ | -- | მოქმედება: `"status"`, `"tasks"`, `"run"`, `"pause"`, `"resume"` |
 
-## Cron Expression Format
+## Cron გამოსახულების ფორმატი
 
-PRX uses standard 5-field cron expressions:
+PRX სტანდარტულ 5-ველიან cron გამოსახულებებს იყენებს:
 
 ```
-┌───────────── minute (0-59)
-│ ┌───────────── hour (0-23)
-│ │ ┌───────────── day of month (1-31)
-│ │ │ ┌───────────── month (1-12)
-│ │ │ │ ┌───────────── day of week (0-7, 0 and 7 = Sunday)
+┌───────────── წუთი (0-59)
+│ ┌───────────── საათი (0-23)
+│ │ ┌───────────── თვის დღე (1-31)
+│ │ │ ┌───────────── თვე (1-12)
+│ │ │ │ ┌───────────── კვირის დღე (0-7, 0 და 7 = კვირა)
 │ │ │ │ │
 * * * * *
 ```
 
-**Examples:**
+**მაგალითები:**
 
-| Expression | Description |
+| გამოსახულება | აღწერა |
 |-----------|-------------|
-| `0 9 * * *` | Every day at 9:00 AM |
-| `*/15 * * * *` | Every 15 minutes |
-| `0 9 * * 1-5` | Weekdays at 9:00 AM |
-| `0 0 1 * *` | First day of every month at midnight |
-| `30 8,12,18 * * *` | At 8:30, 12:30, and 18:30 daily |
+| `0 9 * * *` | ყოველდღე 9:00-ზე |
+| `*/15 * * * *` | ყოველ 15 წუთში |
+| `0 9 * * 1-5` | სამუშაო დღეებში 9:00-ზე |
+| `0 0 1 * *` | ყოველი თვის პირველ დღეს შუაღამისას |
+| `30 8,12,18 * * *` | 8:30, 12:30 და 18:30-ზე ყოველდღიურად |
 
-## Xin Engine
+## Xin ძრავი
 
-The Xin engine is an advanced task scheduler that goes beyond simple cron timing:
+Xin ძრავი მოწინავე ამოცანების დამგეგმავია, რომელიც მარტივი cron დროითმართვის მიღმა მიდის:
 
-- **Dependency chains**: Tasks can depend on the successful completion of other tasks
-- **Conditional execution**: Tasks run only when specified conditions are met
-- **Built-in tasks**: System maintenance tasks (heartbeat, memory hygiene, log rotation) are auto-registered when `builtin_tasks = true`
-- **Evolution integration**: When `evolution_integration = true`, Xin manages the self-evolution and fitness check schedule
-- **Stale detection**: Tasks running longer than `stale_timeout_minutes` are marked as stale and can be cleaned up
-- **Concurrent execution**: Multiple tasks can run in parallel, limited by `max_concurrent`
+- **დამოკიდებულებების ჯაჭვები**: ამოცანები სხვა ამოცანების წარმატებულ დასრულებაზე შეიძლება იყოს დამოკიდებული
+- **პირობითი შესრულება**: ამოცანები მხოლოდ მითითებული პირობების დაკმაყოფილებისას შესრულდება
+- **ჩაშენებული ამოცანები**: სისტემის მოვლის ამოცანები (ჰარტბიტი, მეხსიერების ჰიგიენა, ჟურნალების როტაცია) ავტომატურად რეგისტრირდება `builtin_tasks = true` შემთხვევაში
+- **ევოლუციის ინტეგრაცია**: `evolution_integration = true` შემთხვევაში Xin თვითევოლუციისა და ფიტნესის შემოწმების გრაფიკს მართავს
+- **მოძველების აღმოჩენა**: `stale_timeout_minutes`-ზე მეტხანს მიმდინარე ამოცანები მოძველებულად აღინიშნება და გასუფთავდება
+- **ერთდროული შესრულება**: მრავალი ამოცანა პარალელურად შეიძლება შესრულდეს, `max_concurrent`-ით შეზღუდული
 
 ## გამოყენება
 
-### CLI Cron Management
+### CLI Cron მართვა
 
 ```bash
-# List all cron jobs
+# ყველა cron სამუშაოს სია
 prx cron list
 
-# Add a new cron job
+# ახალი cron სამუშაოს დამატება
 prx cron add --name "check-updates" --schedule "0 */6 * * *" --action agent --prompt "Check for package updates"
 
-# Manually trigger a job
+# სამუშაოს ხელით გაშვება
 prx cron run daily-report
 
-# View run history
+# შესრულების ისტორიის ნახვა
 prx cron runs --name daily-report --limit 5
 
-# Remove a job
+# სამუშაოს წაშლა
 prx cron remove check-updates
 ```
 
-### Xin Status
+### Xin სტატუსი
 
 ```bash
-# Check Xin engine status
+# Xin ძრავის სტატუსის შემოწმება
 prx xin status
 
-# List all Xin tasks
+# ყველა Xin ამოცანის სია
 prx xin tasks
 ```
 
 ## უსაფრთხოება
 
-### Shell Command Sandboxing
+### Shell ბრძანებების სენდბოქსი
 
-Cron jobs with `action = "shell"` execute through the same sandbox as the `shell` tool. The configured sandbox backend (Landlock, Firejail, Bubblewrap, Docker) applies to scheduled commands.
+`action = "shell"` მქონე cron სამუშაოები იმავე სენდბოქსში სრულდება, რაც `shell` ინსტრუმენტი. კონფიგურირებული სენდბოქსის ბექენდი (Landlock, Firejail, Bubblewrap, Docker) დაგეგმილ ბრძანებებზე ვრცელდება.
 
-### Agent Prompt Safety
+### აგენტის პრომპტის უსაფრთხოება
 
-Cron jobs with `action = "agent"` spawn a new agent session with the configured prompt. The agent session inherits the daemon's security policies, tool restrictions, and resource limits.
+`action = "agent"` მქონე cron სამუშაოები ახალ აგენტის სესიას იწყებს კონფიგურირებული პრომპტით. აგენტის სესია დემონის უსაფრთხოების პოლიტიკებს, ინსტრუმენტების შეზღუდვებსა და რესურსების ლიმიტებს მემკვიდრეობით იღებს.
 
-### Policy Engine
+### პოლიტიკის ძრავი
 
-Cron tools are governed by the security policy engine:
+Cron ინსტრუმენტები უსაფრთხოების პოლიტიკის ძრავის ქვეშ მოქმედებს:
 
 ```toml
 [security.tool_policy.groups]
 automation = "allow"
 
 [security.tool_policy.tools]
-cron_add = "supervised"    # Require approval to add new jobs
-cron_remove = "supervised" # Require approval to remove jobs
-cron_run = "allow"         # Allow manual triggers
+cron_add = "supervised"    # ახალი სამუშაოების დამატებისთვის დამტკიცების მოთხოვნა
+cron_remove = "supervised" # სამუშაოების წაშლისთვის დამტკიცების მოთხოვნა
+cron_run = "allow"         # ხელით გაშვების ნებართვა
 ```
 
-### Audit Logging
+### აუდიტის ჟურნალი
 
-All cron operations are recorded in the audit log: job creation, modification, deletion, manual triggers, and execution results.
+ყველა cron ოპერაცია აუდიტის ჟურნალში აღირიცხება: სამუშაოების შექმნა, შეცვლა, წაშლა, ხელით გაშვება და შესრულების შედეგები.
 
-### Resource Limits
+### რესურსების ლიმიტები
 
-Scheduled tasks share the daemon's resource limits. The `max_concurrent` setting in the Xin engine prevents resource exhaustion from too many simultaneous tasks.
+დაგეგმილი ამოცანები დემონის რესურსების ლიმიტებს იზიარებს. Xin ძრავის `max_concurrent` პარამეტრი ძალიან ბევრი ერთდროული ამოცანისგან რესურსების ამოწურვას თავიდან იცილებს.
 
-## დაკავშირებული
+## დაკავშირებული გვერდები
 
-- [Cron System](/ka/prx/cron/) -- architecture and built-in tasks
-- [Cron Heartbeat](/ka/prx/cron/heartbeat) -- health monitoring
-- [Cron Tasks](/ka/prx/cron/tasks) -- built-in maintenance tasks
-- [Self-Evolution](/ka/prx/self-evolution/) -- Xin evolution integration
-- [Shell Execution](/ka/prx/tools/shell) -- sandbox for shell-based cron jobs
-- [Configuration Reference](/ka/prx/config/reference) -- `[cron]` and `[xin]` settings
-- [Tools Overview](/ka/prx/tools/) -- all tools and registry system
+- [Cron სისტემა](/ka/prx/cron/) -- არქიტექტურა და ჩაშენებული ამოცანები
+- [Cron ჰარტბიტი](/ka/prx/cron/heartbeat) -- ჯანმრთელობის მონიტორინგი
+- [Cron ამოცანები](/ka/prx/cron/tasks) -- ჩაშენებული მოვლის ამოცანები
+- [თვითევოლუცია](/ka/prx/self-evolution/) -- Xin ევოლუციის ინტეგრაცია
+- [Shell-ის შესრულება](/ka/prx/tools/shell) -- სენდბოქსი shell-ზე დაფუძნებული cron სამუშაოებისთვის
+- [კონფიგურაციის მითითება](/ka/prx/config/reference) -- `[cron]` და `[xin]` პარამეტრები
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა ინსტრუმენტი და რეესტრის სისტემა

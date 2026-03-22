@@ -1,65 +1,65 @@
 ---
-title: Approval Workflow
-description: How PRX handles supervised tool calls that require human approval before execution.
+title: დამტკიცების სამუშაო პროცესი
+description: როგორ ამუშავებს PRX ზედამხედველ ინსტრუმენტთა გამოძახებებს, რომლებიც ადამიანის დამტკიცებას მოითხოვს შესრულებამდე.
 ---
 
-# Approval Workflow
+# დამტკიცების სამუშაო პროცესი
 
-When a tool's security policy is set to `"supervised"`, PRX pauses execution and waits for human approval before running the tool call. This provides a critical safety layer for high-risk operations -- shell commands, file writes, network requests, or any action that could have irreversible consequences.
+როდესაც ინსტრუმენტის უსაფრთხოების პოლიტიკა `"supervised"`-ზეა დაყენებული, PRX შესრულებას აპაუზებს და ადამიანის დამტკიცებას ელოდება ინსტრუმენტის გამოძახების გაშვებამდე. ეს კრიტიკულ უსაფრთხოების ფენას უზრუნველყოფს მაღალი რისკის ოპერაციებისთვის -- shell ბრძანებები, ფაილის ჩაწერა, ქსელის მოთხოვნები, ან ნებისმიერი მოქმედება, რომელსაც შეუქცევადი შედეგები შეიძლება ჰქონდეს.
 
 ## მიმოხილვა
 
-The approval workflow sits between the agent loop and tool execution:
+დამტკიცების სამუშაო პროცესი აგენტის ციკლსა და ინსტრუმენტის შესრულებას შორის მდებარეობს:
 
 ```
-Agent Loop
+აგენტის ციკლი
     │
-    ├── LLM emits tool call: shell("rm -rf /tmp/data")
+    ├── LLM გამოსცემს ინსტრუმენტის გამოძახებას: shell("rm -rf /tmp/data")
     │
     ▼
 ┌───────────────────────────────────┐
-│        Policy Engine              │
+│        პოლიტიკის ძრავა           │
 │                                   │
-│  Tool: "shell"                    │
-│  Policy: "supervised"             │
-│  Action: REQUIRE APPROVAL         │
+│  ინსტრუმენტი: "shell"            │
+│  პოლიტიკა: "supervised"          │
+│  მოქმედება: დამტკიცება სავალდებულო│
 └───────────────┬───────────────────┘
                 │
                 ▼
 ┌───────────────────────────────────┐
-│      Approval Request             │
+│      დამტკიცების მოთხოვნა        │
 │                                   │
-│  Pending...                       │
-│  ├── Notify supervisor            │
-│  ├── Wait for response            │
-│  └── Timeout after N seconds      │
+│  მოლოდინში...                     │
+│  ├── ზედამხედველის შეტყობინება   │
+│  ├── პასუხის მოლოდინი            │
+│  └── ვადაგასვლა N წამის შემდეგ   │
 └───────────────┬───────────────────┘
                 │
          ┌──────┴──────┐
          │             │
     ┌────▼────┐   ┌────▼────┐
-    │ Approved│   │ Denied  │
+    │დამტკიცდა│   │უარყოფილია│
     │         │   │         │
-    │ Execute │   │ Return  │
-    │ tool    │   │ error   │
+    │შესრულება│   │შეცდომის │
+    │         │   │დაბრუნება│
     └─────────┘   └─────────┘
 ```
 
 ## კონფიგურაცია
 
-### Setting Tool Policies
+### ინსტრუმენტთა პოლიტიკების დაყენება
 
-Configure which tools require approval in `config.toml`:
+განსაზღვრეთ რომელი ინსტრუმენტები მოითხოვს დამტკიცებას `config.toml`-ში:
 
 ```toml
 [security.tool_policy]
-# Default policy for all tools.
-# "allow" -- execute immediately
-# "deny" -- block execution entirely
-# "supervised" -- require approval before execution
+# ნაგულისხმევი პოლიტიკა ყველა ინსტრუმენტისთვის.
+# "allow" -- დაუყოვნებელი შესრულება
+# "deny" -- შესრულების სრული დაბლოკვა
+# "supervised" -- შესრულებამდე დამტკიცების მოთხოვნა
 default = "allow"
 
-# Per-tool policy overrides.
+# ინსტრუმენტის დონის პოლიტიკის გადაფარვები.
 [security.tool_policy.tools]
 shell = "supervised"
 file_write = "supervised"
@@ -68,34 +68,34 @@ git_operations = "allow"
 memory_store = "allow"
 browser = "deny"
 
-# Group-level policies.
+# ჯგუფის დონის პოლიტიკები.
 [security.tool_policy.groups]
 sessions = "allow"
 automation = "supervised"
 ```
 
-### Approval Settings
+### დამტკიცების პარამეტრები
 
 ```toml
 [security.approval]
-# How long to wait for a response before timing out (seconds).
+# რამდენ ხანს ელოდება პასუხს ვადაგასვლამდე (წამები).
 timeout_secs = 300
 
-# Action when approval times out: "deny" or "allow".
-# "deny" is the safe default -- unanswered requests are rejected.
+# მოქმედება ვადაგასვლისას: "deny" ან "allow".
+# "deny" უსაფრთხო ნაგულისხმევია -- უპასუხო მოთხოვნები უარყოფილია.
 on_timeout = "deny"
 
-# Notification channel for approval requests.
-# The supervisor is notified through this channel.
+# შეტყობინების არხი დამტკიცების მოთხოვნებისთვის.
+# ზედამხედველი ამ არხის მეშვეობით ეცნობება.
 notify_channel = "telegram"
 
-# Supervisor user ID or identifier.
-# Only this user can approve or deny requests.
+# ზედამხედველის მომხმარებლის ID ან იდენტიფიკატორი.
+# მხოლოდ ამ მომხმარებელს შეუძლია მოთხოვნების დამტკიცება ან უარყოფა.
 supervisor_id = "admin"
 
-# Auto-approve patterns: tool calls matching these patterns
-# are approved automatically without human intervention.
-# Use with caution.
+# ავტო-დამტკიცების შაბლონები: ამ შაბლონებთან დამთხვეული
+# ინსტრუმენტის გამოძახებები ავტომატურად მტკიცდება ადამიანის ჩარევის გარეშე.
+# სიფრთხილით გამოიყენეთ.
 [[security.approval.auto_approve]]
 tool = "shell"
 command_pattern = "^(ls|cat|head|tail|wc|grep|find|echo) "
@@ -105,129 +105,129 @@ tool = "file_write"
 path_pattern = "^/tmp/"
 ```
 
-## Approval Flow
+## დამტკიცების ნაკადი
 
-### Step 1: Policy Check
+### ნაბიჯი 1: პოლიტიკის შემოწმება
 
-When the agent emits a tool call, the policy engine evaluates it:
+როდესაც აგენტი ინსტრუმენტის გამოძახებას გამოსცემს, პოლიტიკის ძრავა აფასებს მას:
 
-1. Check per-tool policy (`security.tool_policy.tools.<name>`)
-2. If no per-tool policy, check group policy (`security.tool_policy.groups.<group>`)
-3. If no group policy, use the default policy (`security.tool_policy.default`)
+1. ინსტრუმენტის დონის პოლიტიკის შემოწმება (`security.tool_policy.tools.<name>`)
+2. თუ ინსტრუმენტის პოლიტიკა არ არსებობს, ჯგუფის პოლიტიკის შემოწმება (`security.tool_policy.groups.<group>`)
+3. თუ ჯგუფის პოლიტიკა არ არსებობს, ნაგულისხმევი პოლიტიკის გამოყენება (`security.tool_policy.default`)
 
-If the resolved policy is `"supervised"`, the approval flow is triggered.
+თუ გადაწყვეტილი პოლიტიკა `"supervised"`-ია, დამტკიცების ნაკადი აქტივირდება.
 
-### Step 2: Auto-Approve Check
+### ნაბიჯი 2: ავტო-დამტკიცების შემოწმება
 
-Before notifying the supervisor, PRX checks if the request matches any `auto_approve` pattern. Auto-approve rules use regex patterns to match tool arguments:
+ზედამხედველის შეტყობინებამდე, PRX ამოწმებს ემთხვევა თუ არა მოთხოვნა რომელიმე `auto_approve` შაბლონს. ავტო-დამტკიცების წესები რეგულარული გამოსახულებების შაბლონებს იყენებს ინსტრუმენტის არგუმენტებთან შესადარებლად:
 
-| Field | Description |
-|-------|-------------|
-| `tool` | Tool name that the rule applies to |
-| `command_pattern` | Regex pattern matched against the shell command (for `shell` tool) |
-| `path_pattern` | Regex pattern matched against file paths (for `file_write`, `file_read`) |
-| `url_pattern` | Regex pattern matched against URLs (for `http_request`) |
-| `args_pattern` | Regex pattern matched against the full JSON arguments |
+| ველი | აღწერა |
+|------|--------|
+| `tool` | ინსტრუმენტის სახელი, რომელზეც წესი ვრცელდება |
+| `command_pattern` | რეგულარული გამოსახულების შაბლონი shell ბრძანებასთან შესადარებლად (`shell` ინსტრუმენტისთვის) |
+| `path_pattern` | რეგულარული გამოსახულების შაბლონი ფაილის ბილიკებთან შესადარებლად (`file_write`, `file_read`) |
+| `url_pattern` | რეგულარული გამოსახულების შაბლონი URL-ებთან შესადარებლად (`http_request`) |
+| `args_pattern` | რეგულარული გამოსახულების შაბლონი სრულ JSON არგუმენტებთან შესადარებლად |
 
-If a match is found, the request is auto-approved and execution proceeds immediately. This is useful for safe, read-only commands that would create excessive approval fatigue.
+თუ დამთხვევა აღმოჩნდა, მოთხოვნა ავტომატურად მტკიცდება და შესრულება დაუყოვნებლივ გრძელდება. ეს სასარგებლოა უსაფრთხო, მხოლოდ-წაკითხვის ბრძანებებისთვის, რომლებიც დამტკიცების გადაჭარბებულ დაღლილობას შექმნიდა.
 
-### Step 3: Notification
+### ნაბიჯი 3: შეტყობინება
 
-If no auto-approve rule matches, PRX creates an approval request and notifies the supervisor:
+თუ ავტო-დამტკიცების წესი არ ემთხვევა, PRX დამტკიცების მოთხოვნას ქმნის და ზედამხედველს აცნობებს:
 
 ```
-[APPROVAL REQUIRED]
+[დამტკიცება სავალდებულო]
 
-Tool: shell
-Arguments: {"command": "rm -rf /tmp/data"}
-Session: abc-123
-Agent: default
-Time: 2026-03-21 14:30:22 UTC
+ინსტრუმენტი: shell
+არგუმენტები: {"command": "rm -rf /tmp/data"}
+სესია: abc-123
+აგენტი: default
+დრო: 2026-03-21 14:30:22 UTC
 
-Reply with:
-  /approve -- execute the tool call
-  /deny -- reject the tool call
-  /deny reason: <explanation> -- reject with reason
+უპასუხეთ:
+  /approve -- ინსტრუმენტის გამოძახების შესრულება
+  /deny -- ინსტრუმენტის გამოძახების უარყოფა
+  /deny reason: <ახსნა> -- უარყოფა მიზეზით
 ```
 
-The notification is sent through the configured `notify_channel`. Supported channels:
+შეტყობინება კონფიგურირებული `notify_channel`-ის მეშვეობით იგზავნება. მხარდაჭერილი არხები:
 
-| Channel | Notification Method |
-|---------|-------------------|
-| Telegram | Message to supervisor's chat |
-| Discord | DM to supervisor |
-| Slack | DM to supervisor |
-| CLI | Terminal prompt (stdin) |
-| Email | Email to configured address |
-| Webhook | HTTP POST to configured URL |
+| არხი | შეტყობინების მეთოდი |
+|------|---------------------|
+| Telegram | შეტყობინება ზედამხედველის ჩატში |
+| Discord | პირადი შეტყობინება ზედამხედველს |
+| Slack | პირადი შეტყობინება ზედამხედველს |
+| CLI | ტერმინალის მოთხოვნა (stdin) |
+| Email | ელფოსტა კონფიგურირებულ მისამართზე |
+| Webhook | HTTP POST კონფიგურირებულ URL-ზე |
 
-### Step 4: Wait
+### ნაბიჯი 4: მოლოდინი
 
-The agent loop pauses while waiting for the supervisor's response. During this time:
+აგენტის ციკლი პაუზირდება ზედამხედველის პასუხის მოლოდინში. ამ დროს:
 
-- The agent cannot execute any tools (the current tool call blocks)
-- Other sessions continue to operate independently
-- The approval request has a unique ID for tracking
+- აგენტს არცერთი ინსტრუმენტის შესრულება არ შეუძლია (მიმდინარე ინსტრუმენტის გამოძახება ბლოკავს)
+- სხვა სესიები დამოუკიდებლად განაგრძობს მუშაობას
+- დამტკიცების მოთხოვნას უნიკალური ID აქვს თვალთვალისთვის
 
-### Step 5: Resolution
+### ნაბიჯი 5: გადაწყვეტა
 
-The supervisor responds with one of:
+ზედამხედველი ერთ-ერთით პასუხობს:
 
-| Response | Effect |
-|----------|--------|
-| **Approve** | The tool call executes normally and the result is returned to the agent |
-| **Deny** | The tool call is rejected and an error message is returned to the agent |
-| **Deny with reason** | Same as deny, but the reason is included in the error message so the agent can adapt |
-| **Timeout** | The `on_timeout` action is applied (default: deny) |
+| პასუხი | ეფექტი |
+|--------|--------|
+| **დამტკიცება** | ინსტრუმენტის გამოძახება ჩვეულებრივ სრულდება და შედეგი აგენტს უბრუნდება |
+| **უარყოფა** | ინსტრუმენტის გამოძახება უარყოფილია და შეცდომის შეტყობინება აგენტს უბრუნდება |
+| **უარყოფა მიზეზით** | იგივეა რაც უარყოფა, მაგრამ მიზეზი შეცდომის შეტყობინებაში შედის, რათა აგენტმა ადაპტირება შეძლოს |
+| **ვადაგასვლა** | `on_timeout` მოქმედება გამოიყენება (ნაგულისხმევი: უარყოფა) |
 
-## Request Lifecycle
+## მოთხოვნის სიცოცხლის ციკლი
 
-Each approval request transitions through these states:
+თითოეული დამტკიცების მოთხოვნა ამ მდგომარეობებში გადადის:
 
 ```
 PENDING → APPROVED → EXECUTED
        → DENIED
        → TIMED_OUT
-       → CANCELLED (if the session ends before resolution)
+       → CANCELLED (თუ სესია გადაწყვეტამდე დასრულდა)
 ```
 
-| State | Description |
-|-------|-------------|
-| `PENDING` | Waiting for supervisor response |
-| `APPROVED` | Supervisor approved, tool executing |
-| `EXECUTED` | Tool execution completed after approval |
-| `DENIED` | Supervisor explicitly denied the request |
-| `TIMED_OUT` | No response within `timeout_secs` |
-| `CANCELLED` | Session terminated before resolution |
+| მდგომარეობა | აღწერა |
+|-------------|--------|
+| `PENDING` | ზედამხედველის პასუხის მოლოდინში |
+| `APPROVED` | ზედამხედველმა დაამტკიცა, ინსტრუმენტი სრულდება |
+| `EXECUTED` | ინსტრუმენტის შესრულება დასრულდა დამტკიცების შემდეგ |
+| `DENIED` | ზედამხედველმა ცალსახად უარყო მოთხოვნა |
+| `TIMED_OUT` | პასუხი არ მიღებულა `timeout_secs`-ის ფარგლებში |
+| `CANCELLED` | სესია გადაწყვეტამდე შეწყდა |
 
-## Approval Interfaces
+## დამტკიცების ინტერფეისები
 
-In CLI mode, approval requests appear as interactive terminal prompts with tool name, arguments, and risk level. For programmatic access, PRX exposes a REST API:
+CLI რეჟიმში დამტკიცების მოთხოვნები ინტერაქტიული ტერმინალის მოთხოვნების სახით ჩნდება ინსტრუმენტის სახელით, არგუმენტებითა და რისკის დონით. პროგრამული წვდომისთვის PRX REST API-ს გამოაქვეყნებს:
 
 ```bash
-# List pending requests / approve / deny
+# მოლოდინში მყოფი მოთხოვნების ჩამონათვალი / დამტკიცება / უარყოფა
 curl http://localhost:8080/api/approvals?status=pending
 curl -X POST http://localhost:8080/api/approvals/{id}/approve
 curl -X POST http://localhost:8080/api/approvals/{id}/deny \
   -d '{"reason": "Not permitted"}'
 ```
 
-## Audit Trail
+## აუდიტის კვალი
 
-All approval decisions are recorded in the activity log with fields: `request_id`, `tool`, `arguments`, `session_id`, `decision`, `decided_by`, `decided_at`, `reason`, and `execution_result`. Access via `prx audit approvals --last 50` or export with `--format json`.
+ყველა დამტკიცების გადაწყვეტილება აქტივობის ჟურნალში აღირიცხება შემდეგი ველებით: `request_id`, `tool`, `arguments`, `session_id`, `decision`, `decided_by`, `decided_at`, `reason` და `execution_result`. წვდომა `prx audit approvals --last 50`-ით ან ექსპორტი `--format json`-ით.
 
-## Security Notes
+## უსაფრთხოების შენიშვნები
 
-- **Default deny on timeout** -- always set `on_timeout = "deny"` in production. Allowing unanswered requests to proceed defeats the purpose of supervision.
-- **Auto-approve carefully** -- overly broad auto-approve patterns can bypass the approval workflow. Use specific regex patterns and review them regularly.
-- **Supervisor authentication** -- ensure the `notify_channel` authenticates the supervisor. A compromised notification channel could allow unauthorized approvals.
-- **Rate limiting** -- if an agent repeatedly triggers approval requests for the same operation, consider updating the policy to `"deny"` for that tool or adding a more specific auto-approve rule.
-- **Multi-supervisor** -- in team deployments, consider configuring multiple supervisors. Any one of them can approve or deny.
+- **ნაგულისხმევი უარყოფა ვადაგასვლისას** -- საწარმოო გარემოში ყოველთვის დააყენეთ `on_timeout = "deny"`. უპასუხო მოთხოვნების გაგრძელების ნებართვა ზედამხედველობის მიზანს ეწინააღმდეგება.
+- **ავტო-დამტკიცების სიფრთხილე** -- ზედმეტად ფართო ავტო-დამტკიცების შაბლონებმა შეიძლება დამტკიცების სამუშაო პროცესი გვერდის ავლით დატოვოს. გამოიყენეთ კონკრეტული რეგულარული გამოსახულებები და რეგულარულად გადახედეთ მათ.
+- **ზედამხედველის ავთენტიფიკაცია** -- დარწმუნდით, რომ `notify_channel` ზედამხედველს ავთენტიფიცირებს. კომპრომეტირებულმა შეტყობინების არხმა შეიძლება არაავტორიზებული დამტკიცებები დაუშვას.
+- **სიჩქარის შეზღუდვა** -- თუ აგენტი ერთი და იმავე ოპერაციისთვის განმეორებით იწვევს დამტკიცების მოთხოვნებს, განიხილეთ ამ ინსტრუმენტის პოლიტიკის `"deny"`-ზე განახლება ან უფრო კონკრეტული ავტო-დამტკიცების წესის დამატება.
+- **მრავალ-ზედამხედველი** -- გუნდურ განთავსებებში განიხილეთ მრავალი ზედამხედველის კონფიგურაცია. ნებისმიერ მათგანს შეუძლია დამტკიცება ან უარყოფა.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Security Overview](/ka/prx/security/)
-- [Policy Engine](/ka/prx/security/policy-engine)
-- [Sandbox](/ka/prx/security/sandbox)
-- [Audit Logging](/ka/prx/security/audit)
-- [Tools Overview](/ka/prx/tools/)
+- [უსაფრთხოების მიმოხილვა](/ka/prx/security/)
+- [პოლიტიკის ძრავა](/ka/prx/security/policy-engine)
+- [სენდბოქსი](/ka/prx/security/sandbox)
+- [აუდიტის ჟურნალი](/ka/prx/security/audit)
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/)

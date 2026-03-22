@@ -1,74 +1,74 @@
 ---
 title: პრობლემების მოგვარება
-description: Common issues and solutions for PRX, including diagnostics tools and FAQ.
+description: PRX-ის გაშვებისას გავრცელებული პრობლემები და გადაწყვეტილებები, მათ შორის დიაგნოსტიკის ინსტრუმენტები და FAQ.
 ---
 
-# Troubleshooting
+# პრობლემების მოგვარება
 
-This section covers common issues encountered when running PRX and how to resolve them.
+ეს სექცია მოიცავს PRX-ის გაშვებისას შეხვედრილ გავრცელებულ პრობლემებსა და მათი მოგვარების გზებს.
 
-## Quick Diagnostics
+## სწრაფი დიაგნოსტიკა
 
-Run the built-in doctor command for a comprehensive health check:
+გაუშვით ჩაშენებული doctor ბრძანება ყოვლისმომცველი ჯანმრთელობის შემოწმებისთვის:
 
 ```bash
 prx doctor
 ```
 
-This checks:
+ეს ამოწმებს:
 
-- Configuration file validity
-- Provider connectivity and authentication
-- System dependencies
-- Disk space and permissions
-- Active daemon status
+- კონფიგურაციის ფაილის ვალიდობას
+- პროვაიდერთან კავშირსა და ავთენტიფიკაციას
+- სისტემის დამოკიდებულებებს
+- დისკის სივრცესა და ნებართვებს
+- აქტიური დემონის სტატუსს
 
-## Common Issues
+## გავრცელებული პრობლემები
 
-### Daemon won't start
+### დემონი ვერ იწყება
 
-**Symptoms**: `prx daemon` exits immediately or fails to bind.
+**სიმპტომები**: `prx daemon` დაუყოვნებლივ გამოდის ან ვერ ხერხდება მიბმა.
 
-**Solutions**:
-- Check if another instance is running: `prx daemon status`
-- Verify the port is available: `ss -tlnp | grep 3120`
-- Check logs: `prx daemon logs`
-- Validate config: `prx config check`
+**გადაწყვეტილებები**:
+- შეამოწმეთ, მუშაობს თუ არა სხვა ინსტანცია: `prx daemon status`
+- შეამოწმეთ პორტის ხელმისაწვდომობა: `ss -tlnp | grep 3120`
+- შეამოწმეთ ლოგები: `prx daemon logs`
+- კონფიგურაციის ვალიდაცია: `prx config check`
 
-### Provider authentication fails
+### პროვაიდერის ავთენტიფიკაცია ვერ ხერხდება
 
-**Symptoms**: "Unauthorized" or "Invalid API key" errors.
+**სიმპტომები**: "Unauthorized" ან "Invalid API key" შეცდომები.
 
-**Solutions**:
-- Verify your API key: `prx auth status`
-- Re-authenticate: `prx auth login <provider>`
-- Check environment variables: `env | grep API_KEY`
+**გადაწყვეტილებები**:
+- შეამოწმეთ API გასაღები: `prx auth status`
+- ხელახლა ავთენტიფიკაცია: `prx auth login <provider>`
+- შეამოწმეთ გარემოს ცვლადები: `env | grep API_KEY`
 
-### High memory usage
+### მაღალი მეხსიერების მოხმარება
 
-**Symptoms**: PRX process consuming excessive memory.
+**სიმპტომები**: PRX პროცესი ჭარბ მეხსიერებას მოიხმარს.
 
-**Solutions**:
-- Reduce concurrent sessions: set `[agent.limits] max_concurrent_sessions`
-- Enable memory hygiene: `prx memory compact`
-- Check for long-running sessions: `prx session list`
+**გადაწყვეტილებები**:
+- შეამცირეთ ერთდროული სესიები: დააყენეთ `[agent.limits] max_concurrent_sessions`
+- ჩართეთ მეხსიერების ჰიგიენა: `prx memory compact`
+- შეამოწმეთ ხანგრძლივი სესიები: `prx session list`
 
-### Tool execution hangs
+### ინსტრუმენტის შესრულება იჭედება
 
-**Symptoms**: Agent appears stuck during tool execution.
+**სიმპტომები**: აგენტი ინსტრუმენტის შესრულებისას გაჩერებულად ჩანს.
 
-**Solutions**:
-- Check sandbox configuration
-- Verify tool dependencies are installed
-- Set a timeout: `[agent] session_timeout_secs = 300`
-- Cancel the session: `prx session cancel <id>`
+**გადაწყვეტილებები**:
+- შეამოწმეთ სენდბოქსის კონფიგურაცია
+- შეამოწმეთ ინსტრუმენტის დამოკიდებულებების დაყენება
+- დააყენეთ ტაიმაუტი: `[agent] session_timeout_secs = 300`
+- სესიის გაუქმება: `prx session cancel <id>`
 
-## Getting Help
+## დახმარების მიღება
 
-- Check the [Diagnostics](./diagnostics) page for detailed diagnostic procedures
-- Open an issue on GitHub: `https://github.com/openprx/prx/issues`
-- Join the community Discord for real-time help
+- იხილეთ [დიაგნოსტიკის](./diagnostics) გვერდი დეტალური დიაგნოსტიკის პროცედურებისთვის
+- გახსენით ხარვეზი GitHub-ზე: `https://github.com/openprx/prx/issues`
+- შეუერთდით კომუნიტის Discord-ს რეალურ დროში დახმარებისთვის
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Diagnostics](./diagnostics)
+- [დიაგნოსტიკა](./diagnostics)

@@ -1,26 +1,26 @@
 ---
 title: დანამატის განვითარების ნაკრები (PDK)
-description: API reference for the PRX Plugin Development Kit used to build WASM plugins.
+description: API მითითება PRX დანამატის განვითარების ნაკრებისთვის, რომელიც WASM დანამატების შესაქმნელად გამოიყენება.
 ---
 
-# Plugin Development Kit (PDK)
+# დანამატის განვითარების ნაკრები (PDK)
 
-The PRX PDK is a Rust crate that provides the types, traits, and macros needed to build PRX plugins. It handles serialization, host function bindings, and the plugin lifecycle.
+PRX PDK არის Rust crate, რომელიც PRX დანამატების შესაქმნელად საჭირო ტიპებს, თვისებებსა და მაკროებს უზრუნველყოფს. იგი სერიალიზაციას, ჰოსტ ფუნქციების ბაინდინგებსა და დანამატის სიცოცხლის ციკლს ამუშავებს.
 
-## Installation
+## ინსტალაცია
 
-Add to your `Cargo.toml`:
+დაამატეთ თქვენს `Cargo.toml`-ში:
 
 ```toml
 [dependencies]
 prx-pdk = "0.1"
 ```
 
-## Core Traits
+## ძირითადი თვისებები
 
 ### Tool
 
-The `Tool` trait is used to register new tools that the agent can call:
+`Tool` თვისება ახალი ინსტრუმენტების რეგისტრაციისთვის გამოიყენება, რომლებსაც აგენტი გამოიძახებს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -37,7 +37,7 @@ fn weather(location: String) -> Result<String, PluginError> {
 
 ### Channel
 
-The `Channel` trait adds new messaging channels:
+`Channel` თვისება ახალ შეტყობინებების არხებს ამატებს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -53,23 +53,23 @@ impl Channel for MyChatChannel {
 
 ### Filter
 
-The `Filter` trait processes messages before or after the LLM:
+`Filter` თვისება შეტყობინებებს LLM-მდე ან მის შემდეგ ამუშავებს:
 
 ```rust
 use prx_pdk::prelude::*;
 
 #[prx_filter(stage = "pre")]
 fn content_filter(message: &str) -> Result<FilterAction, PluginError> {
-    // Return FilterAction::Pass or FilterAction::Block
+    // დააბრუნეთ FilterAction::Pass ან FilterAction::Block
 }
 ```
 
-## Types
+## ტიპები
 
-The PDK exports common types: `PluginError`, `FilterAction`, `ToolResult`, `ChannelMessage`, and `PluginConfig`.
+PDK საერთო ტიპებს ექსპორტირებს: `PluginError`, `FilterAction`, `ToolResult`, `ChannelMessage` და `PluginConfig`.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Developer Guide](./developer-guide)
-- [Host Functions](./host-functions)
-- [Examples](./examples)
+- [დეველოპერის სახელმძღვანელო](./developer-guide)
+- [ჰოსტ ფუნქციები](./host-functions)
+- [მაგალითები](./examples)

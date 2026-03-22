@@ -1,38 +1,38 @@
 ---
 title: ჰუკები
-description: Event-driven extension system with 8 lifecycle events, shell hook execution, WASM plugin callbacks, HTTP API management, and event bus integration for observability and automation.
+description: მოვლენებით მართული გაფართოების სისტემა 8 სასიცოცხლო ციკლის მოვლენით, shell ჰუკის შესრულებით, WASM პლაგინის callback-ებით, HTTP API მართვითა და მოვლენების ავტობუსის ინტეგრაციით დაკვირვებისა და ავტომატიზაციისთვის.
 ---
 
-# Hooks
+# ჰუკები
 
-PRX hooks provide an event-driven extension system that lets you react to lifecycle events during agent execution. Every significant moment in the agent loop -- starting a turn, calling an LLM, invoking a tool, encountering an error -- emits a hook event. You attach actions to these events via a `hooks.json` configuration file, WASM plugin manifests, or the HTTP API.
+PRX ჰუკები მოვლენებით მართულ გაფართოების სისტემას უზრუნველყოფს, რომელიც აგენტის შესრულების დროს სასიცოცხლო ციკლის მოვლენებზე რეაგირების საშუალებას იძლევა. აგენტის ციკლის ყოველი მნიშვნელოვანი მომენტი -- ბიჯის დაწყება, LLM-ის გამოძახება, ინსტრუმენტის გაშვება, შეცდომის დაფიქსირება -- ჰუკის მოვლენას ასხივებს. მოვლენებზე მოქმედებები `hooks.json` კონფიგურაციის ფაილით, WASM პლაგინის მანიფესტებით ან HTTP API-ით მიმაგრდება.
 
-Hooks are **fire-and-forget** by design. They never block the agent loop, never modify execution flow, and never inject data back into the conversation. This makes them ideal for audit logging, metrics collection, external notifications, and side-effect automation without introducing latency or failure modes into the core agent pipeline.
+ჰუკები **ცეცხლი-და-დავიწყება** (fire-and-forget) პრინციპით მუშაობს. ისინი არასდროს ბლოკავს აგენტის ციკლს, არასდროს ცვლის შესრულების ნაკადს და არასდროს აბრუნებს მონაცემებს საუბარში. ეს მათ იდეალურს ხდის აუდიტის ჟურნალისთვის, მეტრიკების შეგროვებისთვის, გარე შეტყობინებებისთვის და გვერდითი ეფექტების ავტომატიზაციისთვის -- ბირთვულ აგენტის პაიპლაინში ლატენტურობის ან მარცხის რეჟიმების შეტანის გარეშე.
 
-There are three hook execution backends:
+სამი ჰუკის შესრულების ბექენდი არსებობს:
 
-- **Shell hooks** -- Run an external command with the event payload passed via environment variable, temp file, or stdin. Configured in `hooks.json`.
-- **WASM plugin hooks** -- Call the `on-event` function exported by a WASM plugin. Declared in the plugin's `plugin.toml` manifest.
-- **Event bus hooks** -- Publish to the internal event bus on topic `prx.lifecycle.<event>`. Always active; no configuration needed.
+- **Shell ჰუკები** -- გარე ბრძანების შესრულება მოვლენის დატვირთვით, რომელიც გარემოს ცვლადით, დროებითი ფაილით ან stdin-ით გადაეცემა. კონფიგურირდება `hooks.json`-ში.
+- **WASM პლაგინის ჰუკები** -- WASM პლაგინის მიერ ექსპორტირებული `on-event` ფუნქციის გამოძახება. განსაზღვრულია პლაგინის `plugin.toml` მანიფესტში.
+- **მოვლენების ავტობუსის ჰუკები** -- შიდა მოვლენების ავტობუსზე გამოქვეყნება თემაზე `prx.lifecycle.<event>`. ყოველთვის აქტიურია; კონფიგურაცია არ არის საჭირო.
 
-## Hook Events
+## ჰუკის მოვლენები
 
-PRX emits 8 lifecycle events. Each event carries a JSON payload with context-specific fields.
+PRX 8 სასიცოცხლო ციკლის მოვლენას ასხივებს. თითოეული მოვლენა კონტექსტისთვის სპეციფიკური ველების მქონე JSON დატვირთვას ატარებს.
 
-| Event | When Emitted | Payload Fields |
+| მოვლენა | როდის ასხივდება | დატვირთვის ველები |
 |-------|-------------|----------------|
-| `agent_start` | Agent loop begins a new turn | `agent` (string), `session` (string) |
-| `agent_end` | Agent loop completes a turn | `success` (bool), `messages_count` (number) |
-| `llm_request` | Before sending a request to the LLM provider | `provider` (string), `model` (string), `messages_count` (number) |
-| `llm_response` | After receiving the LLM response | `provider` (string), `model` (string), `duration_ms` (number), `success` (bool) |
-| `tool_call_start` | Before a tool begins execution | `tool` (string), `arguments` (object) |
-| `tool_call` | After a tool completes execution | `tool` (string), `success` (bool), `output` (string) |
-| `turn_complete` | Full turn finished (all tools resolved) | _(empty object)_ |
-| `error` | Any error during execution | `component` (string), `message` (string) |
+| `agent_start` | აგენტის ციკლი ახალ ბიჯს იწყებს | `agent` (string), `session` (string) |
+| `agent_end` | აგენტის ციკლი ბიჯს ასრულებს | `success` (bool), `messages_count` (number) |
+| `llm_request` | LLM პროვაიდერზე მოთხოვნის გაგზავნამდე | `provider` (string), `model` (string), `messages_count` (number) |
+| `llm_response` | LLM პასუხის მიღების შემდეგ | `provider` (string), `model` (string), `duration_ms` (number), `success` (bool) |
+| `tool_call_start` | ინსტრუმენტის შესრულების დაწყებამდე | `tool` (string), `arguments` (object) |
+| `tool_call` | ინსტრუმენტის შესრულების დასრულების შემდეგ | `tool` (string), `success` (bool), `output` (string) |
+| `turn_complete` | სრული ბიჯი დასრულდა (ყველა ინსტრუმენტი გადაწყვეტილია) | _(ცარიელი ობიექტი)_ |
+| `error` | შესრულების დროს ნებისმიერი შეცდომა | `component` (string), `message` (string) |
 
-### Payload Schemas
+### დატვირთვის სქემები
 
-All payloads are JSON objects. The top-level structure wraps the event-specific fields:
+ყველა დატვირთვა JSON ობიექტია. ზედა დონის სტრუქტურა მოვლენისთვის სპეციფიკურ ველებს ახვევს:
 
 ```json
 {
@@ -48,13 +48,13 @@ All payloads are JSON objects. The top-level structure wraps the event-specific 
 }
 ```
 
-The `event`, `timestamp`, and `session_id` fields are present on every hook event. The `payload` object varies by event type as described in the table above.
+`event`, `timestamp` და `session_id` ველები ყოველ ჰუკის მოვლენაში არსებობს. `payload` ობიექტი მოვლენის ტიპის მიხედვით იცვლება, როგორც ზემოთ ცხრილშია აღწერილი.
 
 ## კონფიგურაცია
 
-Shell hooks are configured in a `hooks.json` file placed in the workspace directory (the same directory as `config.toml`). PRX watches this file for changes and **hot-reloads** the configuration without requiring a restart.
+Shell ჰუკები `hooks.json` ფაილით კონფიგურირდება, რომელიც სამუშაო სივრცის დირექტორიაში (იმავე დირექტორიაში, სადაც `config.toml`) თავსდება. PRX ამ ფაილს ცვლილებებისთვის აკვირდება და კონფიგურაციას **ცხლად ტვირთავს** გადატვირთვის საჭიროების გარეშე.
 
-### Basic Structure
+### ძირითადი სტრუქტურა
 
 ```json
 {
@@ -75,9 +75,9 @@ Shell hooks are configured in a `hooks.json` file placed in the workspace direct
 }
 ```
 
-Each event name maps to an array of hook actions. Multiple actions can be attached to the same event; they execute concurrently and independently.
+თითოეული მოვლენის სახელი ჰუკის მოქმედებების მასივზე შეესაბამება. ერთ მოვლენაზე მრავალი მოქმედება შეიძლება მიმაგრდეს; ისინი ერთდროულად და დამოუკიდებლად სრულდება.
 
-### Full Example
+### სრული მაგალითი
 
 ```json
 {
@@ -123,44 +123,44 @@ Each event name maps to an array of hook actions. Multiple actions can be attach
 }
 ```
 
-## Hook Action Fields
+## ჰუკის მოქმედების ველები
 
-Each hook action object supports the following fields:
+თითოეული ჰუკის მოქმედების ობიექტი შემდეგ ველებს უჭერს მხარს:
 
-| Field | Type | Required | Default | Description |
+| ველი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-------|------|----------|---------|-------------|
-| `command` | string | Yes | -- | Absolute path to the executable or a command name found in the sanitized PATH |
-| `args` | string[] | No | `[]` | Arguments passed to the command |
-| `env` | object | No | `{}` | Additional environment variables merged into the sanitized execution environment |
-| `cwd` | string | No | workspace dir | Working directory for the spawned process |
-| `timeout_ms` | number | No | `30000` | Maximum execution time in milliseconds. The process is killed (SIGKILL) if it exceeds this limit |
-| `stdin_json` | bool | No | `false` | When `true`, the full event payload JSON is piped to the process via stdin |
+| `command` | string | დიახ | -- | შესრულებადი ფაილის აბსოლუტური ბილიკი ან სანიტარიზებულ PATH-ში ნაპოვნი ბრძანების სახელი |
+| `args` | string[] | არა | `[]` | ბრძანებაზე გადაცემული არგუმენტები |
+| `env` | object | არა | `{}` | დამატებითი გარემოს ცვლადები, რომლებიც სანიტარიზებულ შესრულების გარემოში ერწყმება |
+| `cwd` | string | არა | სამუშაო სივრცის დირექტორია | გაშვებული პროცესის სამუშაო დირექტორია |
+| `timeout_ms` | number | არა | `30000` | შესრულების მაქსიმალური დრო მილიწამებში. პროცესი მოკვდება (SIGKILL) ლიმიტის გადაჭარბებისას |
+| `stdin_json` | bool | არა | `false` | `true` შემთხვევაში სრული მოვლენის დატვირთვის JSON stdin-ით მიეწოდება პროცესს |
 
-### Notes on `command`
+### შენიშვნები `command`-ის შესახებ
 
-The `command` field undergoes security validation before execution. It must not contain shell metacharacters (`;`, `|`, `&`, `` ` ``, `$()`) -- these are rejected to prevent shell injection. If you need shell features, wrap them in a script file and point `command` to that script.
+`command` ველი შესრულებამდე უსაფრთხოების ვალიდაციას გადის. იგი არ უნდა შეიცავდეს shell-ის მეტასიმბოლოებს (`;`, `|`, `&`, `` ` ``, `$()`) -- ისინი shell ინექციის თავიდან ასაცილებლად უარყოფილია. თუ shell-ის ფუნქციები გჭირდებათ, მოათავსეთ ისინი სკრიპტის ფაილში და `command` ამ სკრიპტზე მიმართეთ.
 
-Relative paths are resolved against the workspace directory. However, using absolute paths is recommended for predictability.
+რელატიური ბილიკები სამუშაო სივრცის დირექტორიის მიმართ გადაიჭრება. თუმცა, პროგნოზირებადობისთვის აბსოლუტური ბილიკების გამოყენება რეკომენდებულია.
 
-## Payload Delivery
+## დატვირთვის მიწოდება
 
-Hook actions receive the event payload through three channels simultaneously. This redundancy ensures scripts in any language can access the data through whichever method is most convenient.
+ჰუკის მოქმედებები მოვლენის დატვირთვას ერთდროულად სამი არხით იღებს. ეს ჭარბი რეზერვი უზრუნველყოფს, რომ ნებისმიერ ენაზე დაწერილ სკრიპტებს მონაცემებზე წვდომა ყველაზე მოსახერხებელი მეთოდით შეუძლიათ.
 
-### 1. Environment Variable (`ZERO_HOOK_PAYLOAD`)
+### 1. გარემოს ცვლადი (`ZERO_HOOK_PAYLOAD`)
 
-The payload JSON string is set as the `ZERO_HOOK_PAYLOAD` environment variable. This is the simplest access method for shell scripts:
+დატვირთვის JSON სტრინგი `ZERO_HOOK_PAYLOAD` გარემოს ცვლადად დაყენდება. ეს shell სკრიპტებისთვის ყველაზე მარტივი წვდომის მეთოდია:
 
 ```bash
 #!/bin/bash
-# Read payload from environment variable
+# დატვირთვის წაკითხვა გარემოს ცვლადიდან
 echo "$ZERO_HOOK_PAYLOAD" | jq '.payload.tool'
 ```
 
-**Size limit**: 8 KB. If the serialized payload exceeds 8 KB, the environment variable is **not set** and the payload is only available via the temp file and stdin channels.
+**ზომის ლიმიტი**: 8 KB. თუ სერიალიზებული დატვირთვა 8 KB-ს აღემატება, გარემოს ცვლადი **არ დაყენდება** და დატვირთვა მხოლოდ დროებითი ფაილისა და stdin არხებით იქნება ხელმისაწვდომი.
 
-### 2. Temporary File (`ZERO_HOOK_PAYLOAD_FILE`)
+### 2. დროებითი ფაილი (`ZERO_HOOK_PAYLOAD_FILE`)
 
-The payload is written to a temporary file, and the file path is set in the `ZERO_HOOK_PAYLOAD_FILE` environment variable. The temp file is automatically deleted after the hook process exits.
+დატვირთვა დროებით ფაილში იწერება, ხოლო ფაილის ბილიკი `ZERO_HOOK_PAYLOAD_FILE` გარემოს ცვლადში აყენდება. დროებითი ფაილი ჰუკის პროცესის დასრულების შემდეგ ავტომატურად წაიშლება.
 
 ```python
 import os, json
@@ -171,60 +171,60 @@ with open(payload_file) as f:
 print(f"Tool: {data['payload']['tool']}, Success: {data['payload']['success']}")
 ```
 
-This channel has no size limit and is the recommended method for payloads that may be large (e.g., `tool_call` with verbose output).
+ამ არხს ზომის ლიმიტი არ აქვს და რეკომენდებულია დატვირთვებისთვის, რომლებიც შესაძლოა დიდი იყოს (მაგ., `tool_call` ვრცელი გამოსავალით).
 
-### 3. Standard Input (stdin)
+### 3. სტანდარტული შემავალი (stdin)
 
-When `stdin_json` is set to `true` in the hook action, the payload JSON is piped to the process via stdin. This is useful for commands that natively read from stdin, such as `curl -d @-` or `jq`.
+როდესაც `stdin_json` `true`-ზეა დაყენებული ჰუკის მოქმედებაში, დატვირთვის JSON stdin-ით მიეწოდება პროცესს. ეს სასარგებლოა ბრძანებებისთვის, რომლებიც stdin-იდან კითხულობს, მაგალითად `curl -d @-` ან `jq`.
 
 ```bash
 #!/bin/bash
-# Read from stdin (requires stdin_json: true in hook config)
+# stdin-იდან წაკითხვა (მოითხოვს stdin_json: true ჰუკის კონფიგურაციაში)
 read -r payload
 echo "$payload" | jq -r '.payload.message'
 ```
 
-## Environment Variables
+## გარემოს ცვლადები
 
-Every hook process receives the following environment variables, in addition to `ZERO_HOOK_PAYLOAD` and `ZERO_HOOK_PAYLOAD_FILE`:
+ყოველი ჰუკის პროცესი შემდეგ გარემოს ცვლადებს იღებს, `ZERO_HOOK_PAYLOAD` და `ZERO_HOOK_PAYLOAD_FILE`-ის გარდა:
 
-| ცვლადი | აღწერა | Example |
+| ცვლადი | აღწერა | მაგალითი |
 |----------|-------------|---------|
-| `ZERO_HOOK_EVENT` | The event name that triggered this hook | `tool_call` |
-| `ZERO_HOOK_SESSION` | Current session identifier | `sess_abc123` |
-| `ZERO_HOOK_TIMESTAMP` | ISO 8601 timestamp of the event | `2026-03-21T08:15:30.123Z` |
-| `ZERO_HOOK_PAYLOAD` | Full payload as JSON string (omitted if >8 KB) | `{"event":"tool_call",...}` |
-| `ZERO_HOOK_PAYLOAD_FILE` | Path to temp file containing the payload | `/tmp/prx-hook-a1b2c3.json` |
+| `ZERO_HOOK_EVENT` | მოვლენის სახელი, რომელმაც ეს ჰუკი გააქტივა | `tool_call` |
+| `ZERO_HOOK_SESSION` | მიმდინარე სესიის იდენტიფიკატორი | `sess_abc123` |
+| `ZERO_HOOK_TIMESTAMP` | მოვლენის ISO 8601 დროის შტამპი | `2026-03-21T08:15:30.123Z` |
+| `ZERO_HOOK_PAYLOAD` | სრული დატვირთვა JSON სტრინგად (გამოტოვებულია >8 KB შემთხვევაში) | `{"event":"tool_call",...}` |
+| `ZERO_HOOK_PAYLOAD_FILE` | დატვირთვის შემცველი დროებითი ფაილის ბილიკი | `/tmp/prx-hook-a1b2c3.json` |
 
-The execution environment is **sanitized** before the hook process starts. Sensitive and dangerous environment variables are stripped (see [Security](#security) below), and only the variables listed above plus any `env` overrides from the hook action are available.
+შესრულების გარემო ჰუკის პროცესის დაწყებამდე **სანიტარიზებულია**. საშიში და სენსიტიური გარემოს ცვლადები ამოიშლება (იხ. [უსაფრთხოება](#უსაფრთხოება) ქვემოთ), და მხოლოდ ზემოთ ჩამოთვლილი ცვლადები პლუს ჰუკის მოქმედებიდან `env` გადაფარვები ხელმისაწვდომია.
 
-## WASM Plugin Hooks
+## WASM პლაგინის ჰუკები
 
-WASM plugins can subscribe to hook events by exporting the `on-event` function defined in the PRX WIT (WebAssembly Interface Types) interface.
+WASM პლაგინებს შეუძლიათ ჰუკის მოვლენებზე გამოწერა PRX WIT (WebAssembly Interface Types) ინტერფეისში განსაზღვრული `on-event` ფუნქციის ექსპორტით.
 
-### WIT Interface
+### WIT ინტერფეისი
 
 ```wit
 interface hooks {
-    /// Called when a subscribed event fires.
-    /// Returns Ok(()) on success, Err(message) on failure.
+    /// გამოძახდება გამოწერილი მოვლენის გააქტივებისას.
+    /// აბრუნებს Ok(()) წარმატებისას, Err(message) მარცხისას.
     on-event: func(event: string, payload-json: string) -> result<_, string>;
 }
 ```
 
-The `event` parameter is the event name (e.g., `"tool_call"`), and `payload-json` is the full payload serialized as a JSON string, identical to what shell hooks receive.
+`event` პარამეტრი არის მოვლენის სახელი (მაგ., `"tool_call"`), ხოლო `payload-json` არის სრული დატვირთვა JSON სტრინგად სერიალიზებული, იდენტური იმისა, რასაც shell ჰუკები იღებს.
 
-### Event Subscription Patterns
+### მოვლენებზე გამოწერის შაბლონები
 
-Plugins declare which events they want to receive in their `plugin.toml` manifest using pattern matching:
+პლაგინები აცხადებს რომელი მოვლენების მიღება სურთ `plugin.toml` მანიფესტში შაბლონის შედარების გამოყენებით:
 
-| Pattern | Matches | Example |
+| შაბლონი | ემთხვევა | მაგალითი |
 |---------|---------|---------|
-| Exact match | A single specific event | `"tool_call"` |
-| Wildcard suffix | All events matching a prefix | `"prx.lifecycle.*"` |
-| Universal | Every event | `"*"` |
+| ზუსტი შესაბამისობა | ერთ კონკრეტულ მოვლენას | `"tool_call"` |
+| ბადალი სუფიქსი | პრეფიქსთან შესაბამისი ყველა მოვლენა | `"prx.lifecycle.*"` |
+| უნივერსალური | ყველა მოვლენა | `"*"` |
 
-### Plugin Manifest Example
+### პლაგინის მანიფესტის მაგალითი
 
 ```toml
 [plugin]
@@ -241,24 +241,24 @@ type = "hook"
 events = ["prx.lifecycle.*"]
 ```
 
-A single plugin can declare multiple `[[capabilities]]` blocks with different event patterns. The union of all matched events determines which events the plugin receives.
+ერთ პლაგინს შეუძლია მრავალი `[[capabilities]]` ბლოკი სხვადასხვა მოვლენის შაბლონებით განაცხადოს. ყველა შესაბამისი მოვლენის კავშირი განსაზღვრავს რომელ მოვლენებს მიიღებს პლაგინი.
 
-### Execution Model
+### შესრულების მოდელი
 
-WASM plugin hooks run inside the WASM sandbox with the same resource limits as other plugin functions. They are subject to:
+WASM პლაგინის ჰუკები WASM სენდბოქსში მუშაობს პლაგინის სხვა ფუნქციების იგივე რესურსების ლიმიტებით. მათზე ვრცელდება:
 
-- **Memory limit**: Defined in the plugin's resource configuration (default 64 MB)
-- **Execution timeout**: Same as `timeout_ms` for shell hooks (default 30 seconds)
-- **No filesystem access**: Unless explicitly granted via WASI capabilities
-- **No network access**: Unless explicitly granted via capability flags
+- **მეხსიერების ლიმიტი**: განსაზღვრული პლაგინის რესურსების კონფიგურაციაში (ნაგულისხმევი 64 MB)
+- **შესრულების დროის ამოწურვა**: იგივე, რაც shell ჰუკებისთვის `timeout_ms` (ნაგულისხმევი 30 წამი)
+- **ფაილური სისტემის წვდომა არ აქვს**: თუ WASI შესაძლებლობებით ექსპლიციტურად არ არის მინიჭებული
+- **ქსელური წვდომა არ აქვს**: თუ შესაძლებლობების ფლაგებით ექსპლიციტურად არ არის მინიჭებული
 
-If a WASM hook returns `Err(message)`, the error is logged but does not affect the agent loop. Hooks are always fire-and-forget.
+თუ WASM ჰუკი `Err(message)`-ს აბრუნებს, შეცდომა ჟურნალში აღირიცხება, მაგრამ აგენტის ციკლს არ ეხება. ჰუკები ყოველთვის ცეცხლი-და-დავიწყების პრინციპით მუშაობს.
 
-## Event Bus Integration
+## მოვლენების ავტობუსის ინტეგრაცია
 
-Every hook event is automatically published to the internal event bus on topic `prx.lifecycle.<event>`. This happens regardless of whether any shell or WASM hooks are configured.
+ყოველი ჰუკის მოვლენა ავტომატურად ქვეყნდება შიდა მოვლენების ავტობუსზე თემაზე `prx.lifecycle.<event>`. ეს ხდება მიუხედავად იმისა, კონფიგურირებულია თუ არა shell ან WASM ჰუკები.
 
-### Topic Format
+### თემის ფორმატი
 
 ```
 prx.lifecycle.agent_start
@@ -271,36 +271,36 @@ prx.lifecycle.turn_complete
 prx.lifecycle.error
 ```
 
-### Subscription Types
+### გამოწერის ტიპები
 
-Internal components and plugins can subscribe to event bus topics using three patterns:
+შიდა კომპონენტებსა და პლაგინებს შეუძლიათ მოვლენების ავტობუსის თემებზე სამი შაბლონით გამოწერა:
 
-- **Exact**: `prx.lifecycle.tool_call` -- receives only `tool_call` events
-- **Wildcard**: `prx.lifecycle.*` -- receives all lifecycle events
-- **Hierarchical**: `prx.*` -- receives all PRX-domain events (lifecycle, metrics, etc.)
+- **ზუსტი**: `prx.lifecycle.tool_call` -- მხოლოდ `tool_call` მოვლენებს იღებს
+- **ბადალი**: `prx.lifecycle.*` -- ყველა სასიცოცხლო ციკლის მოვლენას იღებს
+- **იერარქიული**: `prx.*` -- ყველა PRX დომენის მოვლენას იღებს (სასიცოცხლო ციკლი, მეტრიკები და სხვ.)
 
-### Payload Limits
+### დატვირთვის ლიმიტები
 
-| Constraint | Value |
+| შეზღუდვა | მნიშვნელობა |
 |------------|-------|
-| Maximum payload size | 64 KB |
-| Maximum recursion depth | 8 levels |
-| Dispatch model | Fire-and-forget (async) |
-| Delivery guarantee | At-most-once |
+| დატვირთვის მაქსიმალური ზომა | 64 KB |
+| რეკურსიის მაქსიმალური სიღრმე | 8 დონე |
+| გადაცემის მოდელი | ცეცხლი-და-დავიწყება (ასინქრონული) |
+| მიწოდების გარანტია | მაქსიმუმ-ერთხელ |
 
-If a hook event triggers another hook event (e.g., a hook script calls a tool that emits `tool_call`), the recursion counter increments. At 8 levels deep, further event emissions are silently dropped to prevent infinite loops.
+თუ ჰუკის მოვლენა სხვა ჰუკის მოვლენას გააქტივებს (მაგ., ჰუკის სკრიპტი ინსტრუმენტს გამოიძახებს, რომელიც `tool_call`-ს ასხივებს), რეკურსიის მთვლელი იზრდება. 8 დონის სიღრმეზე შემდგომი მოვლენების ასხივება უხმოდ წყდება უსასრულო ციკლების თავიდან ასაცილებლად.
 
 ## HTTP API
 
-Hooks can be managed programmatically through the HTTP API. All endpoints require authentication and return JSON responses.
+ჰუკები პროგრამულად შეიძლება იმართოს HTTP API-ით. ყველა ენდფოინთი ავთენტიფიკაციას მოითხოვს და JSON პასუხებს აბრუნებს.
 
-### List All Hooks
+### ყველა ჰუკის სია
 
 ```
 GET /api/hooks
 ```
 
-Response:
+პასუხი:
 
 ```json
 {
@@ -322,7 +322,7 @@ Response:
 }
 ```
 
-### Create a Hook
+### ჰუკის შექმნა
 
 ```
 POST /api/hooks
@@ -340,7 +340,7 @@ Content-Type: application/json
 }
 ```
 
-Response (201 Created):
+პასუხი (201 Created):
 
 ```json
 {
@@ -358,7 +358,7 @@ Response (201 Created):
 }
 ```
 
-### Update a Hook
+### ჰუკის განახლება
 
 ```
 PUT /api/hooks/hook_02
@@ -376,23 +376,23 @@ Content-Type: application/json
 }
 ```
 
-Response (200 OK): Returns the updated hook object.
+პასუხი (200 OK): აბრუნებს განახლებულ ჰუკის ობიექტს.
 
-### Delete a Hook
+### ჰუკის წაშლა
 
 ```
 DELETE /api/hooks/hook_02
 ```
 
-Response (204 No Content): Empty body on success.
+პასუხი (204 No Content): წარმატებისას ცარიელი სხეული.
 
-### Toggle a Hook
+### ჰუკის გადართვა
 
 ```
 PATCH /api/hooks/hook_01/toggle
 ```
 
-Response (200 OK):
+პასუხი (200 OK):
 
 ```json
 {
@@ -401,49 +401,49 @@ Response (200 OK):
 }
 ```
 
-This endpoint flips the `enabled` state. Disabled hooks remain in the configuration but are not executed when their event fires.
+ეს ენდფოინთი `enabled` მდგომარეობას ცვლის. გამორთული ჰუკები კონფიგურაციაში რჩება, მაგრამ მათი მოვლენის გააქტივებისას არ სრულდება.
 
 ## უსაფრთხოება
 
-Hook execution is subject to several security measures to prevent privilege escalation, data exfiltration, and denial-of-service.
+ჰუკის შესრულება რამდენიმე უსაფრთხოების ზომას ექვემდებარება პრივილეგიების ესკალაციის, მონაცემთა ექსფილტრაციისა და სერვისის უარყოფის თავიდან ასაცილებლად.
 
-### Blocked Environment Variables
+### დაბლოკილი გარემოს ცვლადები
 
-The following environment variables are stripped from the hook execution environment and cannot be overridden via the `env` field in hook actions:
+შემდეგი გარემოს ცვლადები ჰუკის შესრულების გარემოდან ამოიშლება და ჰუკის მოქმედებაში `env` ველით ვერ გადაიფარება:
 
-| Variable | Reason |
+| ცვლადი | მიზეზი |
 |----------|--------|
-| `LD_PRELOAD` | Library injection attack vector |
-| `LD_LIBRARY_PATH` | Library search path manipulation |
-| `DYLD_INSERT_LIBRARIES` | macOS library injection |
-| `DYLD_LIBRARY_PATH` | macOS library path manipulation |
-| `PATH` | Prevents PATH hijacking; a minimal safe PATH is provided |
-| `HOME` | Prevents home directory spoofing |
+| `LD_PRELOAD` | ბიბლიოთეკის ინექციის თავდასხმის ვექტორი |
+| `LD_LIBRARY_PATH` | ბიბლიოთეკის ძიების ბილიკის მანიპულაცია |
+| `DYLD_INSERT_LIBRARIES` | macOS ბიბლიოთეკის ინექცია |
+| `DYLD_LIBRARY_PATH` | macOS ბიბლიოთეკის ბილიკის მანიპულაცია |
+| `PATH` | PATH-ის გატაცების თავიდან აცილება; მინიმალური უსაფრთხო PATH მიეწოდება |
+| `HOME` | სახლის დირექტორიის გაყალბების თავიდან აცილება |
 
-### Input Validation
+### შემავალი მონაცემების ვალიდაცია
 
-- **Null byte rejection**: Any `command`, `args`, `env` key, or `env` value containing a null byte (`\0`) is rejected. This prevents null byte injection attacks that could truncate strings at the OS level.
-- **Shell metacharacter rejection**: The `command` field must not contain `;`, `|`, `&`, `` ` ``, `$(`, or other shell metacharacters. This prevents shell injection even if the command is accidentally passed through a shell.
-- **Path traversal**: The `cwd` field is validated to ensure it does not escape the workspace directory via `..` components.
+- **ნულოვანი ბაიტის უარყოფა**: ნებისმიერი `command`, `args`, `env` გასაღები ან `env` მნიშვნელობა, რომელიც ნულოვან ბაიტს (`\0`) შეიცავს, უარყოფილია. ეს თავიდან იცილებს ნულოვანი ბაიტის ინექციის თავდასხმებს, რომლებმაც შეიძლება სტრინგები OS დონეზე შეამოკლოს.
+- **Shell მეტასიმბოლოების უარყოფა**: `command` ველი არ უნდა შეიცავდეს `;`, `|`, `&`, `` ` ``, `$(` ან სხვა shell მეტასიმბოლოებს. ეს shell ინექციას თავიდან იცილებს, თუნდაც ბრძანება შემთხვევით shell-ში გადავიდეს.
+- **ბილიკის გადაცილება**: `cwd` ველი ვალიდაცია, რომ `..` კომპონენტებით სამუშაო სივრცის დირექტორიის მიღმა არ გავიდეს.
 
-### Timeout Enforcement
+### დროის ამოწურვის აღსრულება
 
-Every hook process is subject to the configured `timeout_ms` (default 30 seconds). If the process exceeds this limit:
+ყოველი ჰუკის პროცესი კონფიგურირებულ `timeout_ms`-ს ექვემდებარება (ნაგულისხმევი 30 წამი). თუ პროცესი ამ ლიმიტს გადააჭარბებს:
 
-1. `SIGTERM` is sent to the process
-2. After a 5-second grace period, `SIGKILL` is sent
-3. The hook is marked as timed out in internal metrics
-4. The agent loop is **not** affected
+1. `SIGTERM` იგზავნება პროცესზე
+2. 5-წამიანი საშეღავათო პერიოდის შემდეგ `SIGKILL` იგზავნება
+3. ჰუკი შიდა მეტრიკებში დროის ამოწურვით აღინიშნება
+4. აგენტის ციკლს **არ ეხება**
 
-### Resource Isolation
+### რესურსის იზოლაცია
 
-Hook processes inherit the same cgroup and namespace restrictions as shell tool executions when a sandbox backend is active. In Docker sandbox mode, hooks run in a separate container with no network access by default.
+ჰუკის პროცესები shell ინსტრუმენტის შესრულებების იგივე cgroup და namespace შეზღუდვებს მემკვიდრეობით იღებს, როდესაც სენდბოქსის ბექენდი აქტიურია. Docker სენდბოქსის რეჟიმში ჰუკები ცალკე კონტეინერში მუშაობს ნაგულისხმევად ქსელის წვდომის გარეშე.
 
 ## მაგალითები
 
-### Audit Logging Hook
+### აუდიტის ჟურნალის ჰუკი
 
-Log every tool invocation to a file for compliance auditing:
+ყოველი ინსტრუმენტის გამოძახების ჟურნალი ფაილში შესაბამისობის აუდიტისთვის:
 
 ```json
 {
@@ -468,9 +468,9 @@ Log every tool invocation to a file for compliance auditing:
 echo "$ZERO_HOOK_PAYLOAD" >> "$AUDIT_LOG"
 ```
 
-### Error Notification Hook
+### შეცდომის შეტყობინების ჰუკი
 
-Send error events to a Slack channel:
+შეცდომის მოვლენების Slack არხზე გაგზავნა:
 
 ```json
 {
@@ -492,9 +492,9 @@ Send error events to a Slack channel:
 }
 ```
 
-### LLM Latency Metrics Hook
+### LLM ლატენტურობის მეტრიკების ჰუკი
 
-Track LLM response times for monitoring dashboards:
+LLM პასუხის დროის თვალყურის დევნება მონიტორინგის დაფებისთვის:
 
 ```json
 {
@@ -523,14 +523,14 @@ model = payload["model"]
 duration = payload["duration_ms"]
 success = payload["success"]
 
-# Push to StatsD, Prometheus pushgateway, or any metrics backend
+# StatsD, Prometheus pushgateway ან ნებისმიერ მეტრიკების ბექენდზე გაგზავნა
 print(f"prx.llm.duration,provider={provider},model={model} {duration}")
 print(f"prx.llm.success,provider={provider},model={model} {1 if success else 0}")
 ```
 
-### Session Lifecycle Tracking
+### სესიის სასიცოცხლო ციკლის თვალყურის დევნება
 
-Track agent session start and end for usage analytics:
+აგენტის სესიის დაწყებისა და დასრულების თვალყურის დევნება გამოყენების ანალიტიკისთვის:
 
 ```json
 {
@@ -553,10 +553,10 @@ Track agent session start and end for usage analytics:
 }
 ```
 
-## დაკავშირებული
+## დაკავშირებული გვერდები
 
-- [Shell Execution](/ka/prx/tools/shell) -- Shell tool that hooks often wrap
-- [MCP Integration](/ka/prx/tools/mcp) -- External tool protocol that emits `tool_call` events
-- [Plugins](/ka/prx/plugins/) -- WASM plugin system including hook capabilities
-- [Observability](/ka/prx/observability/) -- Metrics and tracing that complement hooks
-- [Security](/ka/prx/security/) -- Sandbox and policy engine that governs hook execution
+- [Shell-ის შესრულება](/ka/prx/tools/shell) -- Shell ინსტრუმენტი, რომელსაც ჰუკები ხშირად ახვევს
+- [MCP ინტეგრაცია](/ka/prx/tools/mcp) -- გარე ინსტრუმენტის პროტოკოლი, რომელიც `tool_call` მოვლენებს ასხივებს
+- [პლაგინები](/ka/prx/plugins/) -- WASM პლაგინის სისტემა ჰუკის შესაძლებლობების ჩათვლით
+- [დაკვირვება](/ka/prx/observability/) -- მეტრიკები და ტრეისინგი, რომლებიც ჰუკებს ავსებს
+- [უსაფრთხოება](/ka/prx/security/) -- სენდბოქსი და პოლიტიკის ძრავი, რომელიც ჰუკის შესრულებას მართავს

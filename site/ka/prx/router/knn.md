@@ -1,26 +1,26 @@
 ---
-title: KNN Router
-description: Semantic similarity-based LLM routing using K-nearest neighbors on historical query embeddings.
+title: KNN მარშრუტიზატორი
+description: სემანტიკური მსგავსებაზე დაფუძნებული LLM მარშრუტიზაცია K უახლოესი მეზობლების მეთოდით ისტორიული შეკითხვების ემბედინგებზე.
 ---
 
-# KNN Router
+# KNN მარშრუტიზატორი
 
-The KNN (K-Nearest Neighbors) router uses semantic similarity to match incoming queries against a database of historical queries with known optimal model assignments. This enables learned routing that improves over time.
+KNN (K უახლოესი მეზობლები) მარშრუტიზატორი სემანტიკურ მსგავსებას იყენებს შემომავალი შეკითხვების ისტორიული შეკითხვების მონაცემთა ბაზასთან შესადარებლად, სადაც ოპტიმალური მოდელის მინიჭებები ცნობილია. ეს საშუალებას იძლევა სწავლადი მარშრუტიზაცია, რომელიც დროთა განმავლობაში უმჯობესდება.
 
 ## როგორ მუშაობს
 
-1. **Embed query** -- convert the incoming query to a vector embedding
-2. **KNN search** -- find the K most similar past queries in the embedding store
-3. **Vote** -- aggregate the model assignments of the K neighbors
-4. **Select** -- choose the model with the most votes (weighted by similarity)
+1. **შეკითხვის ემბედირება** -- შემომავალი შეკითხვის ვექტორულ ემბედინგად კონვერტაცია
+2. **KNN ძიება** -- K ყველაზე მსგავსი წარსული შეკითხვის პოვნა ემბედინგის საცავში
+3. **ხმის მიცემა** -- K მეზობლის მოდელის მინიჭებების აგრეგაცია
+4. **არჩევა** -- ყველაზე მეტ ხმას მიღებული მოდელის არჩევა (მსგავსებით შეწონილი)
 
-## Training Data
+## სასწავლო მონაცემები
 
-The KNN router builds its dataset from:
+KNN მარშრუტიზატორი თავის მონაცემთა ნაკრებს აგებს:
 
-- Agent session logs with quality ratings
-- A/B test results from prompt evolution
-- Manual feedback and corrections
+- ხარისხის შეფასებების მქონე აგენტის სესიების ლოგებიდან
+- პრომპტის ევოლუციის A/B ტესტების შედეგებიდან
+- ხელით უკუკავშირისა და კორექციებიდან
 
 ## კონფიგურაცია
 
@@ -37,13 +37,13 @@ min_dataset_size = 100
 fallback_strategy = "heuristic"
 ```
 
-## Cold Start
+## ცივი სტარტი
 
-When insufficient training data is available (below `min_dataset_size`), the KNN router falls back to the heuristic strategy.
+არასაკმარისი სასწავლო მონაცემების შემთხვევაში (`min_dataset_size`-ზე ქვემოთ), KNN მარშრუტიზატორი ევრისტიკულ სტრატეგიაზე გადადის.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Router Overview](./)
-- [Heuristic Router](./heuristic)
-- [Automix Router](./automix)
-- [Embeddings Memory](/ka/prx/memory/embeddings)
+- [მარშრუტიზატორის მიმოხილვა](./)
+- [ევრისტიკული მარშრუტიზატორი](./heuristic)
+- [Automix მარშრუტიზატორი](./automix)
+- [ემბედინგების მეხსიერება](/ka/prx/memory/embeddings)

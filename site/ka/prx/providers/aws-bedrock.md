@@ -5,30 +5,30 @@ description: AWS Bedrock-ის კონფიგურაცია PRX-ში 
 
 # AWS Bedrock
 
-> Access foundation models (Claude, Titan, Llama, Mistral, and more) through AWS Bedrock's Converse API with SigV4 authentication, native tool calling, and prompt caching.
+> ფუნდამენტურ მოდელებზე (Claude, Titan, Llama, Mistral და სხვები) წვდომა AWS Bedrock-ის Converse API-ით SigV4 ავტენტიფიკაციით, მშობლიური ინსტრუმენტების გამოძახებითა და პრომპტ ქეშირებით.
 
 ## წინაპირობები
 
-- An AWS account with Bedrock model access enabled
-- AWS credentials (Access Key ID + Secret Access Key) with `bedrock:InvokeModel` permissions
+- AWS ანგარიში Bedrock მოდელებზე წვდომის ჩართვით
+- AWS ავტორიზაციის მონაცემები (Access Key ID + Secret Access Key) `bedrock:InvokeModel` ნებართვით
 
 ## სწრაფი დაყენება
 
-### 1. Enable Model Access
+### 1. მოდელზე წვდომის ჩართვა
 
-1. Open the [AWS Bedrock Console](https://console.aws.amazon.com/bedrock/)
-2. Navigate to **Model access** in the left sidebar
-3. Request access to the models you want to use (e.g., Anthropic Claude, Meta Llama)
+1. გახსენით [AWS Bedrock Console](https://console.aws.amazon.com/bedrock/)
+2. გადახვიდეთ **Model access** განყოფილებაში მარცხენა გვერდითა პანელზე
+3. მოითხოვეთ წვდომა სასურველ მოდელებზე (მაგ., Anthropic Claude, Meta Llama)
 
-### 2. Configure AWS Credentials
+### 2. AWS ავტორიზაციის მონაცემების კონფიგურაცია
 
 ```bash
 export AWS_ACCESS_KEY_ID="AKIA..."
 export AWS_SECRET_ACCESS_KEY="..."
-export AWS_REGION="us-east-1"  # optional, defaults to us-east-1
+export AWS_REGION="us-east-1"  # არასავალდებულო, ნაგულისხმევი us-east-1
 ```
 
-### 3. Configure PRX
+### 3. PRX-ის კონფიგურაცია
 
 ```toml
 [default]
@@ -42,76 +42,76 @@ model = "anthropic.claude-sonnet-4-20250514-v1:0"
 prx doctor models
 ```
 
-## Available Models
+## ხელმისაწვდომი მოდელები
 
-Model IDs follow the Bedrock format `<provider>.<model>-<version>`:
+მოდელის ID-ები Bedrock ფორმატს მიჰყვება `<პროვაიდერი>.<მოდელი>-<ვერსია>`:
 
-| Model ID | Provider | Context | Vision | Tool Use | Notes |
+| მოდელის ID | პროვაიდერი | კონტექსტი | ვიზუალი | ინსტრუმენტები | შენიშვნები |
 |----------|----------|---------|--------|----------|-------|
-| `anthropic.claude-sonnet-4-20250514-v1:0` | Anthropic | 200K | Yes | Yes | Claude Sonnet 4 |
-| `anthropic.claude-sonnet-4-6-v1:0` | Anthropic | 200K | Yes | Yes | Latest Claude Sonnet |
-| `anthropic.claude-opus-4-6-v1:0` | Anthropic | 200K | Yes | Yes | Claude Opus |
-| `anthropic.claude-3-5-haiku-20241022-v1:0` | Anthropic | 200K | Yes | Yes | Fast Claude model |
-| `meta.llama3-1-70b-instruct-v1:0` | Meta | 128K | No | Yes | Llama 3.1 70B |
-| `mistral.mistral-large-2407-v1:0` | Mistral | 128K | No | Yes | Mistral Large |
-| `amazon.titan-text-premier-v1:0` | Amazon | 32K | No | No | Amazon Titan |
+| `anthropic.claude-sonnet-4-20250514-v1:0` | Anthropic | 200K | დიახ | დიახ | Claude Sonnet 4 |
+| `anthropic.claude-sonnet-4-6-v1:0` | Anthropic | 200K | დიახ | დიახ | უახლესი Claude Sonnet |
+| `anthropic.claude-opus-4-6-v1:0` | Anthropic | 200K | დიახ | დიახ | Claude Opus |
+| `anthropic.claude-3-5-haiku-20241022-v1:0` | Anthropic | 200K | დიახ | დიახ | სწრაფი Claude მოდელი |
+| `meta.llama3-1-70b-instruct-v1:0` | Meta | 128K | არა | დიახ | Llama 3.1 70B |
+| `mistral.mistral-large-2407-v1:0` | Mistral | 128K | არა | დიახ | Mistral Large |
+| `amazon.titan-text-premier-v1:0` | Amazon | 32K | არა | არა | Amazon Titan |
 
-Check [AWS Bedrock documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html) for the full list of available models in your region.
+შეამოწმეთ [AWS Bedrock დოკუმენტაცია](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html) თქვენს რეგიონში ხელმისაწვდომი მოდელების სრული სიისთვის.
 
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
 |-------|------|---------|-------------|
-| `model` | string | required | Bedrock model ID (e.g., `anthropic.claude-sonnet-4-6`) |
+| `model` | string | სავალდებულო | Bedrock მოდელის ID (მაგ., `anthropic.claude-sonnet-4-6`) |
 
-Authentication is handled entirely through AWS environment variables:
+ავტენტიფიკაცია მთლიანად AWS გარემოს ცვლადებით ხორციელდება:
 
-| Environment Variable | Required | Description |
+| გარემოს ცვლადი | სავალდებულო | აღწერა |
 |---------------------|----------|-------------|
-| `AWS_ACCESS_KEY_ID` | Yes | AWS access key ID |
-| `AWS_SECRET_ACCESS_KEY` | Yes | AWS secret access key |
-| `AWS_SESSION_TOKEN` | No | Temporary session token (for assumed roles) |
-| `AWS_REGION` | No | AWS region (default: `us-east-1`) |
-| `AWS_DEFAULT_REGION` | No | Fallback region if `AWS_REGION` is not set |
+| `AWS_ACCESS_KEY_ID` | დიახ | AWS წვდომის გასაღების ID |
+| `AWS_SECRET_ACCESS_KEY` | დიახ | AWS საიდუმლო წვდომის გასაღები |
+| `AWS_SESSION_TOKEN` | არა | დროებითი სესიის ტოკენი (მინიჭებული როლებისთვის) |
+| `AWS_REGION` | არა | AWS რეგიონი (ნაგულისხმევი: `us-east-1`) |
+| `AWS_DEFAULT_REGION` | არა | სარეზერვო რეგიონი, თუ `AWS_REGION` დაყენებული არ არის |
 
 ## ფუნქციები
 
-### Zero-Dependency SigV4 Signing
+### ნულოვანი დამოკიდებულების SigV4 ხელმოწერა
 
-PRX implements AWS SigV4 request signing using only `hmac` and `sha2` crates, with no dependency on the AWS SDK. This keeps the binary small and avoids SDK version conflicts. The signing includes:
+PRX AWS SigV4 მოთხოვნის ხელმოწერას მხოლოდ `hmac` და `sha2` crate-ების გამოყენებით ახორციელებს, AWS SDK-ზე დამოკიდებულების გარეშე. ეს ბინარულ ფაილს პატარას ინარჩუნებს და SDK ვერსიების კონფლიქტებს თავიდან აიცილებს. ხელმოწერა მოიცავს:
 
-- HMAC-SHA256 key derivation chain
-- Canonical request construction with sorted headers
-- `x-amz-security-token` support for temporary credentials
+- HMAC-SHA256 გასაღების წარმოების ჯაჭვს
+- კანონიკური მოთხოვნის კონსტრუქციას დახარისხებული ჰედერებით
+- `x-amz-security-token` მხარდაჭერას დროებითი ავტორიზაციის მონაცემებისთვის
 
 ### Converse API
 
-PRX uses Bedrock's Converse API (not the legacy InvokeModel API), which provides:
-- A unified message format across all model providers
-- Structured tool calling with `toolUse` and `toolResult` blocks
-- System prompt support
-- Consistent response format
+PRX იყენებს Bedrock-ის Converse API-ს (არა მოძველებულ InvokeModel API-ს), რომელიც უზრუნველყოფს:
+- ერთიან შეტყობინების ფორმატს ყველა მოდელის პროვაიდერზე
+- სტრუქტურირებულ ინსტრუმენტების გამოძახებას `toolUse` და `toolResult` ბლოკებით
+- სისტემური პრომპტის მხარდაჭერას
+- თანმიმდევრული პასუხის ფორმატს
 
-### Native Tool Calling
+### მშობლიური ინსტრუმენტების გამოძახება
 
-Tools are sent using Bedrock's native `toolConfig` format with `toolSpec` definitions including `name`, `description`, and `inputSchema`. Tool results are wrapped as `toolResult` content blocks within `user` messages.
+ინსტრუმენტები Bedrock-ის მშობლიურ `toolConfig` ფორმატში იგზავნება `toolSpec` განსაზღვრებებით, რომლებიც მოიცავს `name`, `description` და `inputSchema`. ინსტრუმენტის შედეგები შეფუთულია როგორც `toolResult` კონტენტ ბლოკები `user` შეტყობინებებში.
 
-### Prompt Caching
+### პრომპტ ქეშირება
 
-PRX applies Bedrock's prompt caching heuristics (using the same thresholds as the Anthropic provider):
-- System prompts > 3 KB receive a `cachePoint` block
-- Conversations with > 4 non-system messages have the last message annotated with a `cachePoint`
+PRX Bedrock-ის პრომპტ ქეშირების ევრისტიკას იყენებს (Anthropic პროვაიდერის იგივე ზღვრულ მნიშვნელობებით):
+- 3 KB-ზე მეტი სისტემური პრომპტები `cachePoint` ბლოკს იღებს
+- 4-ზე მეტი არა-სისტემური შეტყობინების მქონე საუბრებში ბოლო შეტყობინება `cachePoint`-ით არის მონიშნული
 
-### URL Encoding for Model IDs
+### URL კოდირება მოდელის ID-ებისთვის
 
-Bedrock model IDs containing colons (e.g., `v1:0`) require special handling. PRX:
-- Sends raw colons in the HTTP URL (as reqwest does)
-- Encodes colons as `%3A` in the canonical URI for SigV4 signing
-- This dual approach ensures both HTTP routing and signature verification succeed
+ორწერტილების შემცველი Bedrock მოდელის ID-ები (მაგ., `v1:0`) სპეციალურ დამუშავებას მოითხოვს. PRX:
+- ნედლ ორწერტილებს HTTP URL-ში აგზავნის (როგორც reqwest აკეთებს)
+- ორწერტილებს `%3A`-ით კოდირებს კანონიკურ URI-ში SigV4 ხელმოწერისთვის
+- ეს ორმაგი მიდგომა HTTP მარშრუტიზაციისა და ხელმოწერის ვერიფიკაციის წარმატებას უზრუნველყოფს
 
-## Provider Aliases
+## პროვაიდერის მეტსახელები
 
-The following names resolve to the Bedrock provider:
+შემდეგი სახელები Bedrock პროვაიდერზე მიუთითებს:
 
 - `bedrock`
 - `aws-bedrock`
@@ -120,18 +120,18 @@ The following names resolve to the Bedrock provider:
 
 ### "AWS Bedrock credentials not set"
 
-Ensure both `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are set as environment variables. PRX does not read from `~/.aws/credentials` or `~/.aws/config`.
+დარწმუნდით, რომ `AWS_ACCESS_KEY_ID` და `AWS_SECRET_ACCESS_KEY` ორივე გარემოს ცვლადებად არის დაყენებული. PRX არ კითხულობს `~/.aws/credentials`-ს ან `~/.aws/config`-ს.
 
 ### 403 AccessDeniedException
 
-Common causes:
-- The IAM user/role does not have `bedrock:InvokeModel` permission
-- You have not requested access to the model in the Bedrock console
-- The model is not available in your configured region
+გავრცელებული მიზეზები:
+- IAM მომხმარებელს/როლს არ აქვს `bedrock:InvokeModel` ნებართვა
+- Bedrock კონსოლში მოდელზე წვდომა არ მოგითხოვიათ
+- მოდელი ხელმისაწვდომი არ არის თქვენს კონფიგურირებულ რეგიონში
 
 ### SignatureDoesNotMatch
 
-This usually indicates clock skew. Ensure your system clock is synchronized:
+ეს ჩვეულებრივ საათის გადახრას მიანიშნებს. დარწმუნდით, რომ თქვენი სისტემის საათი სინქრონიზებულია:
 ```bash
 # Linux
 sudo ntpdate pool.ntp.org
@@ -139,17 +139,17 @@ sudo ntpdate pool.ntp.org
 sudo sntp -sS pool.ntp.org
 ```
 
-### Model not available in region
+### მოდელი რეგიონში ხელმისაწვდომი არ არის
 
-Not all models are available in all regions. Check the [Bedrock model availability matrix](https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html) and adjust `AWS_REGION` accordingly.
+ყველა მოდელი ყველა რეგიონში ხელმისაწვდომი არ არის. შეამოწმეთ [Bedrock მოდელების ხელმისაწვდომობის მატრიცა](https://docs.aws.amazon.com/bedrock/latest/userguide/models-regions.html) და შესაბამისად შეცვალეთ `AWS_REGION`.
 
-### Using temporary credentials (STS)
+### დროებითი ავტორიზაციის მონაცემების გამოყენება (STS)
 
-If you are using AWS STS (assumed roles, SSO), set all three variables:
+თუ AWS STS-ს (მინიჭებული როლები, SSO) იყენებთ, დააყენეთ სამივე ცვლადი:
 ```bash
 export AWS_ACCESS_KEY_ID="ASIA..."
 export AWS_SECRET_ACCESS_KEY="..."
 export AWS_SESSION_TOKEN="..."
 ```
 
-The session token is automatically included in the SigV4 signature as the `x-amz-security-token` header.
+სესიის ტოკენი ავტომატურად შედის SigV4 ხელმოწერაში როგორც `x-amz-security-token` ჰედერი.

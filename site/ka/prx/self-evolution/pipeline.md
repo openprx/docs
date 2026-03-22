@@ -1,55 +1,55 @@
 ---
 title: ევოლუციის პაიპლაინი
-description: The 4-stage self-evolution pipeline in PRX -- gate, analyze, judge, execute.
+description: PRX-ში 4-საფეხურიანი თვით-ევოლუციის პაიპლაინი -- კარიბჭე, ანალიზი, განსჯა, შესრულება.
 ---
 
-# Evolution Pipeline
+# ევოლუციის პაიპლაინი
 
-Every self-evolution proposal in PRX passes through a 4-stage pipeline: gate, analyze, judge, and execute. This pipeline ensures that changes are well-reasoned, safe, and reversible.
+PRX-ში ყოველი თვით-ევოლუციის წინადადება 4-საფეხურიან პაიპლაინში გადის: კარიბჭე, ანალიზი, განსჯა და შესრულება. ეს პაიპლაინი უზრუნველყოფს, რომ ცვლილებები კარგად დასაბუთებული, უსაფრთხო და შექცევადი იყოს.
 
-## Pipeline Stages
+## პაიპლაინის საფეხურები
 
 ```
-┌────────┐    ┌─────────┐    ┌────────┐    ┌─────────┐
-│  Gate  │───►│ Analyze │───►│ Judge  │───►│ Execute │
-└────────┘    └─────────┘    └────────┘    └─────────┘
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ კარიბჭე  │───►│ ანალიზი  │───►│ განსჯა   │───►│შესრულება │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
-### 1. Gate
+### 1. კარიბჭე
 
-The gate stage determines whether an evolution cycle should trigger. It checks:
+კარიბჭის საფეხური განსაზღვრავს, უნდა გააქტიურდეს თუ არა ევოლუციის ციკლი. იგი ამოწმებს:
 
-- Schedule conditions (time-based triggers)
-- Data sufficiency (enough samples for analysis)
-- System health (no active incidents)
-- Rate limits (maximum changes per time window)
+- გრაფიკის პირობებს (დროზე დაფუძნებული გამომწვევები)
+- მონაცემთა საკმარისობას (ანალიზისთვის საკმარისი ნიმუშები)
+- სისტემის ჯანმრთელობას (აქტიური ინციდენტების არარსებობა)
+- სიჩქარის ლიმიტებს (მაქსიმალური ცვლილებები დროის ფანჯარაში)
 
-### 2. Analyze
+### 2. ანალიზი
 
-The analysis stage examines collected data to identify improvement opportunities:
+ანალიზის საფეხური შეგროვებულ მონაცემებს იკვლევს გაუმჯობესების შესაძლებლობების იდენტიფიცირებისთვის:
 
-- Performance metrics aggregation
-- Pattern detection and anomaly identification
-- Comparison against baselines
-- Proposal generation with expected impact estimates
+- წარმადობის მეტრიკების აგრეგაცია
+- შაბლონების აღმოჩენა და ანომალიების იდენტიფიკაცია
+- საბაზისო მაჩვენებლებთან შედარება
+- წინადადებების გენერაცია მოსალოდნელი გავლენის შეფასებით
 
-### 3. Judge
+### 3. განსჯა
 
-The judgment stage evaluates proposals for safety and correctness:
+განსჯის საფეხური წინადადებებს უსაფრთხოებისა და სისწორისთვის აფასებს:
 
-- Sanity checks against predefined invariants
-- Risk assessment scoring
-- Conflict detection with existing policies
-- Approval routing (automatic for L1, manual for L3)
+- საღი აზრის შემოწმებები წინასწარ განსაზღვრული ინვარიანტების მიხედვით
+- რისკის შეფასების ქულირება
+- არსებულ პოლიტიკებთან კონფლიქტის აღმოჩენა
+- დამტკიცების მარშრუტირება (ავტომატური L1-ისთვის, ხელით L3-ისთვის)
 
-### 4. Execute
+### 4. შესრულება
 
-The execution stage applies approved changes:
+შესრულების საფეხური დამტკიცებულ ცვლილებებს იყენებს:
 
-- Create a rollback snapshot
-- Apply the change atomically
-- Monitor for regression signals
-- Auto-rollback if sanity checks fail
+- უკუქცევის სნეპშოტის შექმნა
+- ცვლილების ატომურად გამოყენება
+- რეგრესიის სიგნალების მონიტორინგი
+- ავტო-უკუქცევა საღი აზრის შემოწმებების წარუმატებლობისას
 
 ## კონფიგურაცია
 
@@ -60,7 +60,7 @@ min_data_points = 100
 health_check_url = "http://localhost:3120/health"
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [Safety & Rollback](./safety)
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [უსაფრთხოება და უკუქცევა](./safety)

@@ -1,26 +1,26 @@
 ---
 title: Shell-ის შესრულება
-description: The shell tool executes commands in sandboxed environments with configurable isolation backends, environment sanitization, timeout enforcement, and output limits.
+description: shell ინსტრუმენტი ბრძანებებს იზოლირებულ გარემოში ასრულებს კონფიგურირებადი იზოლაციის ბექენდებით, გარემოს სანიტარიზაციით, დროის ამოწურვის აღსრულებითა და გამოსავალის ლიმიტებით.
 ---
 
-# Shell Execution
+# Shell-ის შესრულება
 
-The `shell` tool is one of the three core tools in PRX, available in both `default_tools()` and `all_tools()` registries. It provides OS-level command execution inside a configurable sandbox, ensuring that agent-initiated commands run under strict isolation, time limits, and output constraints.
+`shell` ინსტრუმენტი PRX-ის სამი ძირითადი ინსტრუმენტიდან ერთ-ერთია, ხელმისაწვდომი `default_tools()` და `all_tools()` რეესტრებში. იგი ოპერაციული სისტემის დონეზე ბრძანებების შესრულებას უზრუნველყოფს კონფიგურირებად სენდბოქსში, რაც უზრუნველყოფს აგენტის მიერ ინიცირებული ბრძანებების მკაცრი იზოლაციის, დროის ლიმიტებისა და გამოსავალის შეზღუდვების პირობებში შესრულებას.
 
-When the LLM determines it needs to run a shell command -- installing a package, compiling code, querying system state, or running a script -- it invokes the `shell` tool with the command string. PRX wraps the execution in the configured sandbox backend, enforces a 60-second default timeout, caps output at 1 MB, and strips sensitive environment variables before spawning the child process.
+როცა LLM განსაზღვრავს, რომ shell ბრძანების გაშვებაა საჭირო -- პაკეტის დაყენება, კოდის კომპილაცია, სისტემის მდგომარეობის მოთხოვნა ან სკრიპტის გაშვება -- იგი `shell` ინსტრუმენტს ბრძანების სტრიქონით გამოიძახებს. PRX შესრულებას კონფიგურირებულ სენდბოქსის ბექენდში გადაფუთავს, 60-წამიან ნაგულისხმევ დროის ამოწურვას აღასრულებს, გამოსავალს 1 MB-ით ზღუდავს და მგრძნობიარე გარემოს ცვლადებს ამოშლის შვილობილი პროცესის გაშვებამდე.
 
-The shell tool is typically the most powerful and most restricted tool in the PRX arsenal. It is the primary target of the security policy engine, and most deployments mark it as `supervised` to require human approval before execution.
+shell ინსტრუმენტი, როგორც წესი, PRX-ის ინსტრუმენტებს შორის ყველაზე ძლიერი და ყველაზე შეზღუდულია. იგი უსაფრთხოების პოლიტიკის ძრავის პირველი სამიზნეა, და უმეტესი განლაგება მას `supervised`-ად ნიშნავს, რაც ყოველი შესრულებისას ადამიანის თანხმობას მოითხოვს.
 
 ## კონფიგურაცია
 
-The shell tool itself has no dedicated configuration section. Its behavior is controlled through the security sandbox and resource limits:
+shell ინსტრუმენტს თავისი კონფიგურაციის სექცია არ აქვს. მისი ქცევა უსაფრთხოების სენდბოქსით და რესურსების ლიმიტებით კონტროლდება:
 
 ```toml
 [security.sandbox]
 enabled = true
 backend = "auto"         # "auto" | "landlock" | "firejail" | "bubblewrap" | "docker" | "none"
 
-# Custom Firejail arguments (when backend = "firejail")
+# მორგებული Firejail არგუმენტები (როცა backend = "firejail")
 firejail_args = ["--net=none", "--noroot"]
 
 [security.sandbox.docker]
@@ -41,32 +41,32 @@ max_subprocesses = 10
 memory_monitoring = true
 ```
 
-To mark the shell as supervised (requiring approval per invocation):
+shell-ის ზედამხედველობით მონიშვნისთვის (ყოველ გამოძახებაზე თანხმობის მოთხოვნა):
 
 ```toml
 [security.tool_policy.tools]
 shell = "supervised"
 ```
 
-## Sandbox Backends
+## სენდბოქსის ბექენდები
 
-PRX supports five sandbox backends. When `backend = "auto"`, PRX probes for available backends in the following priority order and selects the first one found:
+PRX ხუთ სენდბოქსის ბექენდს უჭერს მხარს. როცა `backend = "auto"`, PRX ხელმისაწვდომ ბექენდებს შემდეგი პრიორიტეტით ამოწმებს და პირველ ნაპოვნს ირჩევს:
 
-| Backend | Platform | Isolation Level | Overhead | Notes |
+| ბექენდი | პლატფორმა | იზოლაციის დონე | ზედნადები | შენიშვნები |
 |---------|----------|----------------|----------|-------|
-| **Landlock** | Linux (5.13+) | Filesystem LSM | Minimal | Kernel-native, no extra dependencies. Restricts filesystem paths at the kernel level. |
-| **Firejail** | Linux | Full (network, filesystem, PID) | Low | User-space sandbox. Supports `--net=none` for network isolation, PID namespace, seccomp filtering. |
-| **Bubblewrap** | Linux, macOS | Namespace-based | Low | Uses user namespaces. Configurable writable/readonly path lists. |
-| **Docker** | Any | Full container | High | Runs commands inside a disposable container. Maximum isolation but highest latency. |
-| **None** | Any | Application-layer only | None | No OS-level isolation. PRX still enforces timeout and output caps, but the process has full OS access. |
+| **Landlock** | Linux (5.13+) | ფაილური სისტემის LSM | მინიმალური | ბირთვის მშობლიური, დამატებითი დამოკიდებულებები არ სჭირდება. ფაილური სისტემის ბილიკებს ბირთვის დონეზე ზღუდავს. |
+| **Firejail** | Linux | სრული (ქსელი, ფაილური სისტემა, PID) | დაბალი | მომხმარებლის სივრცის სენდბოქსი. უჭერს მხარს `--net=none` ქსელის იზოლაციისთვის, PID სახელთა სივრცეს, seccomp ფილტრაციას. |
+| **Bubblewrap** | Linux, macOS | სახელთა სივრცეზე დაფუძნებული | დაბალი | მომხმარებლის სახელთა სივრცეებს იყენებს. კონფიგურირებადი ჩაწერადი/მხოლოდ-წაკითხვადი ბილიკების სიები. |
+| **Docker** | ნებისმიერი | სრული კონტეინერი | მაღალი | ბრძანებებს ერთჯერად კონტეინერში ასრულებს. მაქსიმალური იზოლაცია, მაგრამ ყველაზე მაღალი დაყოვნება. |
+| **None** | ნებისმიერი | მხოლოდ აპლიკაციის დონე | არცერთი | ოპერაციული სისტემის დონეზე იზოლაცია არ არის. PRX მაინც აღასრულებს დროის ამოწურვას და გამოსავალის ლიმიტებს, მაგრამ პროცესს სრული ოპერაციული სისტემის წვდომა აქვს. |
 
 ### Landlock
 
-Landlock is a Linux Security Module available in kernel 5.13+. It restricts filesystem access at the kernel level without requiring root privileges. PRX uses Landlock to limit which paths the shell command can read from and write to.
+Landlock არის Linux-ის უსაფრთხოების მოდული, ხელმისაწვდომი ბირთვის ვერსია 5.13-დან. იგი ფაილური სისტემის წვდომას ბირთვის დონეზე ზღუდავს root პრივილეგიების გარეშე.
 
 ### Firejail
 
-Firejail provides comprehensive sandboxing via Linux namespaces and seccomp. Custom arguments can be passed through `firejail_args`:
+Firejail ყოვლისმომცველ სენდბოქსირებას უზრუნველყოფს Linux-ის სახელთა სივრცეებითა და seccomp-ით. მორგებული არგუმენტების გადაცემა `firejail_args`-ით შეიძლება:
 
 ```toml
 [security.sandbox]
@@ -76,7 +76,7 @@ firejail_args = ["--net=none", "--noroot", "--nosound", "--no3d"]
 
 ### Bubblewrap
 
-Bubblewrap (`bwrap`) uses user namespaces to create minimal sandboxed environments. It is lighter than Firejail and works on some macOS configurations:
+Bubblewrap (`bwrap`) მომხმარებლის სახელთა სივრცეებს იყენებს მინიმალური სენდბოქსირებული გარემოს შესაქმნელად. Firejail-ზე მსუბუქია და macOS-ის ზოგიერთ კონფიგურაციაზე მუშაობს:
 
 ```toml
 [security.sandbox.bubblewrap]
@@ -87,7 +87,7 @@ readonly_paths = ["/usr", "/lib", "/bin"]
 
 ### Docker
 
-Docker provides full container isolation. Each command runs in a fresh container based on the configured image:
+Docker სრულ კონტეინერის იზოლაციას უზრუნველყოფს. ყოველი ბრძანება ახალ კონტეინერში ეშვება კონფიგურირებული სურათის საფუძველზე:
 
 ```toml
 [security.sandbox.docker]
@@ -99,7 +99,7 @@ cpu_limit = "1.0"
 
 ## გამოყენება
 
-The shell tool is invoked by the LLM during agentic loops. In agent conversations, the LLM generates a tool call like:
+shell ინსტრუმენტს LLM იძახებს აგენტური ციკლების დროს. აგენტის საუბრებში LLM ინსტრუმენტის გამოძახებას წარმოქმნის:
 
 ```json
 {
@@ -110,87 +110,85 @@ The shell tool is invoked by the LLM during agentic loops. In agent conversation
 }
 ```
 
-From the CLI, you can observe shell tool invocations in the agent output. The tool call shows the command being executed and the sandbox backend in use.
+CLI-დან shell ინსტრუმენტის გამოძახებების დაკვირვება აგენტის გამოსავალში შეიძლება.
 
-### Execution Flow
+### შესრულების ნაკადი
 
-1. The LLM generates a `shell` tool call with a `command` argument
-2. The security policy engine checks whether the call is allowed, denied, or requires supervision
-3. If supervised, PRX prompts the user for approval before proceeding
-4. The sandbox backend wraps the command in the appropriate isolation layer
-5. Environment variables are sanitized (see below)
-6. The command executes with a 60-second timeout
-7. stdout and stderr are captured, truncated to 1 MB if necessary
-8. The result is returned to the LLM as a `ToolResult` with success/failure status
+1. LLM წარმოქმნის `shell` ინსტრუმენტის გამოძახებას `command` არგუმენტით
+2. უსაფრთხოების პოლიტიკის ძრავი ამოწმებს, ნებადართულია, უარყოფილია თუ ზედამხედველობას მოითხოვს გამოძახება
+3. ზედამხედველობის შემთხვევაში, PRX მომხმარებელს თანხმობას ეკითხება გაგრძელებამდე
+4. სენდბოქსის ბექენდი ბრძანებას შესაბამის იზოლაციის ფენაში გადაფუთავს
+5. გარემოს ცვლადები სანიტარიზდება (იხ. ქვემოთ)
+6. ბრძანება სრულდება 60-წამიანი დროის ამოწურვით
+7. stdout და stderr აღირიცხება, საჭიროებისას 1 MB-მდე მოიჭრება
+8. შედეგი LLM-ს უბრუნდება როგორც `ToolResult` წარმატების/წარუმატებლობის სტატუსით
 
-## Parameters
+## პარამეტრები
 
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `command` | `string` | Yes | -- | The shell command to execute. Passed to `/bin/sh -c` (or equivalent). |
+| `command` | `string` | დიახ | -- | შესასრულებელი shell ბრძანება. `/bin/sh -c`-ს (ან ეკვივალენტს) გადაეცემა. |
 
-The tool returns a `ToolResult` containing:
+ინსტრუმენტი აბრუნებს `ToolResult`-ს, რომელიც შეიცავს:
 
-| Field | Type | Description |
+| ველი | ტიპი | აღწერა |
 |-------|------|-------------|
-| `success` | `bool` | `true` if the command exited with code 0 |
-| `output` | `string` | Combined stdout and stderr, truncated to 1 MB |
-| `error` | `string?` | Error message if the command failed or timed out |
+| `success` | `bool` | `true` თუ ბრძანება 0 კოდით დასრულდა |
+| `output` | `string` | გაერთიანებული stdout და stderr, 1 MB-მდე მოჭრილი |
+| `error` | `string?` | შეცდომის შეტყობინება ბრძანების წარუმატებლობის ან დროის ამოწურვის შემთხვევაში |
 
-## Environment Sanitization
+## გარემოს სანიტარიზაცია
 
-The shell tool only passes a strict whitelist of environment variables to child processes. This prevents accidental leakage of API keys, tokens, and secrets that may be present in the daemon's environment.
+shell ინსტრუმენტი მხოლოდ მკაცრ თეთრ სიაში მყოფ გარემოს ცვლადებს გადასცემს შვილობილ პროცესებს. ეს API გასაღებების, ტოკენებისა და საიდუმლოებების შემთხვევით გაჟონვას თავიდან იცილებს.
 
-**Allowed environment variables:**
+**ნებადართული გარემოს ცვლადები:**
 
-| Variable | Purpose |
+| ცვლადი | დანიშნულება |
 |----------|---------|
-| `PATH` | Executable search path |
-| `HOME` | User home directory |
-| `TERM` | Terminal type |
-| `LANG` | Locale language |
-| `LC_ALL` | Locale override |
-| `LC_CTYPE` | Character type locale |
-| `USER` | Current username |
-| `SHELL` | Default shell path |
-| `TMPDIR` | Temporary directory |
+| `PATH` | შესასრულებელი ფაილების ძიების ბილიკი |
+| `HOME` | მომხმარებლის მთავარი დირექტორია |
+| `TERM` | ტერმინალის ტიპი |
+| `LANG` | ლოკალის ენა |
+| `LC_ALL` | ლოკალის გადაფარვა |
+| `LC_CTYPE` | სიმბოლოს ტიპის ლოკალი |
+| `USER` | მიმდინარე მომხმარებლის სახელი |
+| `SHELL` | ნაგულისხმევი shell-ის ბილიკი |
+| `TMPDIR` | დროებითი დირექტორია |
 
-All other variables -- including `API_KEY`, `AWS_SECRET_ACCESS_KEY`, `GITHUB_TOKEN`, `OPENAI_API_KEY`, and any custom variables -- are stripped from the child process environment. This is a hard-coded security boundary that cannot be overridden through configuration.
+ყველა სხვა ცვლადი -- `API_KEY`, `AWS_SECRET_ACCESS_KEY`, `GITHUB_TOKEN`, `OPENAI_API_KEY` და ნებისმიერი მორგებული ცვლადი -- შვილობილი პროცესის გარემოდან ამოშლილია. ეს მკაცრად კოდირებული უსაფრთხოების საზღვარია, რომელიც კონფიგურაციით ვერ გადაიფარება.
 
-## Resource Limits
+## რესურსების ლიმიტები
 
-| Limit | Default | Configurable | Description |
+| ლიმიტი | ნაგულისხმევი | კონფიგურირებადი | აღწერა |
 |-------|---------|-------------|-------------|
-| Timeout | 60 seconds | `security.resources.max_cpu_time_seconds` | Maximum wall-clock time per command |
-| Output size | 1 MB | -- | Maximum combined stdout + stderr |
-| Memory | 512 MB | `security.resources.max_memory_mb` | Maximum memory usage per command |
-| Subprocesses | 10 | `security.resources.max_subprocesses` | Maximum child processes spawned |
+| დროის ამოწურვა | 60 წამი | `security.resources.max_cpu_time_seconds` | მაქსიმალური საათის დრო ბრძანებაზე |
+| გამოსავალის ზომა | 1 MB | -- | მაქსიმალური გაერთიანებული stdout + stderr |
+| მეხსიერება | 512 MB | `security.resources.max_memory_mb` | მაქსიმალური მეხსიერების გამოყენება ბრძანებაზე |
+| ქვეპროცესები | 10 | `security.resources.max_subprocesses` | მაქსიმალური გაშვებული შვილობილი პროცესები |
 
-When a command exceeds the timeout, PRX sends SIGTERM followed by SIGKILL after a grace period. The tool result reports the timeout as an error.
-
-When output exceeds 1 MB, it is truncated and a note is appended indicating the truncation.
+როცა ბრძანება დროის ამოწურვას გადააჭარბებს, PRX SIGTERM-ს აგზავნის, შემდეგ მოლოდინის პერიოდის შემდეგ SIGKILL-ს. ინსტრუმენტის შედეგი დროის ამოწურვას შეცდომად აღნიშნავს.
 
 ## უსაფრთხოება
 
-- **Sandbox isolation**: Commands run inside the configured sandbox backend, limiting filesystem, network, and process access
-- **Environment sanitization**: Only 9 whitelisted environment variables are passed to child processes
-- **Policy engine**: Every shell invocation passes through the security policy engine before execution
-- **Audit logging**: All shell commands and their results are logged to the audit log when `security.audit.enabled = true`
-- **Supervised mode**: The shell tool can be marked as `supervised` in the tool policy, requiring explicit user approval before each execution
-- **Resource limits**: Hard limits on timeout, memory, output size, and subprocess count prevent resource exhaustion
+- **სენდბოქსის იზოლაცია**: ბრძანებები კონფიგურირებულ სენდბოქსის ბექენდში სრულდება, რაც ფაილური სისტემის, ქსელისა და პროცესის წვდომას ზღუდავს
+- **გარემოს სანიტარიზაცია**: მხოლოდ 9 თეთრ სიაში მყოფი გარემოს ცვლადი გადაეცემა შვილობილ პროცესებს
+- **პოლიტიკის ძრავი**: ყოველი shell გამოძახება უსაფრთხოების პოლიტიკის ძრავაში გადის შესრულებამდე
+- **აუდიტის ჟურნალირება**: ყველა shell ბრძანება და მათი შედეგები აუდიტის ჟურნალში იწერება, როცა `security.audit.enabled = true`
+- **ზედამხედველობის რეჟიმი**: shell ინსტრუმენტი შეიძლება `supervised`-ად მოინიშნოს ინსტრუმენტების პოლიტიკაში, რაც ყოველ შესრულებაზე მომხმარებლის ექსპლიციტურ თანხმობას მოითხოვს
+- **რესურსების ლიმიტები**: მკაცრი ლიმიტები დროის ამოწურვაზე, მეხსიერებაზე, გამოსავალის ზომასა და ქვეპროცესების რაოდენობაზე რესურსების ამოწურვას თავიდან იცილებს
 
-### Threat Mitigation
+### საფრთხეების შერბილება
 
-The shell tool is the primary vector for prompt injection attacks. If an attacker can influence the LLM's reasoning (through malicious document content, for example), the shell tool is what they would use to execute commands. PRX mitigates this through:
+shell ინსტრუმენტი პრომპტ ინჯექციის შეტევების მთავარი ვექტორია. PRX ამას შერბილებს:
 
-1. **Sandbox confinement** -- even if a malicious command executes, it runs with restricted filesystem and network access
-2. **Environment stripping** -- API keys and secrets are not available to the child process
-3. **Supervision mode** -- a human-in-the-loop can review each command before execution
-4. **Audit trail** -- all commands are logged for forensic review
+1. **სენდბოქსის შეზღუდვით** -- მავნე ბრძანების შესრულების შემთხვევაშიც კი, იგი შეზღუდული ფაილური სისტემისა და ქსელის წვდომით ეშვება
+2. **გარემოს ამოშლით** -- API გასაღებები და საიდუმლოებები შვილობილი პროცესისთვის ხელმისაწვდომი არ არის
+3. **ზედამხედველობის რეჟიმით** -- ადამიანი-ციკლში-ს შეუძლია ყოველი ბრძანების გადახედვა შესრულებამდე
+4. **აუდიტის ჩანაწერით** -- ყველა ბრძანება იწერება სასამართლო ექსპერტიზის მიმოხილვისთვის
 
-## დაკავშირებული
+## დაკავშირებული გვერდები
 
-- [Security Sandbox](/ka/prx/security/sandbox) -- detailed sandbox backend documentation
-- [Policy Engine](/ka/prx/security/policy-engine) -- tool access control rules
-- [Configuration Reference](/ka/prx/config/reference) -- `security.sandbox` and `security.resources` fields
-- [Tools Overview](/ka/prx/tools/) -- all 46+ tools and registry system
+- [უსაფრთხოების სენდბოქსი](/ka/prx/security/sandbox) -- სენდბოქსის ბექენდების დეტალური დოკუმენტაცია
+- [პოლიტიკის ძრავი](/ka/prx/security/policy-engine) -- ინსტრუმენტებზე წვდომის კონტროლის წესები
+- [კონფიგურაციის მითითება](/ka/prx/config/reference) -- `security.sandbox` და `security.resources` ველები
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა 46+ ინსტრუმენტი და რეესტრის სისტემა

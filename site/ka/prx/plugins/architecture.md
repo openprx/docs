@@ -1,54 +1,54 @@
 ---
 title: დანამატის არქიტექტურა
-description: Technical architecture of the PRX WASM plugin runtime, including the host-guest boundary and memory model.
+description: PRX WASM დანამატის რანთაიმის ტექნიკური არქიტექტურა, მათ შორის ჰოსტ-სტუმრის საზღვარი და მეხსიერების მოდელი.
 ---
 
-# Plugin Architecture
+# დანამატის არქიტექტურა
 
-The PRX plugin system is built on a WASM runtime that provides a secure, portable execution environment for third-party code. This page describes the technical architecture.
+PRX-ის დანამატის სისტემა WASM რანთაიმზეა აგებული, რომელიც მესამე მხარის კოდისთვის უსაფრთხო, პორტატულ შესრულების გარემოს უზრუნველყოფს. ეს გვერდი ტექნიკურ არქიტექტურას აღწერს.
 
-## Runtime
+## რანთაიმი
 
-PRX uses the Wasmtime runtime to execute WASM plugins. Each plugin instance runs in its own WASM store with isolated linear memory.
+PRX Wasmtime რანთაიმს იყენებს WASM დანამატების შესასრულებლად. ყოველი დანამატის ინსტანცია საკუთარ WASM საცავში ეშვება იზოლირებული წრფივი მეხსიერებით.
 
 ```
 ┌──────────────────────────────┐
-│         PRX Host             │
+│         PRX ჰოსტი            │
 │                              │
 │  ┌────────────────────────┐  │
-│  │    WASM Runtime         │  │
+│  │    WASM რანთაიმი       │  │
 │  │  ┌──────┐  ┌──────┐   │  │
-│  │  │Plugin│  │Plugin│   │  │
-│  │  │  A   │  │  B   │   │  │
+│  │  │დანა- │  │დანა- │   │  │
+│  │  │მატი A│  │მატი B│   │  │
 │  │  └──┬───┘  └──┬───┘   │  │
 │  │     │         │        │  │
-│  │  Host Functions API    │  │
+│  │  ჰოსტ ფუნქციების API  │  │
 │  └────────────────────────┘  │
 └──────────────────────────────┘
 ```
 
-## Host-Guest Boundary
+## ჰოსტ-სტუმრის საზღვარი
 
-Plugins communicate with the host through a defined set of host functions. The boundary enforces:
+დანამატები ჰოსტთან ჰოსტ ფუნქციების განსაზღვრული ნაკრებით კომუნიცირებს. საზღვარი უზრუნველყოფს:
 
-- **Type safety** -- all function parameters are validated
-- **Resource limits** -- memory and CPU usage are capped
-- **Permission checks** -- each host function call is authorized against the plugin's permission manifest
+- **ტიპის უსაფრთხოება** -- ყველა ფუნქციის პარამეტრი ვალიდირდება
+- **რესურსების ლიმიტები** -- მეხსიერებისა და CPU-ის გამოყენება შეზღუდულია
+- **ნებართვების შემოწმებები** -- ყოველი ჰოსტ ფუნქციის გამოძახება დანამატის ნებართვების მანიფესტის მიხედვით ავტორიზდება
 
-## Memory Model
+## მეხსიერების მოდელი
 
-Each plugin has its own linear memory space (default 64 MB). Data is exchanged between host and guest through shared memory buffers with explicit serialization.
+ყოველ დანამატს საკუთარი წრფივი მეხსიერების სივრცე აქვს (ნაგულისხმევი 64 MB). მონაცემთა გაცვლა ჰოსტსა და სტუმარს შორის საერთო მეხსიერების ბუფერების მეშვეობით ხდება ცალსახა სერიალიზაციით.
 
-## Plugin Lifecycle
+## დანამატის სიცოცხლის ციკლი
 
-1. **Load** -- WASM binary is loaded and validated
-2. **Initialize** -- plugin's `init()` function is called with configuration
-3. **Ready** -- plugin registers its capabilities (tools, channels, etc.)
-4. **Execute** -- host invokes plugin functions as needed
-5. **Shutdown** -- plugin's `shutdown()` function is called for cleanup
+1. **ჩატვირთვა** -- WASM ბინარი ჩაიტვირთება და ვალიდირდება
+2. **ინიციალიზაცია** -- დანამატის `init()` ფუნქცია კონფიგურაციით გამოიძახება
+3. **მზადყოფნა** -- დანამატი თავის შესაძლებლობებს (ინსტრუმენტები, არხები და სხვ.) არეგისტრირებს
+4. **შესრულება** -- ჰოსტი დანამატის ფუნქციებს საჭიროებისამებრ იძახებს
+5. **გათიშვა** -- დანამატის `shutdown()` ფუნქცია გასუფთავებისთვის გამოიძახება
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Plugin System Overview](./)
-- [Host Functions](./host-functions)
-- [Developer Guide](./developer-guide)
+- [დანამატის სისტემის მიმოხილვა](./)
+- [ჰოსტ ფუნქციები](./host-functions)
+- [დეველოპერის სახელმძღვანელო](./developer-guide)

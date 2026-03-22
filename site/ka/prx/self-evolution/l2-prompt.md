@@ -1,29 +1,29 @@
 ---
-title: "L2: Prompt Evolution"
-description: Layer 2 self-evolution in PRX covering system prompt optimization and A/B testing.
+title: "L2: პრომპტის ევოლუცია"
+description: PRX-ში ფენა 2 თვით-ევოლუცია სისტემის პრომპტის ოპტიმიზაციისა და A/B ტესტირების მოცვით.
 ---
 
-# L2: Prompt Evolution
+# L2: პრომპტის ევოლუცია
 
-Layer 2 operates at medium frequency to refine the agent's system prompts. It analyzes conversation quality metrics and proposes prompt modifications, testing them through an A/B framework before permanent adoption.
+ფენა 2 საშუალო სიხშირით ოპერირებს აგენტის სისტემის პრომპტების დასახვეწად. იგი საუბრის ხარისხის მეტრიკებს ანალიზებს და პრომპტის მოდიფიკაციებს სთავაზობს, მათ A/B ჩარჩოთი ტესტავს მუდმივ მიღებამდე.
 
 ## მიმოხილვა
 
-L2 evolution addresses:
+L2 ევოლუცია მიმართავს:
 
-- **System prompt refinement** -- improve instruction clarity and task coverage
-- **Persona tuning** -- adjust tone, verbosity, and communication style
-- **Tool usage instructions** -- optimize how tools are described to the LLM
-- **A/B testing** -- statistically validate prompt changes before rollout
+- **სისტემის პრომპტის დახვეწა** -- ინსტრუქციების სიცხადისა და ამოცანების მოცვის გაუმჯობესება
+- **პერსონის ტუნინგი** -- ტონის, ვერბოზულობისა და კომუნიკაციის სტილის კორექტირება
+- **ინსტრუმენტების გამოყენების ინსტრუქციები** -- ოპტიმიზაცია, როგორ ეწერება ინსტრუმენტები LLM-ისთვის
+- **A/B ტესტირება** -- პრომპტის ცვლილებების სტატისტიკური ვალიდაცია განთავსებამდე
 
-## A/B Testing Framework
+## A/B ტესტირების ჩარჩო
 
-When a prompt modification is proposed, L2 runs both the original and modified prompts in parallel for a configurable evaluation period:
+პრომპტის მოდიფიკაციის შემოთავაზებისას, L2 ორიგინალსა და მოდიფიცირებულ პრომპტებს პარალელურად უშვებს კონფიგურირებადი შეფასების პერიოდისთვის:
 
-1. **Split traffic** -- alternate between original and candidate prompts
-2. **Collect metrics** -- track task completion, user satisfaction, tool usage efficiency
-3. **Statistical test** -- apply significance testing to determine the winner
-4. **Promote or rollback** -- adopt the winner or keep the original
+1. **ტრაფიკის გაყოფა** -- ორიგინალ და კანდიდატ პრომპტებს შორის მონაცვლეობა
+2. **მეტრიკების შეგროვება** -- ამოცანის დასრულების, მომხმარებლის კმაყოფილებისა და ინსტრუმენტების გამოყენების ეფექტურობის თვალყურის ადევნება
+3. **სტატისტიკური ტესტი** -- მნიშვნელოვნების ტესტირება გამარჯვებულის დასადგენად
+4. **დაწინაურება ან უკუქცევა** -- გამარჯვებულის მიღება ან ორიგინალის შენარჩუნება
 
 ## კონფიგურაცია
 
@@ -36,9 +36,9 @@ confidence_level = 0.95
 max_concurrent_experiments = 2
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [L1: Memory Evolution](./l1-memory)
-- [L3: Strategy Tuning](./l3-strategy)
-- [Safety & Rollback](./safety)
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [L1: მეხსიერების ევოლუცია](./l1-memory)
+- [L3: სტრატეგიის ტუნინგი](./l3-strategy)
+- [უსაფრთხოება და უკუქცევა](./safety)

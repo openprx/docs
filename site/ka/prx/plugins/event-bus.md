@@ -1,119 +1,119 @@
 ---
 title: მოვლენათა ავტობუსი
-description: Inter-plugin event bus with topic-based pub/sub, wildcard subscriptions, and delivery guarantees in PRX.
+description: დანამატებს შორის მოვლენათა ავტობუსი თემაზე დაფუძნებული pub/sub-ით, სიმბოლოანი გამოწერებითა და მიწოდების გარანტიებით PRX-ში.
 ---
 
-# Event Bus
+# მოვლენათა ავტობუსი
 
-The PRX event bus enables communication between plugins and the host system through a topic-based publish/subscribe mechanism. Plugins can publish events, subscribe to topics, and react to lifecycle events -- all without direct coupling between components.
+PRX მოვლენათა ავტობუსი დანამატებსა და ჰოსტ სისტემას შორის კომუნიკაციას თემაზე დაფუძნებული გამოქვეყნება/გამოწერის მექანიზმით უზრუნველყოფს. დანამატებს შეუძლიათ მოვლენების გამოქვეყნება, თემებზე გამოწერა და სიცოცხლის ციკლის მოვლენებზე რეაგირება -- ყველაფერი კომპონენტებს შორის პირდაპირი კავშირის გარეშე.
 
 ## მიმოხილვა
 
-The event bus provides:
+მოვლენათა ავტობუსი უზრუნველყოფს:
 
-- **Topic-based routing** -- events are published to hierarchical topics and delivered to matching subscribers
-- **Wildcard subscriptions** -- subscribe to entire topic subtrees with glob-style patterns
-- **Payload limits** -- maximum 64 KB per event payload to prevent resource abuse
-- **Recursion protection** -- maximum 8 levels of event-triggered-event depth to prevent infinite loops
-- **At-most-once delivery** -- events are delivered to subscribers without persistence or retry
+- **თემაზე დაფუძნებული მარშრუტირება** -- მოვლენები იერარქიულ თემებზე ქვეყნდება და შესაბამის გამომწერებს მიეწოდება
+- **სიმბოლოანი გამოწერები** -- თემის მთლიანი ქვეხეების გამოწერა glob-სტილის შაბლონებით
+- **დატვირთვის ლიმიტები** -- მაქსიმუმ 64 KB მოვლენის დატვირთვაზე რესურსების ბოროტად გამოყენების თავიდან ასაცილებლად
+- **რეკურსიის დაცვა** -- მოვლენით-გამოწვეული-მოვლენის მაქსიმუმ 8 დონის სიღრმე უსასრულო ციკლების თავიდან ასაცილებლად
+- **არა-უმეტეს-ერთხელ მიწოდება** -- მოვლენები გამომწერებს მიეწოდება პერსისტენციისა და ხელახალი ცდის გარეშე
 
-## Topic Structure
+## თემის სტრუქტურა
 
-Topics follow a hierarchical dot-separated naming convention under the `prx.` namespace:
+თემები იერარქიულ, წერტილით გამოყოფილ სახელდებას მიჰყვება `prx.` სახელთა სივრცის ქვეშ:
 
 ```
-prx.<category>.<event>
+prx.<კატეგორია>.<მოვლენა>
 ```
 
-### Built-in Topics
+### ჩაშენებული თემები
 
-| Topic | Published By | Description |
-|-------|-------------|-------------|
-| `prx.lifecycle.started` | Host | PRX has started and all components are initialized |
-| `prx.lifecycle.stopping` | Host | PRX is shutting down; plugins should clean up |
-| `prx.lifecycle.config_reloaded` | Host | Configuration was hot-reloaded |
-| `prx.session.created` | Host | A new agent session was created |
-| `prx.session.terminated` | Host | An agent session was terminated |
-| `prx.session.message` | Host | A message was sent or received in a session |
-| `prx.channel.connected` | Host | A channel established a connection |
-| `prx.channel.disconnected` | Host | A channel lost its connection |
-| `prx.channel.error` | Host | A channel encountered an error |
-| `prx.tool.before_execute` | Host | A tool is about to be executed (can be intercepted) |
-| `prx.tool.after_execute` | Host | A tool execution completed |
-| `prx.plugin.loaded` | Host | A plugin was loaded |
-| `prx.plugin.unloaded` | Host | A plugin was unloaded |
-| `prx.evolution.proposed` | Host | A self-evolution proposal was generated |
-| `prx.evolution.applied` | Host | A self-evolution change was applied |
-| `prx.evolution.rolled_back` | Host | A self-evolution change was rolled back |
-| `prx.memory.stored` | Host | A memory entry was stored |
-| `prx.memory.recalled` | Host | Memories were recalled for context |
-| `prx.cron.tick` | Host | A cron heartbeat occurred |
+| თემა | გამომქვეყნებელი | აღწერა |
+|------|----------------|--------|
+| `prx.lifecycle.started` | ჰოსტი | PRX დაიწყო და ყველა კომპონენტი ინიციალიზებულია |
+| `prx.lifecycle.stopping` | ჰოსტი | PRX ითიშება; დანამატებმა გასუფთავება უნდა მოახდინონ |
+| `prx.lifecycle.config_reloaded` | ჰოსტი | კონფიგურაცია ცხელ რეჟიმში ხელახლა ჩაიტვირთა |
+| `prx.session.created` | ჰოსტი | ახალი აგენტის სესია შეიქმნა |
+| `prx.session.terminated` | ჰოსტი | აგენტის სესია შეწყდა |
+| `prx.session.message` | ჰოსტი | შეტყობინება გაიგზავნა ან მიიღეს სესიაში |
+| `prx.channel.connected` | ჰოსტი | არხმა კავშირი დაამყარა |
+| `prx.channel.disconnected` | ჰოსტი | არხმა კავშირი დაკარგა |
+| `prx.channel.error` | ჰოსტი | არხმა შეცდომა წააწყდა |
+| `prx.tool.before_execute` | ჰოსტი | ინსტრუმენტი შესრულების წინ დგას (ინტერცეპტირებადია) |
+| `prx.tool.after_execute` | ჰოსტი | ინსტრუმენტის შესრულება დასრულდა |
+| `prx.plugin.loaded` | ჰოსტი | დანამატი ჩაიტვირთა |
+| `prx.plugin.unloaded` | ჰოსტი | დანამატი ამოიტვირთა |
+| `prx.evolution.proposed` | ჰოსტი | თვით-ევოლუციის წინადადება წარმოიქმნა |
+| `prx.evolution.applied` | ჰოსტი | თვით-ევოლუციის ცვლილება გამოყენებულ იქნა |
+| `prx.evolution.rolled_back` | ჰოსტი | თვით-ევოლუციის ცვლილება უკუქცეულ იქნა |
+| `prx.memory.stored` | ჰოსტი | მეხსიერების ჩანაწერი შეინახა |
+| `prx.memory.recalled` | ჰოსტი | მეხსიერებები კონტექსტისთვის გახსენდა |
+| `prx.cron.tick` | ჰოსტი | cron პულსი მოხდა |
 
-### Custom Topics
+### მორგებული თემები
 
-Plugins can publish to custom topics under their own namespace:
+დანამატებს შეუძლიათ საკუთარი სახელთა სივრცის ქვეშ მორგებულ თემებზე გამოქვეყნება:
 
 ```
 prx.plugin.<plugin_name>.<event>
 ```
 
-For example, a weather plugin might publish:
+მაგალითად, ამინდის დანამატმა შეიძლება გამოაქვეყნოს:
 
 ```
 prx.plugin.weather.forecast_updated
 prx.plugin.weather.alert_issued
 ```
 
-## Subscription Patterns
+## გამოწერის შაბლონები
 
-### Exact Match
+### ზუსტი დამთხვევა
 
-Subscribe to a single specific topic:
+ერთ კონკრეტულ თემაზე გამოწერა:
 
 ```rust
 event_bus.subscribe("prx.session.created", handler);
 ```
 
-### Wildcard Match
+### სიმბოლოანი დამთხვევა
 
-Subscribe to all topics under a subtree using `*` (single level) or `**` (multi-level):
+ქვეხის ყველა თემაზე გამოწერა `*` (ერთ დონე) ან `**` (მრავალ დონე) გამოყენებით:
 
 ```rust
-// All session events
+// ყველა სესიის მოვლენა
 event_bus.subscribe("prx.session.*", handler);
 
-// All lifecycle events
+// ყველა სიცოცხლის ციკლის მოვლენა
 event_bus.subscribe("prx.lifecycle.*", handler);
 
-// All events from a specific plugin
+// კონკრეტული დანამატის ყველა მოვლენა
 event_bus.subscribe("prx.plugin.weather.*", handler);
 
-// All events (use sparingly)
+// ყველა მოვლენა (ეკონომიურად გამოიყენეთ)
 event_bus.subscribe("prx.**", handler);
 ```
 
-| Pattern | Matches | Does Not Match |
-|---------|---------|---------------|
+| შაბლონი | ემთხვევა | არ ემთხვევა |
+|---------|----------|------------|
 | `prx.session.*` | `prx.session.created`, `prx.session.terminated` | `prx.session.message.sent` |
 | `prx.session.**` | `prx.session.created`, `prx.session.message.sent` | `prx.channel.connected` |
 | `prx.*.connected` | `prx.channel.connected` | `prx.channel.error` |
-| `prx.**` | Everything under `prx.` | Topics outside the `prx.` namespace |
+| `prx.**` | ყველაფერი `prx.`-ის ქვეშ | `prx.` სახელთა სივრცის გარეთ თემები |
 
-## Event Structure
+## მოვლენის სტრუქტურა
 
-Each event contains:
+ყოველი მოვლენა შეიცავს:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `topic` | `String` | The full topic path (e.g., `prx.session.created`) |
-| `payload` | `Vec<u8>` | Serialized event data (JSON by convention, max 64 KB) |
-| `source` | `String` | The publisher's identity (e.g., `host`, `plugin:weather`) |
-| `timestamp` | `u64` | Unix timestamp in milliseconds |
-| `correlation_id` | `Option<String>` | Optional ID for tracing related events |
+| ველი | ტიპი | აღწერა |
+|------|------|--------|
+| `topic` | `String` | თემის სრული ბილიკი (მაგ., `prx.session.created`) |
+| `payload` | `Vec<u8>` | სერიალიზებული მოვლენის მონაცემები (კონვენციით JSON, მაქს. 64 KB) |
+| `source` | `String` | გამომქვეყნებლის იდენტობა (მაგ., `host`, `plugin:weather`) |
+| `timestamp` | `u64` | Unix დროის ნიშანი მილიწამებში |
+| `correlation_id` | `Option<String>` | არასავალდებულო ID დაკავშირებული მოვლენების თვალთვალისთვის |
 
-### Payload Format
+### დატვირთვის ფორმატი
 
-Payloads are serialized as JSON by convention. Each topic defines its own payload schema. For example:
+დატვირთვები კონვენციით JSON-ად სერიალიზდება. ყოველი თემა საკუთარ დატვირთვის სქემას განსაზღვრავს. მაგალითად:
 
 **`prx.session.created`:**
 
@@ -143,47 +143,47 @@ Payloads are serialized as JSON by convention. Each topic defines its own payloa
 [plugins.event_bus]
 enabled = true
 max_payload_bytes = 65536           # 64 KB
-max_recursion_depth = 8             # prevent infinite event loops
-max_subscribers_per_topic = 64      # limit subscribers per topic
-channel_capacity = 1024             # internal event queue capacity
-delivery_timeout_ms = 5000          # timeout for slow subscribers
+max_recursion_depth = 8             # უსასრულო მოვლენათა ციკლების თავიდან აცილება
+max_subscribers_per_topic = 64      # გამომწერთა ლიმიტი თემაზე
+channel_capacity = 1024             # შიდა მოვლენათა რიგის ტევადობა
+delivery_timeout_ms = 5000          # ნელი გამომწერებისთვის ვადაგასვლა
 ```
 
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
-|-------|------|---------|-------------|
-| `enabled` | `bool` | `true` | Enable or disable the event bus |
-| `max_payload_bytes` | `usize` | `65536` | Maximum event payload size (64 KB) |
-| `max_recursion_depth` | `u8` | `8` | Maximum depth of event-triggered-event chains |
-| `max_subscribers_per_topic` | `usize` | `64` | Maximum subscribers per exact topic |
-| `channel_capacity` | `usize` | `1024` | Bounded channel capacity for the event queue |
-| `delivery_timeout_ms` | `u64` | `5000` | Maximum time to wait for a subscriber to process an event |
+|------|------|-------------|--------|
+| `enabled` | `bool` | `true` | მოვლენათა ავტობუსის ჩართვა ან გამორთვა |
+| `max_payload_bytes` | `usize` | `65536` | მოვლენის დატვირთვის მაქსიმალური ზომა (64 KB) |
+| `max_recursion_depth` | `u8` | `8` | მოვლენით-გამოწვეული-მოვლენის ჯაჭვების მაქსიმალური სიღრმე |
+| `max_subscribers_per_topic` | `usize` | `64` | გამომწერთა მაქსიმალური რაოდენობა ზუსტ თემაზე |
+| `channel_capacity` | `usize` | `1024` | მოვლენათა რიგის შემოსაზღვრული არხის ტევადობა |
+| `delivery_timeout_ms` | `u64` | `5000` | მაქსიმალური დრო გამომწერის მოვლენის დამუშავებისთვის |
 
-## Using the Event Bus in Plugins
+## მოვლენათა ავტობუსის გამოყენება დანამატებში
 
-### PDK (Plugin Development Kit)
+### PDK (დანამატის განვითარების ნაკრები)
 
-The PRX PDK provides helper functions for event bus interaction within WASM plugins:
+PRX PDK WASM დანამატებში მოვლენათა ავტობუსთან ურთიერთქმედების დამხმარე ფუნქციებს უზრუნველყოფს:
 
 ```rust
 use prx_pdk::event_bus;
 
-// Subscribe to events
+// მოვლენებზე გამოწერა
 event_bus::subscribe("prx.session.created", |event| {
     let payload: SessionCreated = serde_json::from_slice(&event.payload)?;
     log::info!("New session: {}", payload.session_id);
     Ok(())
 })?;
 
-// Publish an event
+// მოვლენის გამოქვეყნება
 let payload = serde_json::to_vec(&MyEvent { data: "hello" })?;
 event_bus::publish("prx.plugin.my_plugin.my_event", &payload)?;
 ```
 
-### Subscribing in Plugin Manifest
+### გამოწერის დეკლარირება დანამატის მანიფესტში
 
-Plugins declare their subscriptions in the manifest file:
+დანამატები გამოწერებს მანიფესტის ფაილში აცხადებენ:
 
 ```toml
 # plugin.toml
@@ -201,45 +201,45 @@ event_bus_publish = [
 ]
 ```
 
-The host enforces these permission declarations. A plugin cannot subscribe to or publish topics outside its declared permissions.
+ჰოსტი ამ ნებართვების დეკლარაციებს აღასრულებს. დანამატს არ შეუძლია გამოწერა ან გამოქვეყნება დეკლარირებული ნებართვების გარეთ არსებულ თემებზე.
 
-## Delivery Guarantees
+## მიწოდების გარანტიები
 
-The event bus provides **at-most-once** delivery:
+მოვლენათა ავტობუსი **არა-უმეტეს-ერთხელ** მიწოდებას უზრუნველყოფს:
 
-- Events are dispatched to all matching subscribers asynchronously
-- If a subscriber is slow or unresponsive, the event is dropped after `delivery_timeout_ms`
-- If the internal event queue is full (`channel_capacity` reached), new events are dropped with a warning
-- There is no persistence, retry, or acknowledgement mechanism
+- მოვლენები ყველა შესაბამის გამომწერს ასინქრონულად ეგზავნება
+- თუ გამომწერი ნელია ან არ პასუხობს, მოვლენა `delivery_timeout_ms`-ის შემდეგ იგდება
+- თუ შიდა მოვლენათა რიგი სავსეა (`channel_capacity` მიღწეული), ახალი მოვლენები გაფრთხილებით იგდება
+- არ არსებობს პერსისტენციის, ხელახალი ცდის ან დადასტურების მექანიზმი
 
-For use cases requiring guaranteed delivery, consider using the webhook system or an external message queue.
+გარანტირებული მიწოდების მოთხოვნილი სცენარებისთვის განიხილეთ webhook სისტემის ან გარე შეტყობინებების რიგის გამოყენება.
 
-## Recursion Protection
+## რეკურსიის დაცვა
 
-When an event handler publishes another event, it creates a chain. The event bus tracks the recursion depth and enforces `max_recursion_depth`:
+როდესაც მოვლენის დამმუშავებელი სხვა მოვლენას გამოაქვეყნებს, ჯაჭვი იქმნება. მოვლენათა ავტობუსი რეკურსიის სიღრმეს თვალყურს ადევნებს და `max_recursion_depth`-ს აღასრულებს:
 
 ```
-prx.session.created           ← depth 0
-  → handler publishes prx.plugin.audit.session_log    ← depth 1
-    → handler publishes prx.plugin.metrics.counter     ← depth 2
-      → ...
+prx.session.created           <- სიღრმე 0
+  -> დამმუშავებელი აქვეყნებს prx.plugin.audit.session_log    <- სიღრმე 1
+    -> დამმუშავებელი აქვეყნებს prx.plugin.metrics.counter     <- სიღრმე 2
+      -> ...
 ```
 
-If the depth exceeds the limit, the event is dropped and a warning is logged:
+თუ სიღრმე ლიმიტს გადააჭარბებს, მოვლენა იგდება და გაფრთხილება აღირიცხება:
 
 ```
 WARN event_bus: Recursion depth 8 exceeded for topic prx.plugin.metrics.counter, event dropped
 ```
 
-## Intercepting Tool Execution
+## ინსტრუმენტის შესრულების ინტერცეპტირება
 
-The `prx.tool.before_execute` event supports interception. Subscribers can modify or cancel a tool call before it runs:
+`prx.tool.before_execute` მოვლენა ინტერცეპტირებას უჭერს მხარს. გამომწერებს შეუძლიათ ინსტრუმენტის გამოძახების მოდიფიცირება ან გაუქმება გაშვებამდე:
 
 ```rust
 event_bus::subscribe("prx.tool.before_execute", |event| {
     let mut payload: ToolBeforeExecute = serde_json::from_slice(&event.payload)?;
 
-    // Block dangerous commands
+    // საშიში ბრძანებების დაბლოკვა
     if payload.tool_name == "shell" && payload.args.contains("rm -rf") {
         return Err(EventBusError::Rejected("Dangerous command blocked".into()));
     }
@@ -248,51 +248,51 @@ event_bus::subscribe("prx.tool.before_execute", |event| {
 })?;
 ```
 
-When any subscriber returns an error, the tool execution is cancelled and the error is reported to the agent.
+როდესაც ნებისმიერი გამომწერი შეცდომას დააბრუნებს, ინსტრუმენტის შესრულება უქმდება და შეცდომა აგენტს ეცნობება.
 
-## Monitoring
+## მონიტორინგი
 
 ### CLI
 
 ```bash
-# View recent event bus activity
+# ბოლო მოვლენათა ავტობუსის აქტივობის ნახვა
 prx events --tail 50
 
-# Filter by topic pattern
+# თემის შაბლონით ფილტრაცია
 prx events --topic "prx.session.*"
 
-# Show event payloads
+# მოვლენის დატვირთვების ჩვენება
 prx events --verbose
 
-# View subscriber counts
+# გამომწერთა რაოდენობის ნახვა
 prx events stats
 ```
 
-### Metrics
+### მეტრიკები
 
-The event bus exposes Prometheus metrics:
+მოვლენათა ავტობუსი Prometheus მეტრიკებს გამოაქვეყნებს:
 
-| Metric | Type | Description |
-|--------|------|-------------|
-| `prx_event_bus_published_total` | Counter | Total events published by topic |
-| `prx_event_bus_delivered_total` | Counter | Total events delivered to subscribers |
-| `prx_event_bus_dropped_total` | Counter | Events dropped (queue full, timeout, recursion) |
-| `prx_event_bus_delivery_duration_seconds` | Histogram | Time to deliver events to subscribers |
-| `prx_event_bus_subscribers` | Gauge | Current subscriber count by topic |
+| მეტრიკა | ტიპი | აღწერა |
+|---------|------|--------|
+| `prx_event_bus_published_total` | Counter | თემის მიხედვით გამოქვეყნებული მოვლენების საერთო რაოდენობა |
+| `prx_event_bus_delivered_total` | Counter | გამომწერებისთვის მიწოდებული მოვლენების საერთო რაოდენობა |
+| `prx_event_bus_dropped_total` | Counter | გადაგდებული მოვლენები (რიგი სავსე, ვადაგასვლა, რეკურსია) |
+| `prx_event_bus_delivery_duration_seconds` | Histogram | მოვლენების გამომწერებისთვის მიწოდების დრო |
+| `prx_event_bus_subscribers` | Gauge | მიმდინარე გამომწერთა რაოდენობა თემის მიხედვით |
 
 ## შეზღუდვები
 
-- At-most-once delivery means events can be lost if the queue is full or subscribers are slow
-- The event bus is local to the PRX process; events are not distributed across nodes
-- Payload size is capped at 64 KB; large data should be referenced by ID rather than embedded
-- Wildcard subscriptions (especially `prx.**`) can generate significant load; use sparingly
-- Plugin event handlers run in the WASM sandbox and cannot access the filesystem or network directly
-- Event ordering is best-effort; subscribers may receive events out of order under high load
+- არა-უმეტეს-ერთხელ მიწოდება ნიშნავს, რომ მოვლენები შეიძლება დაიკარგოს, თუ რიგი სავსეა ან გამომწერები ნელია
+- მოვლენათა ავტობუსი PRX პროცესის ლოკალურია; მოვლენები კვანძებზე არ ნაწილდება
+- დატვირთვის ზომა 64 KB-ით არის შეზღუდული; დიდი მონაცემები ჩადგმის ნაცვლად ID-ით უნდა მიეთითოს
+- სიმბოლოანი გამოწერები (განსაკუთრებით `prx.**`) მნიშვნელოვან დატვირთვას შეიძლება წარმოქმნას; ეკონომიურად გამოიყენეთ
+- დანამატის მოვლენათა დამმუშავებლები WASM სენდბოქსში ეშვება და ფაილურ სისტემასა და ქსელს პირდაპირ ვერ წვდება
+- მოვლენების თანმიმდევრობა საუკეთესო-მცდელობისაა; მაღალი დატვირთვისას გამომწერებმა მოვლენები არათანმიმდევრობით შეიძლება მიიღონ
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Plugin System Overview](./)
-- [Plugin Architecture](./architecture) -- WASM runtime and host-guest boundary
-- [Developer Guide](./developer-guide) -- building plugins with the PDK
-- [Host Functions](./host-functions) -- host functions available to plugins
-- [Webhooks](../gateway/webhooks) -- for guaranteed delivery to external systems
+- [დანამატის სისტემის მიმოხილვა](./)
+- [დანამატის არქიტექტურა](./architecture) -- WASM რანთაიმი და ჰოსტ-სტუმრის საზღვარი
+- [დეველოპერის სახელმძღვანელო](./developer-guide) -- დანამატების აწყობა PDK-ით
+- [ჰოსტ ფუნქციები](./host-functions) -- დანამატებისთვის ხელმისაწვდომი ჰოსტ ფუნქციები
+- [Webhook-ები](../gateway/webhooks) -- გარე სისტემებისთვის გარანტირებული მიწოდებისთვის

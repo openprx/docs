@@ -1,27 +1,27 @@
 ---
-title: Automix Router
-description: Cost-optimizing LLM routing that starts with cheap models and escalates on low confidence.
+title: Automix მარშრუტიზატორი
+description: ხარჯების ოპტიმიზაციის LLM მარშრუტიზაცია, რომელიც იაფი მოდელებით იწყებს და დაბალი ნდობისას ესკალაციას ახდენს.
 ---
 
-# Automix Router
+# Automix მარშრუტიზატორი
 
-The Automix router optimizes for cost by starting every query with a cheap model and only escalating to a premium model when the initial response's confidence is below a threshold.
+Automix მარშრუტიზატორი ხარჯებს ოპტიმიზებს, ყოველი შეკითხვის იაფი მოდელით დაწყებითა და პრემიუმ მოდელზე ესკალაციით მხოლოდ მაშინ, როდესაც საწყისი პასუხის ნდობის ქულა ზღურბლზე ქვემოთაა.
 
 ## როგორ მუშაობს
 
-1. **Initial query** -- send the query to the cheap model
-2. **Confidence check** -- evaluate the response confidence score
-3. **Escalate if needed** -- if confidence is below threshold, re-query with premium model
-4. **Return** -- return the first confident response
+1. **საწყისი შეკითხვა** -- შეკითხვის გაგზავნა იაფ მოდელზე
+2. **ნდობის შემოწმება** -- პასუხის ნდობის ქულის შეფასება
+3. **საჭიროებისას ესკალაცია** -- თუ ნდობა ზღურბლზე ქვემოთაა, ხელახალი შეკითხვა პრემიუმ მოდელით
+4. **დაბრუნება** -- პირველი მაღალი ნდობის პასუხის დაბრუნება
 
-## Confidence Scoring
+## ნდობის შეფასება
 
-Confidence is assessed based on:
+ნდობა ფასდება:
 
-- Self-reported confidence in the response
-- Presence of hedging language ("I'm not sure", "might be")
-- Token-level entropy of the response
-- Tool call success rate
+- პასუხში თვით-დეკლარირებული ნდობის მიხედვით
+- გამოფარვის ენის არსებობით ("არ ვარ დარწმუნებული", "შესაძლოა")
+- პასუხის ტოკენის დონის ენტროპიით
+- ინსტრუმენტის გამოძახების წარმატების სიჩქარით
 
 ## კონფიგურაცია
 
@@ -37,12 +37,12 @@ premium_model = "anthropic/claude-opus-4-6"
 max_escalations = 1
 ```
 
-## Cost Savings
+## ხარჯების დაზოგვა
 
-In typical usage, Automix routes 60-80% of queries to the cheap model, achieving significant cost savings while maintaining quality for complex queries.
+ტიპიურ გამოყენებაში, Automix შეკითხვების 60-80%-ს იაფ მოდელზე მარშრუტირებს, რაც მნიშვნელოვან ხარჯების დაზოგვას იძლევა რთული შეკითხვებისთვის ხარისხის შენარჩუნებით.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Router Overview](./)
-- [Heuristic Router](./heuristic)
-- [KNN Router](./knn)
+- [მარშრუტიზატორის მიმოხილვა](./)
+- [ევრისტიკული მარშრუტიზატორი](./heuristic)
+- [KNN მარშრუტიზატორი](./knn)

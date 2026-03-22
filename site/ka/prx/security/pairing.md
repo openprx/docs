@@ -1,33 +1,33 @@
 ---
-title: Device Pairing
-description: Device pairing and identity verification for PRX agent authentication.
+title: მოწყობილობის დაწყვილება
+description: მოწყობილობის დაწყვილება და იდენტობის ვერიფიკაცია PRX აგენტის ავთენტიფიკაციისთვის.
 ---
 
-# Device Pairing
+# მოწყობილობის დაწყვილება
 
-PRX uses a device pairing model to authenticate agent instances and establish trust between nodes. Pairing ensures that only authorized devices can connect to and control the agent.
+PRX იყენებს მოწყობილობის დაწყვილების მოდელს აგენტის ინსტანციების ავთენტიფიკაციისა და კვანძებს შორის ნდობის დასამყარებლად. დაწყვილება უზრუნველყოფს, რომ მხოლოდ ავტორიზებულ მოწყობილობებს შეუძლიათ აგენტთან დაკავშირება და კონტროლი.
 
 ## მიმოხილვა
 
-The pairing process:
+დაწყვილების პროცესი:
 
-1. Generate a unique device identity (Ed25519 keypair)
-2. Exchange public keys between the controller and agent
-3. Verify identity through a challenge-response protocol
-4. Establish an encrypted communication channel
+1. უნიკალური მოწყობილობის იდენტობის გენერაცია (Ed25519 გასაღების წყვილი)
+2. საჯარო გასაღებების გაცვლა კონტროლერსა და აგენტს შორის
+3. იდენტობის ვერიფიკაცია გამოწვევა-პასუხის პროტოკოლით
+4. დაშიფრული კომუნიკაციის არხის დამყარება
 
-## Pairing Flow
+## დაწყვილების ნაკადი
 
 ```
-Controller                    Agent
+კონტროლერი                    აგენტი
     │                           │
-    │──── Pairing Request ─────►│
+    │──── დაწყვილების მოთხოვნა ─►│
     │                           │
-    │◄─── Challenge ───────────│
+    │◄─── გამოწვევა ────────────│
     │                           │
-    │──── Signed Response ─────►│
+    │──── ხელმოწერილი პასუხი ──►│
     │                           │
-    │◄─── Pairing Confirmed ───│
+    │◄─── დაწყვილება დადასტურდა │
 ```
 
 ## კონფიგურაცია
@@ -39,17 +39,17 @@ max_paired_devices = 5
 challenge_timeout_secs = 30
 ```
 
-## Managing Paired Devices
+## დაწყვილებული მოწყობილობების მართვა
 
 ```bash
-prx pair list          # List paired devices
-prx pair add           # Start pairing flow
-prx pair remove <id>   # Remove a paired device
-prx pair revoke-all    # Revoke all pairings
+prx pair list          # დაწყვილებული მოწყობილობების ჩამონათვალი
+prx pair add           # დაწყვილების ნაკადის დაწყება
+prx pair remove <id>   # დაწყვილებული მოწყობილობის ამოღება
+prx pair revoke-all    # ყველა დაწყვილების გაუქმება
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Security Overview](./)
-- [Nodes](/ka/prx/nodes/)
-- [Secrets Management](./secrets)
+- [უსაფრთხოების მიმოხილვა](./)
+- [კვანძები](/ka/prx/nodes/)
+- [საიდუმლოებების მართვა](./secrets)

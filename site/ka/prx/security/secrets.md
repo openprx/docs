@@ -1,28 +1,28 @@
 ---
-title: Secrets Management
-description: Secure storage and access control for API keys and credentials in PRX.
+title: საიდუმლოებების მართვა
+description: API გასაღებებისა და სერთიფიკატების უსაფრთხო შენახვა და წვდომის კონტროლი PRX-ში.
 ---
 
-# Secrets Management
+# საიდუმლოებების მართვა
 
-PRX provides secure storage for sensitive data like API keys, tokens, and credentials. Secrets are encrypted at rest and accessed through a controlled API.
+PRX უზრუნველყოფს მგრძნობიარე მონაცემების უსაფრთხო შენახვას, როგორიცაა API გასაღებები, ტოკენები და სერთიფიკატები. საიდუმლოებები მოსვენებულ მდგომარეობაში დაშიფრულია და კონტროლირებადი API-ით ხელმისაწვდომია.
 
 ## მიმოხილვა
 
-The secrets system:
+საიდუმლოებების სისტემა:
 
-- Encrypts secrets at rest using AES-256-GCM
-- Derives encryption keys from a master password or system keyring
-- Provides environment variable injection for tool execution
-- Supports secret rotation and expiration
+- საიდუმლოებებს მოსვენებულ მდგომარეობაში AES-256-GCM-ით შიფრავს
+- დაშიფვრის გასაღებებს სამთავრო პაროლიდან ან სისტემის გასაღებთა რგოლიდან იღებს
+- ინსტრუმენტის შესრულებისთვის გარემოს ცვლადების ინექციას უზრუნველყოფს
+- საიდუმლოებების როტაციასა და ვადაგასვლას უჭერს მხარს
 
-## Storage
+## შენახვა
 
-Secrets are stored in an encrypted file at `~/.local/share/openprx/secrets.enc`. The encryption key is derived from:
+საიდუმლოებები დაშიფრულ ფაილში ინახება `~/.local/share/openprx/secrets.enc` ბილიკზე. დაშიფვრის გასაღები მიიღება:
 
-1. System keyring (preferred, when available)
-2. Master password (interactive prompt)
-3. Environment variable `PRX_MASTER_KEY` (for automation)
+1. სისტემის გასაღებთა რგოლიდან (სასურველი, ხელმისაწვდომობისას)
+2. სამთავრო პაროლიდან (ინტერაქტიული მოთხოვნა)
+3. `PRX_MASTER_KEY` გარემოს ცვლადიდან (ავტომატიზაციისთვის)
 
 ## კონფიგურაცია
 
@@ -33,17 +33,17 @@ key_derivation = "argon2id"
 auto_rotate_days = 90
 ```
 
-## CLI Commands
+## CLI ბრძანებები
 
 ```bash
-prx secret set OPENAI_API_KEY      # Set a secret (prompts for value)
-prx secret get OPENAI_API_KEY      # Retrieve a secret
-prx secret list                    # List secret names (not values)
-prx secret delete OPENAI_API_KEY   # Delete a secret
-prx secret rotate                  # Rotate the master key
+prx secret set OPENAI_API_KEY      # საიდუმლოების დაყენება (მნიშვნელობას ითხოვს)
+prx secret get OPENAI_API_KEY      # საიდუმლოების მიღება
+prx secret list                    # საიდუმლოებების სახელების ჩამონათვალი (არა მნიშვნელობების)
+prx secret delete OPENAI_API_KEY   # საიდუმლოების წაშლა
+prx secret rotate                  # სამთავრო გასაღების როტაცია
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Security Overview](./)
-- [Auth](/ka/prx/auth/)
+- [უსაფრთხოების მიმოხილვა](./)
+- [ავთენტიფიკაცია](/ka/prx/auth/)

@@ -1,54 +1,54 @@
 ---
 title: Tailscale Funnel
-description: Expose your PRX agent to the internet using Tailscale Funnel over your Tailscale mesh network.
+description: PRX აგენტის ინტერნეტში გამოქვეყნება Tailscale Funnel-ით თქვენი Tailscale mesh ქსელის მეშვეობით.
 ---
 
 # Tailscale Funnel
 
-Tailscale Funnel allows you to expose your local PRX instance to the public internet through Tailscale's relay infrastructure. Unlike a traditional tunnel that requires a third-party edge network, Funnel leverages your existing Tailscale mesh -- making it an excellent choice when your PRX nodes already communicate over Tailscale.
+Tailscale Funnel საშუალებას გაძლევთ თქვენი ლოკალური PRX ინსტანცია საჯარო ინტერნეტში გამოაქვეყნოთ Tailscale-ის გადაცემის ინფრასტრუქტურის მეშვეობით. ტრადიციული გვირაბისგან განსხვავებით, რომელიც მესამე მხარის ზღვრულ ქსელს მოითხოვს, Funnel თქვენს არსებულ Tailscale mesh-ს იყენებს -- რაც შესანიშნავ არჩევანს წარმოადგენს, როდესაც თქვენი PRX კვანძები უკვე Tailscale-ით კომუნიცირებენ.
 
 ## მიმოხილვა
 
-Tailscale provides two complementary features for PRX connectivity:
+Tailscale ორ ურთიერთშემავსებელ ფუნქციას უზრუნველყოფს PRX კავშირისთვის:
 
-| Feature | Scope | Use Case |
+| ფუნქცია | სფერო | გამოყენება |
 |---------|-------|----------|
-| **Tailscale Serve** | Private (tailnet only) | Expose PRX to other devices on your Tailscale network |
-| **Tailscale Funnel** | Public (internet) | Expose PRX to external webhooks and services |
+| **Tailscale Serve** | კერძო (მხოლოდ tailnet) | PRX-ის გამოქვეყნება თქვენი Tailscale ქსელის სხვა მოწყობილობებისთვის |
+| **Tailscale Funnel** | საჯარო (ინტერნეტი) | PRX-ის გამოქვეყნება გარე webhook-ებისა და სერვისებისთვის |
 
-PRX uses Funnel for webhook ingress and Serve for node-to-node communication within a tailnet.
+PRX იყენებს Funnel-ს webhook შესვლისთვის და Serve-ს კვანძიდან კვანძზე კომუნიკაციისთვის tailnet-ის ფარგლებში.
 
-### How Funnel Works
+### როგორ მუშაობს Funnel
 
 ```
-External Service (GitHub, Telegram, etc.)
+გარე სერვისი (GitHub, Telegram და ა.შ.)
          │
          ▼ HTTPS
 ┌─────────────────────┐
 │  Tailscale DERP Relay│
-│  (Tailscale infra)   │
+│  (Tailscale ინფრა)   │
 └────────┬────────────┘
          │ WireGuard
 ┌────────▼────────────┐
 │  tailscaled          │
-│  (your machine)      │
+│  (თქვენი მანქანა)    │
 └────────┬────────────┘
          │ localhost
 ┌────────▼────────────┐
-│  PRX Gateway         │
+│  PRX გეითვეი         │
 │  (127.0.0.1:8080)   │
 └─────────────────────┘
 ```
 
-Traffic arrives at your Tailscale MagicDNS hostname (e.g., `prx-host.tailnet-name.ts.net`), is routed through Tailscale's DERP relay network over WireGuard, and forwarded to the local PRX gateway.
+ტრაფიკი მოდის თქვენი Tailscale MagicDNS ჰოსტნეიმზე (მაგ., `prx-host.tailnet-name.ts.net`), მარშრუტირდება Tailscale-ის DERP გადაცემის ქსელით WireGuard-ით და გადამისამართდება ლოკალურ PRX გეითვეიზე.
 
 ## წინაპირობები
 
-1. Tailscale installed and authenticated on the machine running PRX
-2. Tailscale Funnel enabled for your tailnet (requires admin approval)
-3. The machine's Tailscale node must have Funnel capability in the ACL policy
+1. Tailscale დაყენებული და ავთენტიფიცირებული PRX-ის გამშვებ მანქანაზე
+2. Tailscale Funnel ჩართული თქვენი tailnet-ისთვის (მოითხოვს ადმინის დამტკიცებას)
+3. მანქანის Tailscale კვანძს უნდა ჰქონდეს Funnel შესაძლებლობა ACL პოლიტიკაში
 
-### Installing Tailscale
+### Tailscale-ის დაყენება
 
 ```bash
 # Debian / Ubuntu
@@ -57,13 +57,13 @@ curl -fsSL https://tailscale.com/install.sh | sh
 # macOS
 brew install tailscale
 
-# Authenticate
+# ავთენტიფიკაცია
 sudo tailscale up
 ```
 
-### Enabling Funnel in ACL Policy
+### Funnel-ის ჩართვა ACL პოლიტიკაში
 
-Funnel must be explicitly allowed in your tailnet's ACL policy. Add the following to your Tailscale ACL file (via the admin console):
+Funnel ცალსახად უნდა იყოს ნებადართული თქვენი tailnet-ის ACL პოლიტიკაში. დაამატეთ შემდეგი თქვენს Tailscale ACL ფაილში (ადმინის კონსოლით):
 
 ```json
 {
@@ -76,18 +76,9 @@ Funnel must be explicitly allowed in your tailnet's ACL policy. Add the followin
 }
 ```
 
-This grants Funnel capability to all members. For tighter control, replace `autogroup:member` with specific users or tags:
-
-```json
-{
-  "target": ["tag:prx-agent"],
-  "attr": ["funnel"]
-}
-```
-
 ## კონფიგურაცია
 
-### Basic Funnel Setup
+### ბაზისური Funnel დაყენება
 
 ```toml
 [tunnel]
@@ -95,21 +86,18 @@ backend = "tailscale"
 local_addr = "127.0.0.1:8080"
 
 [tunnel.tailscale]
-# Funnel exposes the service to the public internet.
-# Set to false to use Serve (tailnet-only access).
+# Funnel სერვისს საჯარო ინტერნეტში გამოაქვეყნებს.
+# false-ზე დაყენებისას Serve (მხოლოდ tailnet წვდომა) გამოიყენება.
 funnel = true
 
-# Port to expose via Funnel. Tailscale Funnel supports
-# ports 443, 8443, and 10000.
+# Funnel-ით გამოსაქვეყნებელი პორტი. Tailscale Funnel მხარს უჭერს
+# პორტებს 443, 8443 და 10000.
 port = 443
-
-# HTTPS is mandatory for Funnel. Tailscale provisions
-# a certificate automatically via Let's Encrypt.
 ```
 
-### Tailnet-Only (Serve) Setup
+### მხოლოდ Tailnet (Serve) დაყენება
 
-For private node-to-node communication without public exposure:
+კერძო კვანძიდან კვანძზე კომუნიკაციისთვის საჯარო გამოქვეყნების გარეშე:
 
 ```toml
 [tunnel]
@@ -123,71 +111,63 @@ port = 443
 
 ## კონფიგურაციის მითითება
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `funnel` | boolean | `true` | `true` for public Funnel, `false` for tailnet-only Serve |
-| `port` | integer | `443` | Public port (Funnel supports 443, 8443, 10000) |
-| `tailscale_path` | string | `"tailscale"` | Path to the `tailscale` CLI binary |
-| `hostname` | string | auto-detected | Override the MagicDNS hostname |
-| `reset_on_stop` | boolean | `true` | Remove the Funnel/Serve configuration when PRX stops |
-| `background` | boolean | `true` | Run `tailscale serve` in background mode |
+| პარამეტრი | ტიპი | ნაგულისხმევი | აღწერა |
+|-----------|------|-------------|--------|
+| `funnel` | boolean | `true` | `true` საჯარო Funnel-ისთვის, `false` მხოლოდ tailnet Serve-ისთვის |
+| `port` | integer | `443` | საჯარო პორტი (Funnel მხარს უჭერს 443, 8443, 10000) |
+| `tailscale_path` | string | `"tailscale"` | `tailscale` CLI ბინარის ბილიკი |
+| `hostname` | string | ავტო-ამოცნობა | MagicDNS ჰოსტნეიმის გადაფარვა |
+| `reset_on_stop` | boolean | `true` | Funnel/Serve კონფიგურაციის წაშლა PRX-ის შეჩერებისას |
+| `background` | boolean | `true` | `tailscale serve`-ის ფონურ რეჟიმში გაშვება |
 
-## How PRX Manages Tailscale
+## როგორ მართავს PRX Tailscale-ს
 
-When the tunnel starts, PRX executes:
+გვირაბის დაწყებისას, PRX ასრულებს:
 
 ```bash
-# For Funnel (public)
+# Funnel-ისთვის (საჯარო)
 tailscale funnel --bg --https=443 http://127.0.0.1:8080
 
-# For Serve (private)
+# Serve-ისთვის (კერძო)
 tailscale serve --bg --https=443 http://127.0.0.1:8080
 ```
 
-The `--bg` flag runs the serve/funnel in the background within the `tailscaled` daemon. PRX does not need to keep a child process alive -- `tailscaled` handles the forwarding.
+`--bg` ფლაგი serve/funnel-ს ფონურ რეჟიმში უშვებს `tailscaled` დემონის ფარგლებში. PRX-ს შვილი პროცესის ცოცხლად შენარჩუნება არ სჭირდება -- `tailscaled` გადამისამართებას ამუშავებს.
 
-When PRX stops, it cleans up by running:
+PRX-ის შეჩერებისას, იგი ასუფთავებს:
 
 ```bash
 tailscale funnel --https=443 off
-# or
+# ან
 tailscale serve --https=443 off
 ```
 
-This behavior is controlled by the `reset_on_stop` parameter.
+ეს ქცევა `reset_on_stop` პარამეტრით კონტროლირდება.
 
-## Public URL
+## საჯარო URL
 
-The public URL for Funnel follows the MagicDNS pattern:
+Funnel-ის საჯარო URL MagicDNS შაბლონს მიჰყვება:
 
 ```
 https://<machine-name>.<tailnet-name>.ts.net
 ```
 
-For example, if your machine is named `prx-host` and your tailnet is `example`, the URL is:
+## ჯანმრთელობის შემოწმებები
 
-```
-https://prx-host.example.ts.net
-```
+PRX Tailscale გვირაბს ორი შემოწმებით აკვირდება:
 
-PRX automatically detects this hostname by parsing the output of `tailscale status --json` and constructs the full public URL.
+1. **Tailscale დემონის სტატუსი** -- `tailscale status --json` უნდა ანგარიშობდეს კვანძის დაკავშირებულობას
+2. **Funnel-ის მისაწვდომობა** -- HTTP GET საჯარო URL-ზე უნდა დააბრუნოს 2xx პასუხი
 
-## Health Checks
+ჯანმრთელობის შემოწმების წარუმატებლობისას, PRX ცდილობს Funnel-ის ხელახლა დამყარებას `tailscale funnel` ბრძანების ხელახლა გაშვებით.
 
-PRX monitors the Tailscale tunnel with two checks:
+## ACL გათვალისწინებები
 
-1. **Tailscale daemon status** -- `tailscale status --json` must report the node as connected
-2. **Funnel reachability** -- HTTP GET to the public URL must return a 2xx response
+Tailscale ACL-ები აკონტროლებს, რომელ მოწყობილობებს შეუძლიათ კომუნიკაცია და რომელებს -- Funnel-ის გამოყენება.
 
-If health checks fail, PRX attempts to re-establish the Funnel by running the `tailscale funnel` command again. If `tailscaled` itself is down, PRX logs an error and disables the tunnel until the daemon recovers.
+### Funnel-ის შეზღუდვა PRX კვანძებზე
 
-## ACL Considerations
-
-Tailscale ACLs control which devices can communicate and which can use Funnel. Key considerations for PRX deployments:
-
-### Restricting Funnel to PRX Nodes
-
-Tag your PRX machines and restrict Funnel access:
+მონიშნეთ თქვენი PRX მანქანები და შეზღუდეთ Funnel წვდომა:
 
 ```json
 {
@@ -203,9 +183,9 @@ Tag your PRX machines and restrict Funnel access:
 }
 ```
 
-### Allowing Node-to-Node Traffic
+### კვანძიდან კვანძზე ტრაფიკის ნებართვა
 
-For distributed PRX deployments, allow traffic between PRX nodes:
+განაწილებული PRX განთავსებისთვის, ნება დართეთ ტრაფიკს PRX კვანძებს შორის:
 
 ```json
 {
@@ -221,18 +201,18 @@ For distributed PRX deployments, allow traffic between PRX nodes:
 
 ## პრობლემების მოგვარება
 
-| Symptom | Cause | Resolution |
-|---------|-------|------------|
-| "Funnel not available" | ACL policy missing funnel attr | Add `funnel` attribute to node or user in ACL |
-| "not connected" status | `tailscaled` not running | Start the Tailscale daemon: `sudo tailscale up` |
-| Certificate error | DNS not propagated | Wait for MagicDNS propagation (usually < 1 minute) |
-| Port already in use | Another Serve/Funnel on same port | Remove existing: `tailscale funnel --https=443 off` |
-| 502 Bad Gateway | PRX gateway not listening | Verify `local_addr` matches your gateway's listen address |
+| სიმპტომი | მიზეზი | გადაწყვეტა |
+|----------|--------|-----------|
+| "Funnel not available" | ACL პოლიტიკას funnel ატრიბუტი აკლია | დაამატეთ `funnel` ატრიბუტი კვანძზე ან მომხმარებელზე ACL-ში |
+| "not connected" სტატუსი | `tailscaled` არ მუშაობს | Tailscale დემონის გაშვება: `sudo tailscale up` |
+| სერტიფიკატის შეცდომა | DNS არ გავრცელებულა | დაელოდეთ MagicDNS-ის გავრცელებას (ჩვეულებრივ < 1 წუთი) |
+| პორტი უკვე გამოიყენება | სხვა Serve/Funnel იმავე პორტზე | არსებულის წაშლა: `tailscale funnel --https=443 off` |
+| 502 Bad Gateway | PRX გეითვეი არ ისმენს | შეამოწმეთ `local_addr`-ის შესაბამისობა გეითვეის მოსმენის მისამართთან |
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Tunnel Overview](./)
-- [Cloudflare Tunnel](./cloudflare)
+- [გვირაბის მიმოხილვა](./)
+- [Cloudflare გვირაბი](./cloudflare)
 - [ngrok](./ngrok)
-- [Node Pairing](/ka/prx/nodes/pairing)
-- [Security Overview](/ka/prx/security/)
+- [კვანძის დაწყვილება](/ka/prx/nodes/pairing)
+- [უსაფრთხოების მიმოხილვა](/ka/prx/security/)

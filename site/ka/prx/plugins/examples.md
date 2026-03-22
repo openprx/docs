@@ -1,15 +1,15 @@
 ---
 title: დანამატის მაგალითები
-description: Example PRX plugins demonstrating common patterns and use cases.
+description: PRX დანამატების მაგალითები გავრცელებული შაბლონებისა და გამოყენების შემთხვევების დემონსტრაციით.
 ---
 
-# Plugin Examples
+# დანამატის მაგალითები
 
-This page provides example plugins to help you get started with PRX plugin development.
+ეს გვერდი მაგალითი დანამატებს წარმოადგენს PRX დანამატის შექმნის დასაწყებად.
 
-## Example 1: Simple Tool Plugin
+## მაგალითი 1: მარტივი ინსტრუმენტის დანამატი
 
-A tool plugin that converts text to uppercase:
+ინსტრუმენტის დანამატი, რომელიც ტექსტს ზედა რეგისტრში გარდაქმნის:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -23,9 +23,9 @@ fn uppercase(text: String) -> Result<String, PluginError> {
 }
 ```
 
-## Example 2: HTTP API Tool
+## მაგალითი 2: HTTP API ინსტრუმენტი
 
-A tool plugin that fetches data from an external API:
+ინსტრუმენტის დანამატი, რომელიც გარე API-დან მონაცემებს იღებს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -37,14 +37,14 @@ use prx_pdk::prelude::*;
 fn github_stars(repo: String) -> Result<String, PluginError> {
     let url = format!("https://api.github.com/repos/{}", repo);
     let resp = http_get(&url)?;
-    // Parse and return star count
+    // ვარსკვლავების რაოდენობის გარჩევა და დაბრუნება
     Ok(resp.body)
 }
 ```
 
-## Example 3: Content Filter
+## მაგალითი 3: შინაარსის ფილტრი
 
-A filter plugin that redacts sensitive information:
+ფილტრის დანამატი, რომელიც მგრძნობიარე ინფორმაციას რედაქტირებს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -59,9 +59,9 @@ fn redact_emails(message: &str) -> Result<FilterAction, PluginError> {
 }
 ```
 
-## Example 4: Plugin with Configuration
+## მაგალითი 4: დანამატი კონფიგურაციით
 
-A plugin that reads from its configuration:
+დანამატი, რომელიც თავის კონფიგურაციას კითხულობს:
 
 ```rust
 use prx_pdk::prelude::*;
@@ -73,7 +73,7 @@ fn greet(name: String) -> Result<String, PluginError> {
 }
 ```
 
-Configuration in `config.toml`:
+კონფიგურაცია `config.toml`-ში:
 
 ```toml
 [[plugins.registry]]
@@ -85,8 +85,8 @@ enabled = true
 greeting = "Welcome"
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Developer Guide](./developer-guide)
-- [PDK Reference](./pdk)
-- [Host Functions](./host-functions)
+- [დეველოპერის სახელმძღვანელო](./developer-guide)
+- [PDK მითითება](./pdk)
+- [ჰოსტ ფუნქციები](./host-functions)

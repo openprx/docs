@@ -1,55 +1,49 @@
 ---
 title: ვებ ძიება
-description: Search the web via DuckDuckGo (free, no API key) or Brave Search (API key required) with configurable result limits and timeouts.
+description: ვებში ძიება DuckDuckGo-ით (უფასო, API გასაღები არ სჭირდება) ან Brave Search-ით (API გასაღები სავალდებულოა) კონფიგურირებადი შედეგების ლიმიტებითა და დროის ამოწურვით.
 ---
 
-# Web Search
+# ვებ ძიება
 
-The `web_search_tool` enables PRX agents to search the web for current information. It supports two search providers -- DuckDuckGo (free, no API key required) and Brave Search (requires an API key) -- and returns structured search results that the agent can use to answer questions about recent events, look up documentation, or research topics.
+`web_search_tool` ინსტრუმენტი PRX აგენტებს ვებში მიმდინარე ინფორმაციის ძიების საშუალებას აძლევს. იგი ორ საძიებო პროვაიდერს უჭერს მხარს -- DuckDuckGo (უფასო, API გასაღები არ სჭირდება) და Brave Search (API გასაღები სავალდებულოა) -- და სტრუქტურირებულ საძიებო შედეგებს აბრუნებს.
 
-Web search is feature-gated and requires `web_search.enabled = true` in the configuration. When enabled, PRX also optionally registers the `web_fetch` tool for extracting full page content from URLs found in search results.
+ვებ ძიება ფუნქციით გეითირებულია და მოითხოვს `web_search.enabled = true` კონფიგურაციაში. ჩართვისას PRX ასევე სურვილისამებრ `web_fetch` ინსტრუმენტს არეგისტრირებს საძიებო შედეგებში ნაპოვნი URL-ებიდან გვერდის სრული კონტენტის ამოღებისთვის.
 
-The combination of `web_search_tool` and `web_fetch` gives agents a complete web research pipeline: search for relevant pages, then fetch and extract content from the most promising results.
+`web_search_tool` და `web_fetch` კომბინაცია აგენტებს ვებ კვლევის სრულ პაიპლაინს აძლევს: შესაბამისი გვერდების ძიება, შემდეგ ყველაზე პერსპექტიული შედეგებიდან კონტენტის ამოღება.
 
 ## კონფიგურაცია
 
 ```toml
 [web_search]
 enabled = true
-provider = "duckduckgo"      # "duckduckgo" (free) or "brave" (API key required)
-max_results = 5              # Maximum results per search (1-10)
-timeout_secs = 10            # Request timeout in seconds
+provider = "duckduckgo"      # "duckduckgo" (უფასო) ან "brave" (API გასაღები სავალდებულოა)
+max_results = 5              # მაქსიმალური შედეგები ძიებაზე (1-10)
+timeout_secs = 10            # მოთხოვნის დროის ამოწურვა წამებში
 
-# Brave Search (requires API key)
+# Brave Search (API გასაღები სავალდებულოა)
 # provider = "brave"
 # brave_api_key = "BSA-xxxxxxxxxxxx"
 
-# Web fetch (page content extraction)
-fetch_enabled = true         # Enable the web_fetch tool
-fetch_max_chars = 50000      # Maximum characters returned by web_fetch
+# ვებ ამოღება (გვერდის კონტენტის ექსტრაქცია)
+fetch_enabled = true         # web_fetch ინსტრუმენტის ჩართვა
+fetch_max_chars = 50000      # web_fetch-ის მიერ დაბრუნებული მაქსიმალური სიმბოლოები
 ```
 
-### Provider Comparison
+### პროვაიდერების შედარება
 
-| Feature | DuckDuckGo | Brave Search |
+| ფუნქცია | DuckDuckGo | Brave Search |
 |---------|-----------|-------------|
-| Cost | Free | Free tier (2000 queries/month), paid plans available |
-| API key | Not required | Required (`brave_api_key`) |
-| Result quality | Good for general queries | Higher quality, better structured |
-| Rate limits | Implicit (may throttle) | Explicit (based on plan) |
-| Privacy | Privacy-focused | Privacy-focused |
-| Structured data | Basic (title, URL, snippet) | Rich (title, URL, snippet, extra descriptions) |
-
-### Choosing a Provider
-
-- **DuckDuckGo** is the default and works out of the box with no configuration beyond `enabled = true`. It is suitable for most use cases and does not require any account or API key.
-- **Brave Search** provides higher-quality results and richer metadata. Use it when search quality is critical or when you need the `web_fetch` tool for reliable content extraction.
+| ღირებულება | უფასო | უფასო დონე (2000 მოთხოვნა/თვე), ფასიანი გეგმები ხელმისაწვდომია |
+| API გასაღები | არ სჭირდება | სავალდებულოა (`brave_api_key`) |
+| შედეგების ხარისხი | კარგია ზოგადი მოთხოვნებისთვის | უფრო მაღალი ხარისხი, უკეთ სტრუქტურირებული |
+| ლიმიტები | იმპლიციტური (შეიძლება შეანელოს) | ექსპლიციტური (გეგმის მიხედვით) |
+| კონფიდენციალურობა | კონფიდენციალურობაზე ორიენტირებული | კონფიდენციალურობაზე ორიენტირებული |
 
 ## გამოყენება
 
 ### web_search_tool
 
-The search tool returns a list of results with titles, URLs, and snippets:
+საძიებო ინსტრუმენტი შედეგების სიას აბრუნებს სათაურებით, URL-ებითა და ფრაგმენტებით:
 
 ```json
 {
@@ -61,18 +55,9 @@ The search tool returns a list of results with titles, URLs, and snippets:
 }
 ```
 
-**Example response:**
-
-```json
-{
-  "success": true,
-  "output": "1. Comparing Tokio and async-std in 2026 - https://blog.example.com/rust-async\n   Snippet: A detailed comparison of the two main Rust async runtimes...\n\n2. Tokio documentation - https://docs.rs/tokio\n   Snippet: Tokio is an asynchronous runtime for Rust...\n\n..."
-}
-```
-
 ### web_fetch
 
-After finding relevant URLs via search, the agent can fetch and extract content:
+საძიებო შედეგებში რელევანტური URL-ების პოვნის შემდეგ, აგენტს შეუძლია კონტენტის ამოღება:
 
 ```json
 {
@@ -83,117 +68,63 @@ After finding relevant URLs via search, the agent can fetch and extract content:
 }
 ```
 
-The `web_fetch` tool:
+`web_fetch` ინსტრუმენტი:
 
-1. Validates the URL domain against `browser.allowed_domains`
-2. Fetches the page content
-3. Extracts readable text (stripping HTML, scripts, styles)
-4. Truncates to `fetch_max_chars`
-5. Returns the extracted content
+1. URL-ის დომენს `browser.allowed_domains`-თან ამოწმებს
+2. გვერდის კონტენტს იღებს
+3. წაკითხვად ტექსტს ამოიღებს (HTML, სკრიპტები, სტილები ამოშლილია)
+4. `fetch_max_chars`-მდე მოჭრის
+5. ამოღებულ კონტენტს აბრუნებს
 
-::: warning
-`web_fetch` requires both `web_search.fetch_enabled = true` **and** `browser.allowed_domains` to be set. The fetched URL must match one of the allowed domains.
-:::
+## პარამეტრები
 
-## Parameters
+### web_search_tool პარამეტრები
 
-### web_search_tool Parameters
-
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `query` | `string` | Yes | -- | The search query string |
-| `max_results` | `integer` | No | Config value (`5`) | Maximum number of results to return (1-10) |
+| `query` | `string` | დიახ | -- | საძიებო მოთხოვნის სტრიქონი |
+| `max_results` | `integer` | არა | კონფიგურაციის მნიშვნელობა (`5`) | დასაბრუნებელი შედეგების მაქსიმუმი (1-10) |
 
-**Returns:**
+### web_fetch პარამეტრები
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `bool` | `true` if the search completed |
-| `output` | `string` | Formatted search results with titles, URLs, and snippets |
-| `error` | `string?` | Error message if the search failed (timeout, provider error, etc.) |
-
-### web_fetch Parameters
-
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `url` | `string` | Yes | -- | The URL to fetch and extract content from |
+| `url` | `string` | დიახ | -- | URL, საიდანაც კონტენტის ამოღება და ექსტრაქცია ხდება |
 
-**Returns:**
+## ტიპიური კვლევის სამუშაო ნაკადი
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `bool` | `true` if the page was fetched and parsed |
-| `output` | `string` | Extracted text content, truncated to `fetch_max_chars` |
-| `error` | `string?` | Error message if the fetch failed (domain not allowed, timeout, etc.) |
+სრული ვებ კვლევის სამუშაო ნაკადი ჩვეულებრივ ამ შაბლონს მიჰყვება:
 
-## Typical Research Workflow
-
-A complete web research workflow typically follows this pattern:
-
-1. **Search**: The agent uses `web_search_tool` to find relevant pages
-2. **Evaluate**: The agent reviews search snippets to identify the most relevant results
-3. **Fetch**: The agent uses `web_fetch` to extract full content from selected pages
-4. **Synthesize**: The agent combines information from multiple sources into a response
-
-```
-Agent thinking: The user asked about the latest Rust release features.
-  1. [web_search_tool] query="Rust 1.82 release features changelog"
-  2. [reviews results, selects top 2 URLs]
-  3. [web_fetch] url="https://blog.rust-lang.org/2026/..."
-  4. [web_fetch] url="https://releases.rs/docs/1.82.0/"
-  5. [synthesizes response from fetched content]
-```
+1. **ძიება**: აგენტი `web_search_tool`-ს იყენებს რელევანტური გვერდების მოსაძებნად
+2. **შეფასება**: აგენტი საძიებო ფრაგმენტებს განიხილავს ყველაზე რელევანტური შედეგების დასადგენად
+3. **ამოღება**: აგენტი `web_fetch`-ს იყენებს შერჩეული გვერდებიდან სრული კონტენტის ამოსაღებად
+4. **სინთეზი**: აგენტი მრავალი წყაროდან ინფორმაციას პასუხში აერთიანებს
 
 ## უსაფრთხოება
 
-### Provider Credentials
+### პროვაიდერის ავტორიზაციის მონაცემები
 
-- **DuckDuckGo**: No credentials required. Queries are sent to DuckDuckGo's API endpoints.
-- **Brave Search**: The `brave_api_key` is stored in the configuration file. Use PRX's encrypted secrets store to protect it:
+- **DuckDuckGo**: ავტორიზაციის მონაცემები არ სჭირდება.
+- **Brave Search**: `brave_api_key` კონფიგურაციის ფაილში ინახება. გამოიყენეთ PRX-ის დაშიფრული საიდუმლოებების საცავი მის დასაცავად.
 
-```toml
-[web_search]
-brave_api_key = "enc:xxxxxxxxxxxxx"  # Encrypted with ChaCha20-Poly1305
-```
+### დომენის შეზღუდვები web_fetch-ისთვის
 
-### Domain Restrictions for web_fetch
+`web_fetch` ინსტრუმენტი `browser.allowed_domains` სიას იცავს. ეს აგენტს ნებისმიერი URL-დან კონტენტის ამოღებას უშლის.
 
-The `web_fetch` tool respects the `browser.allowed_domains` list. This prevents the agent from fetching content from arbitrary URLs, which could:
+### პოლიტიკის ძრავი
 
-- Expose the agent to malicious content (prompt injection via web pages)
-- Trigger server-side request forgery (SSRF) if the agent fetches internal URLs
-- Leak information through DNS or HTTP requests to attacker-controlled domains
-
-```toml
-[browser]
-allowed_domains = ["docs.rs", "crates.io", "github.com", "*.rust-lang.org"]
-```
-
-### Timeout Protection
-
-Both search and fetch operations have configurable timeouts to prevent hanging on slow or unresponsive servers:
-
-- `web_search.timeout_secs` (default: 10 seconds) -- search query timeout
-- Network-level timeouts apply to `web_fetch` as well
-
-### Content Size Limits
-
-The `fetch_max_chars` setting (default: 50,000 characters) prevents memory exhaustion from extremely large web pages. Content beyond this limit is truncated.
-
-### Policy Engine
-
-Web search tools pass through the security policy engine:
+ვებ ძიების ინსტრუმენტები უსაფრთხოების პოლიტიკის ძრავას გადის:
 
 ```toml
 [security.tool_policy.tools]
 web_search_tool = "allow"
-web_fetch = "supervised"     # Require approval before fetching
+web_fetch = "supervised"     # ამოღებამდე თანხმობის მოთხოვნა
 ```
 
-## დაკავშირებული
+## დაკავშირებული გვერდები
 
-- [HTTP Request](/ka/prx/tools/http-request) -- programmatic HTTP requests to APIs
-- [Browser Tool](/ka/prx/tools/browser) -- full browser automation for JavaScript-heavy sites
-- [Configuration Reference](/ka/prx/config/reference) -- `[web_search]` and `[browser]` fields
-- [Secrets Management](/ka/prx/security/secrets) -- encrypted storage for API keys
-- [Tools Overview](/ka/prx/tools/) -- all tools and registry system
+- [HTTP Request](/ka/prx/tools/http-request) -- API-ებზე პროგრამული HTTP მოთხოვნები
+- [ბრაუზერის ინსტრუმენტი](/ka/prx/tools/browser) -- სრული ბრაუზერის ავტომატიზაცია JavaScript-ით მძიმე საიტებისთვის
+- [კონფიგურაციის მითითება](/ka/prx/config/reference) -- `[web_search]` და `[browser]` ველები
+- [საიდუმლოებების მართვა](/ka/prx/security/secrets) -- API გასაღებების დაშიფრული შენახვა
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა ინსტრუმენტი და რეესტრის სისტემა

@@ -1,36 +1,36 @@
 ---
 title: Skillforge
-description: Automated skill discovery, evaluation, and integration pipeline for extending PRX agent capabilities.
+description: ავტომატიზებული უნარების აღმოჩენის, შეფასებისა და ინტეგრაციის პაიპლაინი PRX აგენტის შესაძლებლობების გაფართოებისთვის.
 ---
 
 # Skillforge
 
-Skillforge is PRX's automated pipeline for discovering, evaluating, and integrating new skills (tools) from external sources. Instead of manually configuring every tool, Skillforge can scout GitHub repositories and the Clawhub registry, evaluate whether a discovered skill fits your agent's needs, and generate the integration manifest -- all without human intervention.
+Skillforge არის PRX-ის ავტომატიზებული პაიპლაინი ახალი უნარების (ინსტრუმენტების) აღმოჩენის, შეფასებისა და ინტეგრაციისთვის გარე წყაროებიდან. ყოველი ინსტრუმენტის ხელით კონფიგურაციის ნაცვლად, Skillforge-ს შეუძლია GitHub რეპოზიტორიებისა და Clawhub რეესტრის სკანირება, აღმოჩენილი უნარის თქვენი აგენტის საჭიროებებთან შესაბამისობის შეფასება და ინტეგრაციის მანიფესტის გენერაცია -- ყოველივე ეს ადამიანის ჩარევის გარეშე.
 
 ## მიმოხილვა
 
-The Skillforge pipeline consists of three stages:
+Skillforge პაიპლაინი სამი ეტაპისგან შედგება:
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Scout      │────▶│   Evaluate   │────▶│  Integrate   │
+│   სკაუტი    │────▶│   შეფასება   │────▶│  ინტეგრაცია  │
 │              │     │              │     │              │
-│ Discover     │     │ Fitness      │     │ Manifest     │
-│ skills from  │     │ scoring,     │     │ generation,  │
-│ GitHub,      │     │ security     │     │ config       │
-│ Clawhub      │     │ review       │     │ injection    │
+│ უნარების    │     │ ფიტნესის     │     │ მანიფესტის   │
+│ აღმოჩენა    │     │ ქულა,        │     │ გენერაცია,   │
+│ GitHub,     │     │ უსაფრთხოების │     │ კონფიგურაციის│
+│ Clawhub     │     │ განხილვა     │     │ ინექცია      │
 └─────────────┘     └──────────────┘     └──────────────┘
 ```
 
-| Stage | Trait | Responsibility |
+| ეტაპი | თრეითი | პასუხისმგებლობა |
 |-------|-------|----------------|
-| **Scout** | `Scout` | Discover candidate skills from configured sources |
-| **Evaluate** | `Evaluator` | Score each candidate for fitness, security, and compatibility |
-| **Integrate** | `Integrator` | Generate manifests and register skills into the tool registry |
+| **სკაუტი** | `Scout` | კანდიდატი უნარების აღმოჩენა კონფიგურირებული წყაროებიდან |
+| **შეფასება** | `Evaluator` | თითოეული კანდიდატის შეფასება ფიტნესის, უსაფრთხოებისა და თავსებადობის მიხედვით |
+| **ინტეგრაცია** | `Integrator` | მანიფესტების გენერაცია და უნარების რეგისტრაცია ინსტრუმენტების რეესტრში |
 
 ## არქიტექტურა
 
-Skillforge is built on three core async traits: `Scout` (discovers candidates matching `SearchCriteria`), `Evaluator` (scores candidates for fitness and security), and `Integrator` (generates manifests and registers skills). Each trait can have multiple implementations, and the pipeline orchestrator runs them in sequence, filtering candidates at each stage.
+Skillforge სამ ბირთვულ ასინქრონულ თრეითზეა აშენებული: `Scout` (აღმოაჩენს კანდიდატებს `SearchCriteria`-ს შესაბამისად), `Evaluator` (აფასებს კანდიდატებს ფიტნესისა და უსაფრთხოების მიხედვით) და `Integrator` (გენერირებს მანიფესტებს და არეგისტრირებს უნარებს). თითოეულ თრეითს მრავალი იმპლემენტაცია შეიძლება ჰქონდეს, ხოლო პაიპლაინის ორკესტრატორი მათ თანმიმდევრულად ასრულებს, კანდიდატებს ყოველ ეტაპზე ფილტრავს.
 
 ## კონფიგურაცია
 
@@ -38,122 +38,122 @@ Skillforge is built on three core async traits: `Scout` (discovers candidates ma
 [skillforge]
 enabled = true
 
-# Automatic discovery: periodically scout for new skills.
+# ავტომატური აღმოჩენა: ახალი უნარების პერიოდული სკანირება.
 auto_discover = false
 discover_interval_hours = 24
 
-# Minimum evaluation score (0.0-1.0) for a skill to be integrated.
+# მინიმალური შეფასების ქულა (0.0-1.0) უნარის ინტეგრაციისთვის.
 min_fitness_score = 0.7
 
-# Require manual approval before integrating discovered skills.
+# აღმოჩენილი უნარების ინტეგრაციამდე ხელით დამტკიცების მოთხოვნა.
 require_approval = true
 
-# Maximum number of skills to evaluate per discovery run.
+# აღმოჩენის თითოეულ რაუნდზე შეფასების მაქსიმალური კანდიდატების რაოდენობა.
 max_candidates = 20
 ```
 
-### Scout Sources
+### სკაუტის წყაროები
 
-Configure where Skillforge looks for skills:
+Skillforge-ის უნარების ძიების ადგილების კონფიგურაცია:
 
 ```toml
 [skillforge.sources.github]
 enabled = true
 
-# GitHub repositories to search.
-# Supports org/user patterns and topic-based discovery.
+# GitHub რეპოზიტორიები საძიებლად.
+# მხარს უჭერს ორგანიზაციის/მომხმარებლის შაბლონებსა და თემაზე დაფუძნებულ აღმოჩენას.
 search_topics = ["prx-skill", "mcp-server", "ai-tool"]
 search_orgs = ["openprx", "modelcontextprotocol"]
 
-# Rate limiting for GitHub API calls.
+# GitHub API გამოძახებების სიხშირის შეზღუდვა.
 max_requests_per_hour = 30
 
-# GitHub token for higher rate limits (optional).
+# GitHub ტოკენი უფრო მაღალი სიხშირის ლიმიტებისთვის (არასავალდებულო).
 # token = "${GITHUB_TOKEN}"
 
 [skillforge.sources.clawhub]
 enabled = true
 
-# Clawhub registry endpoint.
+# Clawhub რეესტრის ენდფოინთი.
 registry_url = "https://registry.clawhub.dev"
 
-# Categories to search.
+# საძიებო კატეგორიები.
 categories = ["tools", "integrations", "automation"]
 ```
 
-## Scout Stage
+## სკაუტის ეტაპი
 
-The Scout discovers candidate skills from configured sources. Each source implements the `Scout` trait differently:
+სკაუტი კანდიდატ უნარებს კონფიგურირებული წყაროებიდან აღმოაჩენს. თითოეული წყარო `Scout` თრეითს განსხვავებულად ახორციელებს:
 
-### GitHub Scout
+### GitHub სკაუტი
 
-Searches GitHub for repositories matching configured topics, organizations, or search queries. For each matching repository, the scout extracts:
+GitHub-ზე ეძებს რეპოზიტორიებს კონფიგურირებული თემების, ორგანიზაციების ან საძიებო მოთხოვნების მიხედვით. თითოეული შესაბამისი რეპოზიტორიისთვის სკაუტი ამოიღებს:
 
-- Repository metadata (name, description, stars, last update)
-- README content (for capability analysis)
-- Manifest files (`prx-skill.toml`, `mcp.json`, `package.json`)
-- License information
+- რეპოზიტორიის მეტამონაცემებს (სახელი, აღწერა, ვარსკვლავები, ბოლო განახლება)
+- README კონტენტს (შესაძლებლობების ანალიზისთვის)
+- მანიფესტის ფაილებს (`prx-skill.toml`, `mcp.json`, `package.json`)
+- ლიცენზიის ინფორმაციას
 
-### Clawhub Scout
+### Clawhub სკაუტი
 
-Queries the Clawhub registry API for published skills. Clawhub provides structured metadata including:
+Clawhub რეესტრის API-ს ეკითხება გამოქვეყნებულ უნარებს. Clawhub სტრუქტურირებულ მეტამონაცემებს უზრუნველყოფს, მათ შორის:
 
-- Skill name, version, and description
-- Input/output schemas
-- Dependency requirements
-- Compatibility tags (PRX version, OS, runtime)
+- უნარის სახელი, ვერსია და აღწერა
+- შემავალი/გამომავალი სქემები
+- დამოკიდებულებების მოთხოვნები
+- თავსებადობის ტეგები (PRX ვერსია, OS, Runtime)
 
-### Search Criteria
+### ძიების კრიტერიუმები
 
 ```rust
 pub struct SearchCriteria {
-    /// Keywords describing the desired capability.
+    /// სასურველი შესაძლებლობის აღმწერი საკვანძო სიტყვები.
     pub keywords: Vec<String>,
 
-    /// Required runtime: "native", "docker", "wasm", or "any".
+    /// საჭირო Runtime: "native", "docker", "wasm" ან "any".
     pub runtime: String,
 
-    /// Minimum repository stars (GitHub only).
+    /// მინიმალური რეპოზიტორიის ვარსკვლავები (მხოლოდ GitHub).
     pub min_stars: u32,
 
-    /// Maximum age of last commit in days.
+    /// ბოლო კომიტის მაქსიმალური ხანდაზმულობა დღეებში.
     pub max_age_days: u32,
 
-    /// Required license types (e.g., "MIT", "Apache-2.0").
+    /// საჭირო ლიცენზიის ტიპები (მაგ., "MIT", "Apache-2.0").
     pub licenses: Vec<String>,
 }
 ```
 
-## Evaluate Stage
+## შეფასების ეტაპი
 
-Each candidate passes through the Evaluator, which produces a fitness score and security assessment:
+თითოეული კანდიდატი შემფასებელს გადის, რომელიც ფიტნესის ქულასა და უსაფრთხოების შეფასებას აწარმოებს:
 
-### Evaluation Criteria
+### შეფასების კრიტერიუმები
 
-| Criterion | Weight | Description |
+| კრიტერიუმი | წონა | აღწერა |
 |-----------|--------|-------------|
-| **Relevance** | 30% | How well the skill matches the search criteria |
-| **Quality** | 25% | Code quality signals: tests, CI, documentation |
-| **Security** | 25% | License compatibility, dependency audit, no unsafe patterns |
-| **Maintenance** | 10% | Recent commits, active maintainers, issue response time |
-| **Compatibility** | 10% | PRX version compatibility, runtime requirements met |
+| **რელევანტურობა** | 30% | რამდენად ემთხვევა უნარი ძიების კრიტერიუმებს |
+| **ხარისხი** | 25% | კოდის ხარისხის სიგნალები: ტესტები, CI, დოკუმენტაცია |
+| **უსაფრთხოება** | 25% | ლიცენზიის თავსებადობა, დამოკიდებულებების აუდიტი, საშიში შაბლონების არარსებობა |
+| **მოვლა** | 10% | ბოლო კომიტები, აქტიური მეინტეინერები, ისუების რეაგირების დრო |
+| **თავსებადობა** | 10% | PRX ვერსიის თავსებადობა, Runtime მოთხოვნების დაკმაყოფილება |
 
-### Security Checks
+### უსაფრთხოების შემოწმებები
 
-The evaluator performs automated security analysis: license compatibility scanning, dependency vulnerability audit, dangerous code pattern detection (network calls, file system access, eval), and sandbox compatibility verification.
+შემფასებელი ავტომატიზებულ უსაფრთხოების ანალიზს ახორციელებს: ლიცენზიის თავსებადობის სკანირება, დამოკიდებულებების მოწყვლადობის აუდიტი, საშიში კოდის შაბლონების აღმოჩენა (ქსელური გამოძახებები, ფაილური სისტემის წვდომა, eval) და სენდბოქსის თავსებადობის ვერიფიკაცია.
 
-The `Evaluation` struct contains the overall `fitness_score` (0.0-1.0), per-criterion scores, a `security_status` (`safe`/`caution`/`blocked`), a human-readable summary, and a list of concerns.
+`Evaluation` სტრუქტურა შეიცავს საერთო `fitness_score`-ს (0.0-1.0), კრიტერიუმების მიხედვით ქულებს, `security_status`-ს (`safe`/`caution`/`blocked`), ადამიანისთვის წასაკითხ შეჯამებას და პრობლემების სიას.
 
-## Integrate Stage
+## ინტეგრაციის ეტაპი
 
-Skills that pass the evaluation threshold enter the integration stage:
+შეფასების ზღურბლს გადალახული უნარები ინტეგრაციის ეტაპში შედის:
 
-### Manifest Generation
+### მანიფესტის გენერაცია
 
-The Integrator generates a `Manifest` that describes how to install and register the skill:
+ინტეგრატორი `Manifest`-ს გენერირებს, რომელიც აღწერს უნარის ინსტალაციისა და რეგისტრაციის წესს:
 
 ```toml
-# Generated manifest: ~/.local/share/openprx/skills/web-scraper/manifest.toml
+# გენერირებული მანიფესტი: ~/.local/share/openprx/skills/web-scraper/manifest.toml
 [skill]
 name = "web-scraper"
 version = "1.2.0"
@@ -177,65 +177,65 @@ network = "restricted"
 timeout_secs = 30
 ```
 
-### Registration
+### რეგისტრაცია
 
-Once the manifest is generated, the skill is registered in the PRX tool registry. If `require_approval = true`, the manifest is staged for review:
+მანიფესტის გენერაციის შემდეგ უნარი PRX ინსტრუმენტების რეესტრში რეგისტრირდება. თუ `require_approval = true`, მანიფესტი განხილვისთვის მზადება ეტაპზე გადადის:
 
 ```bash
-# List pending skill integrations
+# მომლოდინე უნარების ინტეგრაციების სია
 prx skillforge pending
 
-# Review a pending skill
+# მომლოდინე უნარის განხილვა
 prx skillforge review web-scraper
 
-# Approve integration
+# ინტეგრაციის დამტკიცება
 prx skillforge approve web-scraper
 
-# Reject integration
+# ინტეგრაციის უარყოფა
 prx skillforge reject web-scraper --reason "Security concerns"
 ```
 
-## CLI Commands
+## CLI ბრძანებები
 
 ```bash
-# Manually trigger a discovery run
+# აღმოჩენის რაუნდის ხელით გაშვება
 prx skillforge discover
 
-# Discover with specific keywords
+# აღმოჩენა კონკრეტული საკვანძო სიტყვებით
 prx skillforge discover --keywords "web scraping" "data extraction"
 
-# Evaluate a specific repository
+# კონკრეტული რეპოზიტორიის შეფასება
 prx skillforge evaluate github:example/web-scraper
 
-# List all integrated skills
+# ყველა ინტეგრირებული უნარის სია
 prx skillforge list
 
-# Show skill details
+# უნარის დეტალების ჩვენება
 prx skillforge info web-scraper
 
-# Remove an integrated skill
+# ინტეგრირებული უნარის წაშლა
 prx skillforge remove web-scraper
 
-# Re-evaluate all integrated skills (check for updates, security issues)
+# ყველა ინტეგრირებული უნარის ხელახალი შეფასება (განახლებების, უსაფრთხოების პრობლემების შემოწმება)
 prx skillforge audit
 ```
 
-## Integration with Self-Evolution
+## ინტეგრაცია თვითევოლუციასთან
 
-Skillforge integrates with PRX's [self-evolution pipeline](/ka/prx/self-evolution/). When the agent identifies a capability gap, it can trigger a discovery run automatically -- scouting, evaluating, and (if approved) integrating a matching skill for the next turn.
+Skillforge PRX-ის [თვითევოლუციის პაიპლაინთან](/ka/prx/self-evolution/) ინტეგრირდება. როდესაც აგენტი შესაძლებლობების ხარვეზს აღმოაჩენს, მას შეუძლია ავტომატურად აღმოჩენის რაუნდის გაშვება -- სკანირება, შეფასება და (დამტკიცების შემთხვევაში) შესაბამისი უნარის ინტეგრაცია მომდევნო ბიჯისთვის.
 
-## Security Notes
+## უსაფრთხოების შენიშვნები
 
-- **Approval gates** -- always set `require_approval = true` in production. Automated integration of untrusted code is a security risk.
-- **Sandbox enforcement** -- integrated skills run within the same sandbox constraints as built-in tools. The sandbox backend must be configured.
-- **Source trust** -- only enable scout sources that you trust. Public GitHub search can return malicious repositories.
-- **Manifest review** -- review generated manifests before approval. Check the `runtime`, `network`, and `timeout_secs` settings.
-- **Audit trail** -- all Skillforge operations are logged in the activity log for compliance review.
+- **დამტკიცების კარიბჭეები** -- პროდუქციაში ყოველთვის `require_approval = true` დააყენეთ. არასანდო კოდის ავტომატიზებული ინტეგრაცია უსაფრთხოების რისკია.
+- **სენდბოქსის აღსრულება** -- ინტეგრირებული უნარები ჩაშენებული ინსტრუმენტების იგივე სენდბოქსის შეზღუდვებში მუშაობს. სენდბოქსის ბექენდი კონფიგურირებული უნდა იყოს.
+- **წყაროს ნდობა** -- მხოლოდ სანდო სკაუტის წყაროები ჩართეთ. საჯარო GitHub ძიებამ მავნე რეპოზიტორიები შეიძლება დააბრუნოს.
+- **მანიფესტის განხილვა** -- დამტკიცებამდე განხილეთ გენერირებული მანიფესტები. შეამოწმეთ `runtime`, `network` და `timeout_secs` პარამეტრები.
+- **აუდიტის კვალი** -- ყველა Skillforge ოპერაცია შესაბამისობის განხილვისთვის აქტივობის ჟურნალში აღირიცხება.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Tools Overview](/ka/prx/tools/)
-- [Self-Evolution Pipeline](/ka/prx/self-evolution/pipeline)
-- [Security Policy Engine](/ka/prx/security/policy-engine)
-- [Runtime Backends](/ka/prx/agent/runtime-backends)
-- [MCP Integration](/ka/prx/tools/mcp)
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/)
+- [თვითევოლუციის პაიპლაინი](/ka/prx/self-evolution/pipeline)
+- [უსაფრთხოების პოლიტიკის ძრავი](/ka/prx/security/policy-engine)
+- [Runtime ბექენდები](/ka/prx/agent/runtime-backends)
+- [MCP ინტეგრაცია](/ka/prx/tools/mcp)

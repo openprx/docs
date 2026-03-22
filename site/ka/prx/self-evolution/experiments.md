@@ -1,147 +1,148 @@
 ---
-title: ექსპერიმენტები & Fitness Evaluation
-description: A/B experiment tracking and fitness scoring for measuring self-evolution improvements in PRX.
+title: ექსპერიმენტები და ვარგისიანობის შეფასება
+description: A/B ექსპერიმენტების თვალთვალი და ვარგისიანობის ქულირება PRX-ში თვით-ევოლუციის გაუმჯობესებების გასაზომად.
 ---
 
-# Experiments & Fitness Evaluation
+# ექსპერიმენტები და ვარგისიანობის შეფასება
 
-The self-evolution system in PRX uses controlled experiments and fitness evaluation to measure whether proposed changes actually improve agent performance. Every evolution proposal above L1 is tested through an A/B experiment before permanent adoption.
+PRX-ში თვით-ევოლუციის სისტემა კონტროლირებულ ექსპერიმენტებსა და ვარგისიანობის შეფასებას იყენებს იმის გასაზომად, შემოთავაზებული ცვლილებები რეალურად აუმჯობესებს თუ არა აგენტის წარმადობას. ყოველი L1-ზე მაღალი ევოლუციის წინადადება A/B ექსპერიმენტით ტესტირდება მუდმივ მიღებამდე.
 
 ## მიმოხილვა
 
-The experiment system provides:
+ექსპერიმენტის სისტემა უზრუნველყოფს:
 
-- **A/B testing** -- run control and treatment variants side by side
-- **Fitness scoring** -- quantify agent performance with a composite score
-- **Statistical validation** -- ensure improvements are significant, not random noise
-- **Automatic convergence** -- promote the winner and retire the loser when results are conclusive
+- **A/B ტესტირება** -- საკონტროლო და სამკურნალო ვარიანტების პარალელური გაშვება
+- **ვარგისიანობის ქულირება** -- აგენტის წარმადობის რაოდენობრივი შეფასება კომპოზიტური ქულით
+- **სტატისტიკური ვალიდაცია** -- გაუმჯობესებების სარწმუნოობის უზრუნველყოფა, შემთხვევითი ხმაურის გამორიცხვით
+- **ავტომატური კონვერგენცია** -- გამარჯვებულის დაწინაურება და წაგებულის გაუქმება შედეგების დამაჯერებლობისას
 
-## Experiment Lifecycle
+## ექსპერიმენტის სიცოცხლის ციკლი
 
 ```
 ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌───────────┐
-│  Create  │───►│  Run     │───►│ Evaluate │───►│ Converge  │
+│  შექმნა  │───►│  გაშვება │───►│ შეფასება │───►│კონვერგენცია│
 │          │    │          │    │          │    │           │
-│ Define   │    │ Split    │    │ Compare  │    │ Promote   │
-│ variants │    │ traffic  │    │ fitness  │    │ or reject │
+│ვარიანტების│    │ტრაფიკის │    │ვარგისიან-│    │დაწინაურება│
+│განსაზღვრა│    │გაყოფა    │    │ობის     │    │ან უარყოფა │
+│          │    │          │    │შედარება  │    │           │
 └──────────┘    └──────────┘    └──────────┘    └───────────┘
 ```
 
-### 1. Create
+### 1. შექმნა
 
-An experiment is created when the evolution pipeline generates a proposal:
+ექსპერიმენტი იქმნება, როდესაც ევოლუციის პაიპლაინი წინადადებას წარმოქმნის:
 
-- A **control** variant representing the current configuration
-- A **treatment** variant representing the proposed change
-- Experiment parameters: duration, sample size, traffic split
+- **საკონტროლო** ვარიანტი, რომელიც მიმდინარე კონფიგურაციას წარმოადგენს
+- **სამკურნალო** ვარიანტი, რომელიც შემოთავაზებულ ცვლილებას წარმოადგენს
+- ექსპერიმენტის პარამეტრები: ხანგრძლივობა, ნიმუშის ზომა, ტრაფიკის გაყოფა
 
-### 2. Run
+### 2. გაშვება
 
-During the experiment, sessions are assigned to variants:
+ექსპერიმენტის განმავლობაში სესიები ვარიანტებზე ნაწილდება:
 
-- Sessions are assigned randomly based on the traffic split ratio
-- Each session runs entirely under one variant (no mid-session switching)
-- Both variants are monitored for the same set of fitness metrics
+- სესიები შემთხვევითად ნაწილდება ტრაფიკის გაყოფის თანაფარდობის მიხედვით
+- ყოველი სესია მთლიანად ერთ ვარიანტში მიმდინარეობს (სესიის შუაგულში გადართვა არ ხდება)
+- ორივე ვარიანტი ვარგისიანობის მეტრიკების ერთი და იმავე ნაკრებით მონიტორინგდება
 
-### 3. Evaluate
+### 3. შეფასება
 
-After the minimum duration or sample size is reached:
+მინიმალური ხანგრძლივობის ან ნიმუშის ზომის მიღწევის შემდეგ:
 
-- Fitness scores are computed for both variants
-- Statistical significance is tested (default: 95% confidence)
-- Effect size is calculated to measure practical significance
+- ორივე ვარიანტისთვის ვარგისიანობის ქულები გამოითვლება
+- სტატისტიკური მნიშვნელოვნება ტესტირდება (ნაგულისხმევი: 95% სარწმუნოობა)
+- ეფექტის ზომა გამოითვლება პრაქტიკული მნიშვნელოვნების გასაზომად
 
-### 4. Converge
+### 4. კონვერგენცია
 
-Based on evaluation results:
+შეფასების შედეგების საფუძველზე:
 
-- **Treatment wins** -- the proposed change is promoted to the default configuration
-- **Control wins** -- the proposed change is rejected; the control remains
-- **Inconclusive** -- the experiment is extended or the change is deferred
+- **სამკურნალო იმარჯვებს** -- შემოთავაზებული ცვლილება ნაგულისხმევ კონფიგურაციად დაწინაურდება
+- **საკონტროლო იმარჯვებს** -- შემოთავაზებული ცვლილება უარყოფილია; საკონტროლო რჩება
+- **გადაუწყვეტელი** -- ექსპერიმენტი გაგრძელდება ან ცვლილება გადაიდება
 
 ## კონფიგურაცია
 
 ```toml
 [self_evolution.experiments]
 enabled = true
-default_duration_hours = 168       # 1 week default
-min_sample_size = 100              # minimum sessions per variant
-traffic_split = 0.5                # 50/50 split between control and treatment
-confidence_level = 0.95            # 95% statistical confidence required
-min_effect_size = 0.02             # minimum 2% improvement to accept
+default_duration_hours = 168       # ნაგულისხმევი 1 კვირა
+min_sample_size = 100              # მინიმალური სესიები ვარიანტზე
+traffic_split = 0.5                # 50/50 გაყოფა საკონტროლოსა და სამკურნალოს შორის
+confidence_level = 0.95            # 95% სტატისტიკური სარწმუნოობა სავალდებულო
+min_effect_size = 0.02             # მინიმუმ 2% გაუმჯობესება მისაღებად
 
 [self_evolution.experiments.auto_converge]
 enabled = true
-check_interval_hours = 24          # evaluate results every 24 hours
-max_duration_hours = 720           # force convergence after 30 days
+check_interval_hours = 24          # შედეგების შეფასება ყოველ 24 საათში
+max_duration_hours = 720           # იძულებითი კონვერგენცია 30 დღის შემდეგ
 ```
 
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
-|-------|------|---------|-------------|
-| `enabled` | `bool` | `true` | Enable or disable the experiment system |
-| `default_duration_hours` | `u64` | `168` | Default experiment duration in hours (1 week) |
-| `min_sample_size` | `usize` | `100` | Minimum sessions per variant before evaluation |
-| `traffic_split` | `f64` | `0.5` | Fraction of sessions assigned to the treatment variant (0.0--1.0) |
-| `confidence_level` | `f64` | `0.95` | Required statistical confidence level |
-| `min_effect_size` | `f64` | `0.02` | Minimum fitness improvement (fraction) to accept the treatment |
-| `auto_converge.enabled` | `bool` | `true` | Automatically promote/reject when results are conclusive |
-| `auto_converge.check_interval_hours` | `u64` | `24` | How often to check experiment results |
-| `auto_converge.max_duration_hours` | `u64` | `720` | Force convergence after this duration (30 days default) |
+|------|------|-------------|--------|
+| `enabled` | `bool` | `true` | ექსპერიმენტის სისტემის ჩართვა ან გამორთვა |
+| `default_duration_hours` | `u64` | `168` | ნაგულისხმევი ექსპერიმენტის ხანგრძლივობა საათებში (1 კვირა) |
+| `min_sample_size` | `usize` | `100` | მინიმალური სესიები ვარიანტზე შეფასებამდე |
+| `traffic_split` | `f64` | `0.5` | სამკურნალო ვარიანტზე მინიჭებული სესიების წილი (0.0--1.0) |
+| `confidence_level` | `f64` | `0.95` | სავალდებულო სტატისტიკური სარწმუნოობის დონე |
+| `min_effect_size` | `f64` | `0.02` | ვარგისიანობის მინიმალური გაუმჯობესება (წილი) სამკურნალოს მისაღებად |
+| `auto_converge.enabled` | `bool` | `true` | ავტომატური დაწინაურება/უარყოფა შედეგების დამაჯერებლობისას |
+| `auto_converge.check_interval_hours` | `u64` | `24` | ექსპერიმენტის შედეგების შემოწმების სიხშირე |
+| `auto_converge.max_duration_hours` | `u64` | `720` | იძულებითი კონვერგენცია ამ ხანგრძლივობის შემდეგ (ნაგულისხმევი 30 დღე) |
 
-## Experiment Record Structure
+## ექსპერიმენტის ჩანაწერის სტრუქტურა
 
-Each experiment is tracked as a structured record:
+ყოველი ექსპერიმენტი სტრუქტურირებულ ჩანაწერად თვალყურს ედევნება:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `experiment_id` | `String` | Unique identifier (UUIDv7) |
-| `decision_id` | `String` | Link to the originating decision |
-| `layer` | `Layer` | Evolution layer: `L1`, `L2`, or `L3` |
+| ველი | ტიპი | აღწერა |
+|------|------|--------|
+| `experiment_id` | `String` | უნიკალური იდენტიფიკატორი (UUIDv7) |
+| `decision_id` | `String` | კავშირი საწყის გადაწყვეტილებასთან |
+| `layer` | `Layer` | ევოლუციის ფენა: `L1`, `L2` ან `L3` |
 | `status` | `Status` | `running`, `evaluating`, `converged`, `cancelled` |
-| `created_at` | `DateTime<Utc>` | When the experiment was created |
-| `converged_at` | `Option<DateTime<Utc>>` | When the experiment concluded |
-| `control` | `Variant` | Description of the control variant |
-| `treatment` | `Variant` | Description of the treatment variant |
-| `control_sessions` | `usize` | Number of sessions assigned to control |
-| `treatment_sessions` | `usize` | Number of sessions assigned to treatment |
-| `control_fitness` | `FitnessScore` | Aggregate fitness for the control variant |
-| `treatment_fitness` | `FitnessScore` | Aggregate fitness for the treatment variant |
-| `p_value` | `Option<f64>` | Statistical significance (lower = more significant) |
-| `winner` | `Option<String>` | `"control"`, `"treatment"`, or `null` if inconclusive |
+| `created_at` | `DateTime<Utc>` | ექსპერიმენტის შექმნის დრო |
+| `converged_at` | `Option<DateTime<Utc>>` | ექსპერიმენტის დასრულების დრო |
+| `control` | `Variant` | საკონტროლო ვარიანტის აღწერა |
+| `treatment` | `Variant` | სამკურნალო ვარიანტის აღწერა |
+| `control_sessions` | `usize` | საკონტროლოზე მინიჭებული სესიების რაოდენობა |
+| `treatment_sessions` | `usize` | სამკურნალოზე მინიჭებული სესიების რაოდენობა |
+| `control_fitness` | `FitnessScore` | საკონტროლო ვარიანტის აგრეგირებული ვარგისიანობა |
+| `treatment_fitness` | `FitnessScore` | სამკურნალო ვარიანტის აგრეგირებული ვარგისიანობა |
+| `p_value` | `Option<f64>` | სტატისტიკური მნიშვნელოვნება (ნაკლები = უფრო მნიშვნელოვანი) |
+| `winner` | `Option<String>` | `"control"`, `"treatment"` ან `null` გადაუწყვეტელის შემთხვევაში |
 
-## Fitness Evaluation
+## ვარგისიანობის შეფასება
 
-Fitness scoring quantifies agent performance across multiple dimensions. The composite fitness score is used to compare experiment variants and track evolution progress over time.
+ვარგისიანობის ქულირება აგენტის წარმადობას მრავალ განზომილებაში რაოდენობრივად აფასებს. კომპოზიტური ვარგისიანობის ქულა ექსპერიმენტის ვარიანტების შესადარებლად და ევოლუციის პროგრესის დროში თვალყურისდევნებისთვის გამოიყენება.
 
-### Fitness Dimensions
+### ვარგისიანობის განზომილებები
 
-| Dimension | Weight | Description | How Measured |
-|-----------|--------|-------------|-------------|
-| `response_relevance` | 0.30 | How relevant agent responses are to user queries | LLM-as-judge scoring |
-| `task_completion` | 0.25 | Fraction of tasks completed successfully | Tool call success rate |
-| `response_latency` | 0.15 | Time from user message to first response token | Percentile-based (p50, p95) |
-| `token_efficiency` | 0.10 | Tokens consumed per successful task | Lower is better |
-| `memory_precision` | 0.10 | Relevance of recalled memories | Recall relevance scoring |
-| `user_satisfaction` | 0.10 | Explicit user feedback signals | Thumbs up/down, corrections |
+| განზომილება | წონა | აღწერა | როგორ იზომება |
+|-----------|------|--------|--------------|
+| `response_relevance` | 0.30 | რამდენად რელევანტურია აგენტის პასუხები მომხმარებლის შეკითხვებისთვის | LLM-მოსამართლის ქულირება |
+| `task_completion` | 0.25 | წარმატებით დასრულებული ამოცანების წილი | ინსტრუმენტის გამოძახების წარმატების მაჩვენებელი |
+| `response_latency` | 0.15 | დრო მომხმარებლის შეტყობინებიდან პირველ პასუხის ტოკენამდე | პერცენტილებზე დაფუძნებული (p50, p95) |
+| `token_efficiency` | 0.10 | ტოკენები წარმატებულ ამოცანაზე | ნაკლები უკეთესია |
+| `memory_precision` | 0.10 | გახსენებული მეხსიერების რელევანტურობა | გახსენების რელევანტურობის ქულირება |
+| `user_satisfaction` | 0.10 | მომხმარებლის ცალსახა უკუკავშირის სიგნალები | მომწონს/არ მომწონს, კორექციები |
 
-### Composite Score
+### კომპოზიტური ქულა
 
-The composite fitness score is a weighted sum:
+კომპოზიტური ვარგისიანობის ქულა შეწონილი ჯამია:
 
 ```
 fitness = sum(dimension_score * dimension_weight)
 ```
 
-Each dimension is normalized to a 0.0--1.0 range before weighting. The composite score is also in the 0.0--1.0 range, where higher is better.
+ყოველი განზომილება შეწონვამდე 0.0--1.0 დიაპაზონში ნორმალიზდება. კომპოზიტური ქულაც 0.0--1.0 დიაპაზონშია, სადაც მაღალი უკეთესია.
 
-### Fitness Configuration
+### ვარგისიანობის კონფიგურაცია
 
 ```toml
 [self_evolution.fitness]
-evaluation_window_hours = 24       # aggregate metrics over this window
-min_sessions_for_score = 10        # require at least 10 sessions for a valid score
+evaluation_window_hours = 24       # მეტრიკების აგრეგაცია ამ ფანჯარაში
+min_sessions_for_score = 10        # მინიმუმ 10 სესია ვალიდური ქულისთვის
 
 [self_evolution.fitness.weights]
 response_relevance = 0.30
@@ -152,46 +153,46 @@ memory_precision = 0.10
 user_satisfaction = 0.10
 
 [self_evolution.fitness.thresholds]
-minimum_acceptable = 0.50          # fitness below this triggers an alert
-regression_delta = 0.05            # fitness drop > 5% triggers rollback
+minimum_acceptable = 0.50          # ამაზე ქვემოთ ვარგისიანობა გაფრთხილებას იწვევს
+regression_delta = 0.05            # ვარგისიანობის 5%-ზე მეტი ვარდნა უკუქცევას იწვევს
 ```
 
-### Fitness Configuration Reference
+### ვარგისიანობის კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
-|-------|------|---------|-------------|
-| `evaluation_window_hours` | `u64` | `24` | Time window for aggregating fitness metrics |
-| `min_sessions_for_score` | `usize` | `10` | Minimum sessions needed to compute a valid score |
-| `weights.*` | `f64` | *(see table above)* | Weight for each fitness dimension (must sum to 1.0) |
-| `thresholds.minimum_acceptable` | `f64` | `0.50` | Alert threshold for low fitness |
-| `thresholds.regression_delta` | `f64` | `0.05` | Maximum fitness drop before automatic rollback |
+|------|------|-------------|--------|
+| `evaluation_window_hours` | `u64` | `24` | ვარგისიანობის მეტრიკების აგრეგაციის დროის ფანჯარა |
+| `min_sessions_for_score` | `usize` | `10` | ვალიდური ქულის გამოსათვლელად საჭირო მინიმალური სესიები |
+| `weights.*` | `f64` | *(იხ. ზემოთ ცხრილი)* | ვარგისიანობის ყოველი განზომილების წონა (ჯამი 1.0 უნდა იყოს) |
+| `thresholds.minimum_acceptable` | `f64` | `0.50` | დაბალი ვარგისიანობის გაფრთხილების ზღურბლი |
+| `thresholds.regression_delta` | `f64` | `0.05` | ვარგისიანობის მაქსიმალური ვარდნა ავტომატური უკუქცევამდე |
 
-## CLI Commands
+## CLI ბრძანებები
 
 ```bash
-# List active experiments
+# აქტიური ექსპერიმენტების ჩამონათვალი
 prx evolution experiments --status running
 
-# View a specific experiment
+# კონკრეტული ექსპერიმენტის ნახვა
 prx evolution experiments --id <experiment_id>
 
-# View experiment results with fitness breakdown
+# ექსპერიმენტის შედეგების ნახვა ვარგისიანობის დაშლით
 prx evolution experiments --id <experiment_id> --details
 
-# Cancel a running experiment (reverts to control)
+# მიმდინარე ექსპერიმენტის გაუქმება (საკონტროლოზე დაბრუნება)
 prx evolution experiments cancel <experiment_id>
 
-# View current fitness score
+# მიმდინარე ვარგისიანობის ქულის ნახვა
 prx evolution fitness
 
-# View fitness history over time
+# ვარგისიანობის ისტორიის ნახვა დროში
 prx evolution fitness --history --last 30d
 
-# View fitness breakdown by dimension
+# ვარგისიანობის დაშლის ნახვა განზომილებების მიხედვით
 prx evolution fitness --breakdown
 ```
 
-### Example Fitness Output
+### ვარგისიანობის გამოტანის მაგალითი
 
 ```
 Current Fitness Score: 0.74
@@ -207,48 +208,48 @@ user_satisfaction    0.60    0.10    0.060
 Trend (last 7 days): +0.03 (improving)
 ```
 
-## Experiment Examples
+## ექსპერიმენტის მაგალითები
 
-### L2 Prompt Optimization
+### L2 პრომპტის ოპტიმიზაცია
 
-A typical L2 experiment tests a system prompt change:
+ტიპიური L2 ექსპერიმენტი სისტემის პრომპტის ცვლილებას ტესტავს:
 
-- **Control**: current system prompt (320 tokens)
-- **Treatment**: refined system prompt (272 tokens, 15% shorter)
-- **Hypothesis**: shorter prompt frees context window, improving response relevance
-- **Duration**: 7 days, 100 sessions per variant
-- **Result**: treatment fitness 0.75 vs control 0.72 (p = 0.03), treatment promoted
+- **საკონტროლო**: მიმდინარე სისტემის პრომპტი (320 ტოკენი)
+- **სამკურნალო**: დახვეწილი სისტემის პრომპტი (272 ტოკენი, 15%-ით მოკლე)
+- **ჰიპოთეზა**: მოკლე პრომპტი კონტექსტის ფანჯარას ათავისუფლებს, პასუხის რელევანტურობას აუმჯობესებს
+- **ხანგრძლივობა**: 7 დღე, 100 სესია ვარიანტზე
+- **შედეგი**: სამკურნალოს ვარგისიანობა 0.75 vs საკონტროლოს 0.72 (p = 0.03), სამკურნალო დაწინაურდა
 
-### L3 Strategy Change
+### L3 სტრატეგიის ცვლილება
 
-An L3 experiment tests a routing policy change:
+L3 ექსპერიმენტი მარშრუტიზაციის პოლიტიკის ცვლილებას ტესტავს:
 
-- **Control**: route all coding tasks to Claude Opus
-- **Treatment**: route simple coding tasks to Claude Sonnet, complex to Opus
-- **Hypothesis**: cost-efficient routing without quality loss
-- **Duration**: 14 days, 200 sessions per variant
-- **Result**: treatment fitness 0.73 vs control 0.74 (p = 0.42), inconclusive -- experiment extended
+- **საკონტროლო**: ყველა კოდირების ამოცანის Claude Opus-ზე მარშრუტირება
+- **სამკურნალო**: მარტივი კოდირების ამოცანების Claude Sonnet-ზე, რთულის Opus-ზე მარშრუტირება
+- **ჰიპოთეზა**: ხარჯ-ეფექტური მარშრუტირება ხარისხის დაკარგვის გარეშე
+- **ხანგრძლივობა**: 14 დღე, 200 სესია ვარიანტზე
+- **შედეგი**: სამკურნალოს ვარგისიანობა 0.73 vs საკონტროლოს 0.74 (p = 0.42), გადაუწყვეტელი -- ექსპერიმენტი გაგრძელდა
 
-## Statistical Methods
+## სტატისტიკური მეთოდები
 
-The experiment system uses the following statistical methods:
+ექსპერიმენტის სისტემა შემდეგ სტატისტიკურ მეთოდებს იყენებს:
 
-- **Two-sample t-test** for comparing mean fitness scores between variants
-- **Mann-Whitney U test** as a non-parametric alternative when fitness distributions are skewed
-- **Bonferroni correction** when multiple fitness dimensions are compared simultaneously
-- **Sequential analysis** with alpha-spending to allow early stopping when results are clearly significant
+- **ორნიმუშიანი t-ტესტი** ვარიანტებს შორის ვარგისიანობის საშუალო ქულების შესადარებლად
+- **Mann-Whitney U ტესტი** არაპარამეტრულ ალტერნატივად, როდესაც ვარგისიანობის განაწილებები ასიმეტრიულია
+- **Bonferroni კორექცია** ვარგისიანობის რამდენიმე განზომილების ერთდროული შედარებისას
+- **თანმიმდევრული ანალიზი** ალფა-დანახარჯით, რაც ადრეული შეჩერების საშუალებას იძლევა შედეგების აშკარა მნიშვნელოვნებისას
 
 ## შეზღუდვები
 
-- Experiments require sufficient session volume; low-traffic deployments may take weeks to reach significance
-- User satisfaction signals depend on explicit feedback, which may be sparse
-- LLM-as-judge scoring for response relevance adds latency and cost to the evaluation pipeline
-- Only one experiment can run per evolution layer at a time to avoid confounding
-- Fitness scores are relative to the specific deployment; they are not comparable across different PRX instances
+- ექსპერიმენტები საკმარის სესიების მოცულობას მოითხოვს; დაბალი ტრაფიკის განთავსებებში მნიშვნელოვნების მიღწევას კვირები სჭირდება
+- მომხმარებლის კმაყოფილების სიგნალები ცალსახა უკუკავშირზეა დამოკიდებული, რომელიც შეიძლება მწირი იყოს
+- პასუხის რელევანტურობის LLM-მოსამართლის ქულირება შეფასების პაიპლაინს შეყოვნებასა და ხარჯს ამატებს
+- ერთდროულად მხოლოდ ერთი ექსპერიმენტი შეიძლება გაიშვას ევოლუციის ფენაზე შერევის თავიდან ასაცილებლად
+- ვარგისიანობის ქულები კონკრეტულ განთავსებასთანაა მიბმული; ისინი სხვადასხვა PRX ინსტანციებს შორის შედარებადი არ არის
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [Decision Log](./decision-log) -- decisions that trigger experiments
-- [Evolution Pipeline](./pipeline) -- the pipeline that generates proposals
-- [Safety & Rollback](./safety) -- automatic rollback on regression
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [გადაწყვეტილების ჟურნალი](./decision-log) -- გადაწყვეტილებები, რომლებიც ექსპერიმენტებს იწვევს
+- [ევოლუციის პაიპლაინი](./pipeline) -- პაიპლაინი, რომელიც წინადადებებს წარმოქმნის
+- [უსაფრთხოება და უკუქცევა](./safety) -- ავტომატური უკუქცევა რეგრესიისას

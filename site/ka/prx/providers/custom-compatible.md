@@ -3,26 +3,26 @@ title: მორგებული თავსებადი
 description: ნებისმიერი OpenAI-თავსებადი API ენდფოინთის კონფიგურაცია PRX-ში LLM პროვაიდერად
 ---
 
-# Custom Compatible
+# მორგებული თავსებადი
 
-> Connect PRX to any LLM API that follows the OpenAI Chat Completions format. Works with LiteLLM, vLLM, Groq, Mistral, xAI, Venice, Vercel AI, Cloudflare AI, HuggingFace Inference, and any other OpenAI-compatible service.
+> PRX-ის დაკავშირება ნებისმიერ LLM API-სთან, რომელიც OpenAI Chat Completions ფორმატს მიჰყვება. მუშაობს LiteLLM-ით, vLLM-ით, Groq-ით, Mistral-ით, xAI-ით, Venice-ით, Vercel AI-ით, Cloudflare AI-ით, HuggingFace Inference-ით და ნებისმიერი სხვა OpenAI-თავსებადი სერვისით.
 
 ## წინაპირობები
 
-- A running LLM API that implements the OpenAI Chat Completions format (`/v1/chat/completions` or `/chat/completions`)
-- An API key (if required by the service)
+- გაშვებული LLM API, რომელიც OpenAI Chat Completions ფორმატს ახორციელებს (`/v1/chat/completions` ან `/chat/completions`)
+- API გასაღები (თუ სერვისი მოითხოვს)
 
 ## სწრაფი დაყენება
 
-### 1. Identify Your Endpoint
+### 1. თქვენი ენდფოინთის იდენტიფიკაცია
 
-Determine the base URL and authentication method for your API. For example:
+განსაზღვრეთ თქვენი API-ის საბაზისო URL და ავტენტიფიკაციის მეთოდი. მაგალითად:
 
 - Groq: `https://api.groq.com/openai/v1`
 - Mistral: `https://api.mistral.ai/v1`
 - xAI: `https://api.x.ai/v1`
-- Local vLLM: `http://localhost:8000/v1`
-- LiteLLM proxy: `http://localhost:4000`
+- ლოკალური vLLM: `http://localhost:8000/v1`
+- LiteLLM პროქსი: `http://localhost:4000`
 
 ### 2. კონფიგურაცია
 
@@ -42,11 +42,11 @@ api_url = "https://api.your-provider.com/v1"
 prx doctor models
 ```
 
-## Built-in Compatible Providers
+## ჩაშენებული თავსებადი პროვაიდერები
 
-PRX includes pre-configured aliases for popular OpenAI-compatible services:
+PRX მოიცავს წინასწარ კონფიგურირებულ მეტსახელებს პოპულარული OpenAI-თავსებადი სერვისებისთვის:
 
-| Provider Name | Aliases | Base URL | Auth Style |
+| პროვაიდერის სახელი | მეტსახელები | საბაზისო URL | ავტენტიფიკაციის სტილი |
 |--------------|---------|----------|------------|
 | Venice | `venice` | `https://api.venice.ai` | Bearer |
 | Vercel AI | `vercel`, `vercel-ai` | `https://api.vercel.ai` | Bearer |
@@ -57,48 +57,48 @@ PRX includes pre-configured aliases for popular OpenAI-compatible services:
 | Qianfan | `qianfan`, `baidu` | `https://aip.baidubce.com` | Bearer |
 | Synthetic | `synthetic` | `https://api.synthetic.com` | Bearer |
 | OpenCode Zen | `opencode`, `opencode-zen` | `https://opencode.ai/zen/v1` | Bearer |
-| LiteLLM | `litellm`, `lite-llm` | configurable | Bearer |
-| vLLM | `vllm`, `v-llm` | configurable | Bearer |
-| HuggingFace | `huggingface`, `hf` | configurable | Bearer |
+| LiteLLM | `litellm`, `lite-llm` | კონფიგურირებადი | Bearer |
+| vLLM | `vllm`, `v-llm` | კონფიგურირებადი | Bearer |
+| HuggingFace | `huggingface`, `hf` | კონფიგურირებადი | Bearer |
 
 ## კონფიგურაციის მითითება
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
 |-------|------|---------|-------------|
-| `api_key` | string | optional | API authentication key |
-| `api_url` | string | required | Base URL of the API endpoint |
-| `model` | string | required | Model name/ID to use |
-| `auth_style` | string | `"bearer"` | Authentication header style (see below) |
+| `api_key` | string | არასავალდებულო | API ავტენტიფიკაციის გასაღები |
+| `api_url` | string | სავალდებულო | API ენდფოინთის საბაზისო URL |
+| `model` | string | სავალდებულო | მოდელის სახელი/ID |
+| `auth_style` | string | `"bearer"` | ავტენტიფიკაციის ჰედერის სტილი (იხილეთ ქვემოთ) |
 
-### Authentication Styles
+### ავტენტიფიკაციის სტილები
 
-| Style | Header Format | Usage |
+| სტილი | ჰედერის ფორმატი | გამოყენება |
 |-------|---------------|-------|
-| `bearer` | `Authorization: Bearer <key>` | Most providers (default) |
-| `x-api-key` | `x-api-key: <key>` | Some Chinese providers |
-| `custom` | Custom header name | Special cases |
+| `bearer` | `Authorization: Bearer <key>` | უმეტესი პროვაიდერები (ნაგულისხმევი) |
+| `x-api-key` | `x-api-key: <key>` | ზოგიერთი ჩინური პროვაიდერი |
+| `custom` | მორგებული ჰედერის სახელი | სპეციალური შემთხვევები |
 
 ## ფუნქციები
 
-### Automatic Endpoint Detection
+### ენდფოინთის ავტომატური ამოცნობა
 
-PRX automatically appends `/chat/completions` to your base URL. You do not need to include the endpoint path:
+PRX ავტომატურად ამატებს `/chat/completions`-ს თქვენს საბაზისო URL-ს. ენდფოინთის ბილიკის ჩართვა არ გჭირდებათ:
 
 ```toml
-# Correct - PRX appends /chat/completions
+# სწორი - PRX ამატებს /chat/completions
 api_url = "https://api.groq.com/openai/v1"
 
-# Also correct - explicit path works too
+# ასევე სწორი - ექსპლიციტური ბილიკი მუშაობს
 api_url = "https://api.groq.com/openai/v1/chat/completions"
 ```
 
-### Responses API Fallback
+### Responses API სარეზერვო ვარიანტი
 
-For providers that support OpenAI's newer Responses API, PRX can fall back to `/v1/responses` when `/v1/chat/completions` returns a 404. This is enabled by default but can be disabled for providers that do not support it (e.g., GLM/Zhipu).
+პროვაიდერებისთვის, რომლებიც OpenAI-ის უფრო ახალ Responses API-ს უჭერენ მხარს, PRX-ს შეუძლია `/v1/responses`-ზე გადავიდეს, როცა `/v1/chat/completions` 404-ს აბრუნებს. ეს ნაგულისხმევად ჩართულია, მაგრამ შეიძლება გამოირთოს პროვაიდერებისთვის, რომლებიც მას არ უჭერენ მხარს (მაგ., GLM/Zhipu).
 
-### Native Tool Calling
+### მშობლიური ინსტრუმენტების გამოძახება
 
-Tools are sent in OpenAI's standard function-calling format:
+ინსტრუმენტები OpenAI-ის სტანდარტულ ფუნქციების გამოძახების ფორმატში იგზავნება:
 
 ```json
 {
@@ -111,35 +111,35 @@ Tools are sent in OpenAI's standard function-calling format:
 }
 ```
 
-The provider supports `tool_choice: "auto"` and properly deserializes structured `tool_calls` responses.
+პროვაიდერი მხარს უჭერს `tool_choice: "auto"`-ს და სწორად დესერიალიზებს სტრუქტურირებულ `tool_calls` პასუხებს.
 
-### Vision Support
+### ვიზუალის მხარდაჭერა
 
-For vision-capable models, images embedded in messages as `[IMAGE:data:image/png;base64,...]` markers are automatically converted to the OpenAI vision format with `image_url` content blocks.
+ვიზუალის შესაძლებლობის მქონე მოდელებისთვის, შეტყობინებებში `[IMAGE:data:image/png;base64,...]` მარკერებით ჩაშენებული სურათები ავტომატურად გარდაიქმნება OpenAI ვიზუალის ფორმატში `image_url` კონტენტ ბლოკებით.
 
-### Streaming Support
+### ნაკადის მხარდაჭერა
 
-The compatible provider supports SSE streaming for real-time token delivery. Stream events are parsed incrementally with support for:
-- `delta.content` text chunks
-- `delta.tool_calls` for incremental tool call construction
-- `[DONE]` marker detection
-- Graceful timeout handling
+თავსებადი პროვაიდერი მხარს უჭერს SSE ნაკადს ტოკენების რეალურ დროში მიწოდებისთვის. ნაკადის მოვლენები ინკრემენტულად იპარსება შემდეგი მხარდაჭერით:
+- `delta.content` ტექსტის ფრაგმენტები
+- `delta.tool_calls` ინკრემენტული ინსტრუმენტის გამოძახების აგებისთვის
+- `[DONE]` მარკერის ამოცნობა
+- დროის ამოწურვის მეგობრული დამუშავება
 
-### System Message Merging
+### სისტემური შეტყობინებების გაერთიანება
 
-Some providers (e.g., MiniMax) reject `role: system` messages. PRX can automatically merge system message content into the first user message. This is enabled by default for known incompatible providers.
+ზოგიერთი პროვაიდერი (მაგ., MiniMax) უარყოფს `role: system` შეტყობინებებს. PRX-ს შეუძლია ავტომატურად გააერთიანოს სისტემური შეტყობინების კონტენტი პირველ მომხმარებლის შეტყობინებაში. ეს ნაგულისხმევად ჩართულია ცნობილი არათავსებადი პროვაიდერებისთვის.
 
-### HTTP/1.1 Forced Mode
+### HTTP/1.1 იძულებითი რეჟიმი
 
-Some providers (notably DashScope/Qwen) require HTTP/1.1 instead of HTTP/2. PRX automatically detects these endpoints and forces HTTP/1.1 for connection reliability.
+ზოგიერთი პროვაიდერი (კერძოდ, DashScope/Qwen) მოითხოვს HTTP/1.1-ს HTTP/2-ის ნაცვლად. PRX ავტომატურად ამოიცნობს ამ ენდფოინთებს და აიძულებს HTTP/1.1-ს კავშირის სანდოობისთვის.
 
-### Reasoning Content Fallback
+### მსჯელობის კონტენტის სარეზერვო ვარიანტი
 
-For reasoning models that return output in `reasoning_content` instead of `content`, PRX automatically falls back to extract the reasoning text.
+მსჯელობის მოდელებისთვის, რომლებიც გამოსავალს `reasoning_content`-ში აბრუნებენ `content`-ის ნაცვლად, PRX ავტომატურად გადადის მსჯელობის ტექსტის ამოღებაზე.
 
-## Advanced Configuration
+## გაფართოებული კონფიგურაცია
 
-### Local LLM Server (vLLM, llama.cpp, etc.)
+### ლოკალური LLM სერვერი (vLLM, llama.cpp და სხვ.)
 
 ```toml
 [default]
@@ -148,10 +148,10 @@ model = "meta-llama/Llama-3.1-8B-Instruct"
 
 [providers.compatible]
 api_url = "http://localhost:8000/v1"
-# No api_key needed for local servers
+# ლოკალური სერვერებისთვის api_key არ არის საჭირო
 ```
 
-### LiteLLM Proxy
+### LiteLLM პროქსი
 
 ```toml
 [default]
@@ -163,9 +163,9 @@ api_key = "${LITELLM_API_KEY}"
 api_url = "http://localhost:4000"
 ```
 
-### Multiple Custom Providers
+### მრავალი მორგებული პროვაიდერი
 
-Use the model router to configure multiple compatible providers:
+გამოიყენეთ მოდელის როუტერი მრავალი თავსებადი პროვაიდერის კონფიგურაციისთვის:
 
 ```toml
 [default]
@@ -187,32 +187,32 @@ api_key = "${MISTRAL_API_KEY}"
 
 ## პრობლემების მოგვარება
 
-### Connection refused
+### კავშირი უარყოფილია
 
-Ensure the API endpoint is reachable:
+დარწმუნდით, რომ API ენდფოინთი მისაწვდომია:
 ```bash
 curl -v https://api.your-provider.com/v1/models
 ```
 
 ### 401 Unauthorized
 
-- Verify your API key is correct
-- Check the authentication style matches your provider (Bearer vs x-api-key)
-- Some providers require additional headers; use a named provider alias if available
+- დარწმუნდით, რომ თქვენი API გასაღები სწორია
+- შეამოწმეთ, შეესაბამება თუ არა ავტენტიფიკაციის სტილი თქვენს პროვაიდერს (Bearer vs x-api-key)
+- ზოგიერთი პროვაიდერი დამატებით ჰედერებს მოითხოვს; გამოიყენეთ დასახელებული პროვაიდერის მეტსახელი, თუ ხელმისაწვდომია
 
-### "role: system" rejected
+### "role: system" უარყოფილია
 
-If your provider does not support system messages, PRX should handle this automatically for known providers. For custom endpoints, this is a provider limitation. Workaround: include system instructions in the first user message.
+თუ თქვენი პროვაიდერი სისტემურ შეტყობინებებს არ უჭერს მხარს, PRX ეს ცნობილი პროვაიდერებისთვის ავტომატურად უნდა დაამუშავოს. მორგებული ენდფოინთებისთვის ეს პროვაიდერის შეზღუდვაა. გამოსავალი: ჩართეთ სისტემური ინსტრუქციები პირველ მომხმარებლის შეტყობინებაში.
 
-### Streaming not working
+### ნაკადი არ მუშაობს
 
-Not all OpenAI-compatible APIs support streaming. If streaming fails, PRX falls back to non-streaming mode automatically.
+ყველა OpenAI-თავსებადი API არ უჭერს მხარს ნაკადს. თუ ნაკადი ვერ ხერხდება, PRX ავტომატურად გადადის არა-ნაკადურ რეჟიმზე.
 
-### Model not found
+### მოდელი ვერ მოიძებნა
 
-Verify the exact model name/ID your provider expects. Different providers use different naming conventions:
+შეამოწმეთ ზუსტი მოდელის სახელი/ID, რომელსაც თქვენი პროვაიდერი მოითხოვს. სხვადასხვა პროვაიდერი სხვადასხვა სახელთა კონვენციას იყენებს:
 - Groq: `llama-3.3-70b-versatile`
 - Mistral: `mistral-large-latest`
 - xAI: `grok-2`
 
-Check your provider's documentation for the correct model identifiers.
+სწორი მოდელის იდენტიფიკატორებისთვის შეამოწმეთ თქვენი პროვაიდერის დოკუმენტაცია.

@@ -1,233 +1,239 @@
 ---
-title: Retrieval-Augmented Generation (RAG)
-description: How PRX uses embeddings and memory search to inject relevant context into LLM prompts before generation.
+title: მოძიებით გაძლიერებული გენერაცია (RAG)
+description: როგორ იყენებს PRX ჩაშენებებსა (embeddings) და მეხსიერების ძიებას რელევანტური კონტექსტის LLM პრომპტებში ინექციისთვის გენერაციამდე.
 ---
 
-# Retrieval-Augmented Generation (RAG)
+# მოძიებით გაძლიერებული გენერაცია (RAG)
 
-PRX implements Retrieval-Augmented Generation (RAG) to enhance LLM responses with relevant context from the agent's memory and knowledge stores. Instead of relying solely on the LLM's parametric knowledge, RAG retrieves pertinent documents and injects them into the prompt -- reducing hallucinations and grounding responses in factual, up-to-date information.
+PRX მოძიებით გაძლიერებულ გენერაციას (RAG) ახორციელებს LLM პასუხების გასაძლიერებლად აგენტის მეხსიერებისა და ცოდნის საცავებიდან რელევანტური კონტექსტით. მხოლოდ LLM-ის პარამეტრულ ცოდნაზე დაყრდნობის ნაცვლად, RAG შესაბამის დოკუმენტებს მოიძიებს და პრომპტში ჩაშვებს -- რაც ჰალუცინაციებს ამცირებს და პასუხებს ფაქტობრივ, განახლებულ ინფორმაციაზე აფუძნებს.
 
 ## მიმოხილვა
 
-The RAG pipeline runs before every LLM call in the agent loop:
+RAG პაიპლაინი აგენტის ციკლში ყოველ LLM გამოძახებამდე შესრულდება:
 
 ```
-User Message
+მომხმარებლის შეტყობინება
     │
     ▼
 ┌──────────────────────────┐
-│  1. Query Formulation     │  Extract search terms from the
-│                           │  user message + conversation context
+│  1. მოთხოვნის ფორმულირება │  საძიებო ტერმინების ამოღება
+│                           │  მომხმარებლის შეტყობინებიდან
+│                           │  + საუბრის კონტექსტიდან
 └──────────┬───────────────┘
            │
            ▼
 ┌──────────────────────────┐
-│  2. Embedding Generation  │  Convert query to a vector using
-│                           │  the configured embedding provider
+│  2. ჩაშენების გენერაცია  │  მოთხოვნის ვექტორად გარდაქმნა
+│                           │  კონფიგურირებული ჩაშენების
+│                           │  პროვაიდერის გამოყენებით
 └──────────┬───────────────┘
            │
            ▼
 ┌──────────────────────────┐
-│  3. Memory Search         │  Search across memory backends:
-│                           │  vector similarity + full-text
+│  3. მეხსიერების ძიება    │  ძიება მეხსიერების ბექენდებში:
+│                           │  ვექტორული მსგავსება + სრული
+│                           │  ტექსტური ძიება
 └──────────┬───────────────┘
            │
            ▼
 ┌──────────────────────────┐
-│  4. Relevance Filtering   │  Score and filter results above
-│                           │  the relevance threshold
+│  4. რელევანტურობის       │  შედეგების შეფასება და
+│     ფილტრაცია            │  რელევანტურობის ზღურბლს ზემოთ
+│                           │  მყოფების გაფილტვრა
 └──────────┬───────────────┘
            │
            ▼
 ┌──────────────────────────┐
-│  5. Context Injection     │  Format results and inject into
-│                           │  the system prompt / context window
+│  5. კონტექსტის ინექცია   │  შედეგების ფორმატირება და
+│                           │  სისტემურ პრომპტში / კონტექსტის
+│                           │  ფანჯარაში ჩაშვება
 └──────────┬───────────────┘
            │
            ▼
 ┌──────────────────────────┐
-│  6. LLM Generation        │  Model generates response with
-│                           │  full context available
+│  6. LLM გენერაცია        │  მოდელი პასუხს სრული
+│                           │  კონტექსტით ხელმისაწვდომი
+│                           │  გენერირებს
 └──────────────────────────┘
 ```
 
 ## კონფიგურაცია
 
-Enable RAG in `config.toml`:
+RAG-ის ჩართვა `config.toml`-ში:
 
 ```toml
 [memory]
-backend = "embeddings"  # RAG requires the embeddings backend
+backend = "embeddings"  # RAG-ს ჩაშენებების ბექენდი სჭირდება
 
 [memory.embeddings]
-# Embedding provider: "openai" | "ollama" | "local"
+# ჩაშენების პროვაიდერი: "openai" | "ollama" | "local"
 provider = "openai"
 model = "text-embedding-3-small"
 dimensions = 1536
 
-# Vector store backend
+# ვექტორული საცავის ბექენდი
 vector_store = "sqlite"  # "sqlite" | "postgres" | "qdrant"
 
 [rag]
 enabled = true
 
-# Maximum number of retrieved chunks to inject into context.
+# კონტექსტში ჩაშვებისთვის მოძიებული ფრაგმენტების მაქსიმალური რაოდენობა.
 max_results = 10
 
-# Minimum relevance score (0.0 to 1.0) for a chunk to be included.
+# მინიმალური რელევანტურობის ქულა (0.0-დან 1.0-მდე) ფრაგმენტის ჩასართავად.
 relevance_threshold = 0.3
 
-# Maximum total tokens allocated for RAG context.
-# Prevents context window overflow.
+# RAG კონტექსტისთვის გამოყოფილი ტოკენების მაქსიმალური რაოდენობა.
+# კონტექსტის ფანჯრის გადავსებას თავიდან იცილებს.
 max_context_tokens = 4000
 
-# Strategy for selecting which chunks to include when
-# max_context_tokens would be exceeded.
-# "top_k" -- highest relevance scores first
-# "mmr" -- maximal marginal relevance (diversity + relevance)
+# ფრაგმენტების შერჩევის სტრატეგია, როდესაც max_context_tokens
+# გადამეტებული იქნებოდა.
+# "top_k" -- ყველაზე მაღალი რელევანტურობის ქულები პირველი
+# "mmr" -- მაქსიმალური ზღვრული რელევანტურობა (მრავალფეროვნება + რელევანტურობა)
 selection_strategy = "top_k"
 ```
 
-### Embedding Providers
+### ჩაშენების პროვაიდერები
 
-PRX supports multiple embedding providers:
+PRX მრავალ ჩაშენების პროვაიდერს უჭერს მხარს:
 
-| Provider | Model | Dimensions | Notes |
+| პროვაიდერი | მოდელი | განზომილებები | შენიშვნები |
 |----------|-------|------------|-------|
-| OpenAI | text-embedding-3-small | 1536 | Best quality/cost ratio |
-| OpenAI | text-embedding-3-large | 3072 | Highest quality |
-| Ollama | nomic-embed-text | 768 | Local, no API cost |
-| Ollama | mxbai-embed-large | 1024 | Local, higher quality |
-| Local | fastembed | 384 | Bundled, no network |
+| OpenAI | text-embedding-3-small | 1536 | საუკეთესო ხარისხი/ფასის თანაფარდობა |
+| OpenAI | text-embedding-3-large | 3072 | უმაღლესი ხარისხი |
+| Ollama | nomic-embed-text | 768 | ლოკალური, API ხარჯის გარეშე |
+| Ollama | mxbai-embed-large | 1024 | ლოკალური, უფრო მაღალი ხარისხი |
+| Local | fastembed | 384 | ჩაშენებული, ქსელის გარეშე |
 
-Configure the embedding provider:
+ჩაშენების პროვაიდერის კონფიგურაცია:
 
 ```toml
-# OpenAI embeddings
+# OpenAI ჩაშენებები
 [memory.embeddings]
 provider = "openai"
 model = "text-embedding-3-small"
 api_key = "${OPENAI_API_KEY}"
 
-# Ollama embeddings (local)
+# Ollama ჩაშენებები (ლოკალური)
 [memory.embeddings]
 provider = "ollama"
 model = "nomic-embed-text"
 endpoint = "http://localhost:11434"
 
-# Built-in local embeddings (no external service)
+# ჩაშენებული ლოკალური ჩაშენებები (გარე სერვისის გარეშე)
 [memory.embeddings]
 provider = "local"
 model = "fastembed"
 ```
 
-## Chunking Strategies
+## ფრაგმენტაციის სტრატეგიები
 
-Before documents can be embedded and searched, they must be split into chunks. PRX supports several chunking strategies:
+დოკუმენტების ჩაშენებისა და ძიების წინ ისინი ფრაგმენტებად უნდა დაიყოს. PRX რამდენიმე ფრაგმენტაციის სტრატეგიას უჭერს მხარს:
 
-| Strategy | Description | Best For |
+| სტრატეგია | აღწერა | საუკეთესო |
 |----------|-------------|----------|
-| `fixed_size` | Split at fixed token counts with overlap | Uniform documents |
-| `sentence` | Split at sentence boundaries | Prose and natural text |
-| `paragraph` | Split at paragraph boundaries | Structured documents |
-| `semantic` | Split at topic boundaries using embeddings | Long, varied documents |
-| `recursive` | Hierarchical splitting (heading > paragraph > sentence) | Markdown/code |
+| `fixed_size` | დაყოფა ფიქსირებულ ტოკენთა რაოდენობაზე გადაფარვით | ერთგვაროვანი დოკუმენტები |
+| `sentence` | დაყოფა წინადადებების საზღვრებზე | პროზა და ბუნებრივი ტექსტი |
+| `paragraph` | დაყოფა აბზაცების საზღვრებზე | სტრუქტურირებული დოკუმენტები |
+| `semantic` | დაყოფა თემატურ საზღვრებზე ჩაშენებების გამოყენებით | გრძელი, მრავალფეროვანი დოკუმენტები |
+| `recursive` | იერარქიული დაყოფა (სათაური > აბზაცი > წინადადება) | Markdown/კოდი |
 
 ```toml
 [rag.chunking]
 strategy = "recursive"
 
-# Target chunk size in tokens.
+# სამიზნე ფრაგმენტის ზომა ტოკენებში.
 chunk_size = 512
 
-# Overlap between adjacent chunks (prevents losing context at boundaries).
+# მეზობელ ფრაგმენტებს შორის გადაფარვა (საზღვრებზე კონტექსტის დაკარგვის თავიდან აცილება).
 chunk_overlap = 64
 
-# For recursive strategy: separators in priority order.
+# რეკურსიული სტრატეგიისთვის: გამყოფები პრიორიტეტის მიხედვით.
 separators = ["\n## ", "\n### ", "\n\n", "\n", ". "]
 ```
 
-## Retrieval Pipeline
+## მოძიების პაიპლაინი
 
-### Steps 1-3: Query, Embed, Search
+### ნაბიჯები 1-3: მოთხოვნა, ჩაშენება, ძიება
 
-The RAG module extracts a search query from the user's latest message (optionally reformulated via LLM with `query_reformulation = true`), converts it to a vector using the embedding provider, and searches across all memory backends simultaneously -- vector similarity (cosine) and full-text search (FTS5/pg_trgm). Results are merged and deduplicated.
+RAG მოდული მომხმარებლის უახლესი შეტყობინებიდან საძიებო მოთხოვნას ამოიღებს (არჩევითად LLM-ით გადაფორმულირებული `query_reformulation = true` შემთხვევაში), მას ჩაშენების პროვაიდერის გამოყენებით ვექტორად გარდაქმნის და ყველა მეხსიერების ბექენდში ერთდროულად ეძებს -- ვექტორული მსგავსება (კოსინუსი) და სრული ტექსტური ძიება (FTS5/pg_trgm). შედეგები გაერთიანდება და დედუბლიკატებს მოშორდება.
 
-### Step 4: Relevance Filtering
+### ნაბიჯი 4: რელევანტურობის ფილტრაცია
 
-Each result receives a relevance score between 0.0 and 1.0. Results below `relevance_threshold` are discarded. The scoring considers:
+თითოეული შედეგი 0.0-დან 1.0-მდე რელევანტურობის ქულას იღებს. `relevance_threshold`-ს ქვემოთ მყოფი შედეგები უარყოფილია. ქულის გამოთვლა ითვალისწინებს:
 
-- Vector cosine similarity (primary signal)
-- Full-text match score (boost factor)
-- Recency (newer memories get a slight boost)
-- Source priority (core memories ranked higher than conversation)
+- ვექტორული კოსინუსის მსგავსებას (პირველადი სიგნალი)
+- სრული ტექსტური შედარების ქულას (გაძლიერების ფაქტორი)
+- სიახლეს (ახალი მეხსიერებები მცირე გაძლიერებას იღებს)
+- წყაროს პრიორიტეტს (ბირთვული მეხსიერებები საუბრის მეხსიერებაზე მაღლა რანჟირდება)
 
-### Step 5: Context Injection
+### ნაბიჯი 5: კონტექსტის ინექცია
 
-Filtered results are formatted with structured XML tags (`<context><memory source="..." relevance="...">`) and injected into the LLM prompt. The total injected context is capped at `max_context_tokens` to prevent context window overflow.
+გაფილტრული შედეგები სტრუქტურირებული XML ტეგებით (`<context><memory source="..." relevance="...">`) ფორმატირდება და LLM პრომპტში ჩაშვდება. ჩაშვებული კონტექსტის მთლიანი რაოდენობა `max_context_tokens`-ით იზღუდება კონტექსტის ფანჯრის გადავსების თავიდან ასაცილებლად.
 
-## Selection Strategies
+## შერჩევის სტრატეგიები
 
 ### Top-K
 
-The default strategy. Selects the K highest-scoring chunks that fit within `max_context_tokens`. Simple and predictable, but may return redundant results when multiple chunks cover the same topic.
+ნაგულისხმევი სტრატეგია. `max_context_tokens`-ში ჯდომადი K ყველაზე მაღალქულიანი ფრაგმენტის შერჩევა. მარტივი და პროგნოზირებადი, მაგრამ შეიძლება ზედმეტი შედეგები დააბრუნოს, როდესაც მრავალი ფრაგმენტი ერთსა და იმავე თემას ფარავს.
 
-### Maximal Marginal Relevance (MMR)
+### მაქსიმალური ზღვრული რელევანტურობა (MMR)
 
-MMR balances relevance with diversity. It iteratively selects chunks that are both relevant to the query and different from already-selected chunks:
+MMR რელევანტურობასა და მრავალფეროვნებას აბალანსებს. იტერაციულად ირჩევს ფრაგმენტებს, რომლებიც ერთდროულად მოთხოვნისთვის რელევანტურია და უკვე შერჩეული ფრაგმენტებისგან განსხვავდება:
 
 ```toml
 [rag]
 selection_strategy = "mmr"
 
-# Lambda controls the relevance-diversity tradeoff.
-# 1.0 = pure relevance (same as top_k)
-# 0.0 = pure diversity
+# Lambda აკონტროლებს რელევანტურობა-მრავალფეროვნების თანაფარდობას.
+# 1.0 = სრული რელევანტურობა (იგივეა, რაც top_k)
+# 0.0 = სრული მრავალფეროვნება
 mmr_lambda = 0.7
 ```
 
-MMR is recommended when the knowledge base contains overlapping or redundant information.
+MMR რეკომენდებულია, როდესაც ცოდნის ბაზა გადაფარვად ან ზედმეტ ინფორმაციას შეიცავს.
 
-## Indexing Documents
+## დოკუმენტების ინდექსირება
 
-### Automatic Indexing
+### ავტომატური ინდექსირება
 
-Memories stored via the `memory_store` tool are automatically embedded and indexed. No additional configuration is required.
+`memory_store` ინსტრუმენტით შენახული მეხსიერებები ავტომატურად იჩაშენება და ინდექსირდება. დამატებითი კონფიგურაცია არ არის საჭირო.
 
-### Manual Document Ingestion
+### დოკუმენტების ხელით შეტანა
 
-For bulk document ingestion, use the CLI:
+დოკუმენტების მასობრივი შეტანისთვის გამოიყენეთ CLI:
 
 ```bash
-# Index a single file or directory
+# ერთი ფაილის ან დირექტორიის ინდექსირება
 prx rag index /path/to/document.md
 prx rag index /path/to/docs/ --recursive
 
-# Re-index all documents (rebuilds embeddings)
+# ყველა დოკუმენტის ხელახალი ინდექსირება (ჩაშენებების ხელახალი აშენება)
 prx rag reindex
 ```
 
-Supported formats: Markdown (`.md`), plain text (`.txt`), PDF (`.pdf`), HTML (`.html`), and source code (`.rs`, `.py`, `.js`).
+მხარდაჭერილი ფორმატები: Markdown (`.md`), უბრალო ტექსტი (`.txt`), PDF (`.pdf`), HTML (`.html`) და წყაროს კოდი (`.rs`, `.py`, `.js`).
 
-## Performance Tuning
+## წარმადობის ოპტიმიზაცია
 
-| Parameter | Recommendation |
+| პარამეტრი | რეკომენდაცია |
 |-----------|----------------|
-| `chunk_size` | 256-512 tokens for Q&A, 512-1024 for summarization |
-| `chunk_overlap` | 10-20% of chunk_size |
-| `max_results` | 5-15 for most use cases |
-| `relevance_threshold` | 0.3-0.5 (tune based on quality) |
+| `chunk_size` | 256-512 ტოკენი კითხვა-პასუხისთვის, 512-1024 შეჯამებისთვის |
+| `chunk_overlap` | chunk_size-ის 10-20% |
+| `max_results` | 5-15 უმეტესი სცენარებისთვის |
+| `relevance_threshold` | 0.3-0.5 (ხარისხის მიხედვით დარეგულირება) |
 
-## Security Notes
+## უსაფრთხოების შენიშვნები
 
-- RAG context is injected into the LLM prompt. Ensure that stored documents do not contain sensitive data unless the agent is authorized to access it.
-- When `memory.acl_enabled = true`, RAG respects access control lists. Only memories accessible to the current principal are retrieved.
-- Embedding API calls transmit document content to the embedding provider. For sensitive data, use a local embedding provider (`ollama` or `local`).
+- RAG კონტექსტი LLM პრომპტში ჩაშვდება. დარწმუნდით, რომ შენახული დოკუმენტები არ შეიცავს სენსიტიურ მონაცემებს, თუ აგენტი არ არის ავტორიზებული მათზე წვდომისთვის.
+- `memory.acl_enabled = true` შემთხვევაში RAG წვდომის კონტროლის სიებს პატივს სცემს. მხოლოდ მიმდინარე პრინციპალისთვის ხელმისაწვდომი მეხსიერებები მოიძიება.
+- ჩაშენების API გამოძახებები დოკუმენტის კონტენტს ჩაშენების პროვაიდერზე გადაცემს. სენსიტიური მონაცემებისთვის გამოიყენეთ ლოკალური ჩაშენების პროვაიდერი (`ollama` ან `local`).
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Memory System](/ka/prx/memory/)
-- [Embeddings](/ka/prx/memory/embeddings)
-- [Vector Search](/ka/prx/memory/vector-search)
-- [SQLite Backend](/ka/prx/memory/sqlite)
-- [PostgreSQL Backend](/ka/prx/memory/postgres)
+- [მეხსიერების სისტემა](/ka/prx/memory/)
+- [ჩაშენებები](/ka/prx/memory/embeddings)
+- [ვექტორული ძიება](/ka/prx/memory/vector-search)
+- [SQLite ბექენდი](/ka/prx/memory/sqlite)
+- [PostgreSQL ბექენდი](/ka/prx/memory/postgres)

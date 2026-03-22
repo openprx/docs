@@ -1,64 +1,64 @@
 ---
 title: ევოლუციის უსაფრთხოება
-description: Rollback protection, sanity checks, and safety mechanisms for PRX self-evolution.
+description: უკუქცევის დაცვა, საღი აზრის შემოწმებები და უსაფრთხოების მექანიზმები PRX თვით-ევოლუციისთვის.
 ---
 
-# Evolution Safety
+# ევოლუციის უსაფრთხოება
 
-Safety is the top priority of the self-evolution system. Every change includes rollback capability, pre/post sanity checks, and automatic regression detection to prevent harmful modifications.
+უსაფრთხოება თვით-ევოლუციის სისტემის უმთავრესი პრიორიტეტია. ყოველი ცვლილება მოიცავს უკუქცევის შესაძლებლობას, შესრულებამდე/შემდეგ საღი აზრის შემოწმებებს და ავტომატურ რეგრესიის აღმოჩენას მავნე მოდიფიკაციების თავიდან ასაცილებლად.
 
-## Safety Mechanisms
+## უსაფრთხოების მექანიზმები
 
-### Rollback Protection
+### უკუქცევის დაცვა
 
-Every evolution change creates a snapshot before application. If issues are detected, the system can instantly revert to the previous state:
+ყოველი ევოლუციის ცვლილება გამოყენებამდე სნეპშოტს ქმნის. პრობლემების აღმოჩენისას სისტემა შეუძლია მყისიერად დაუბრუნდეს წინა მდგომარეობას:
 
-- **Automatic rollback** -- triggered when post-change sanity checks fail
-- **Manual rollback** -- available via CLI for human-initiated reversions
-- **Time-based rollback** -- changes auto-revert if not explicitly confirmed within the rollback window
+- **ავტომატური უკუქცევა** -- გააქტიურდება ცვლილების შემდგომი საღი აზრის შემოწმებების წარუმატებლობისას
+- **ხელით უკუქცევა** -- ხელმისაწვდომია CLI-ით ადამიანის მიერ ინიცირებული დაბრუნებისთვის
+- **დროზე დაფუძნებული უკუქცევა** -- ცვლილებები ავტომატურად უბრუნდება, თუ უკუქცევის ფანჯრის ფარგლებში ცალსახად არ დადასტურდა
 
-### Sanity Checks
+### საღი აზრის შემოწმებები
 
-Before and after every change, the system validates:
+ყოველი ცვლილების წინ და შემდეგ სისტემა ამოწმებს:
 
-- Core functionality still works (smoke tests)
-- Safety invariants are maintained (e.g., no security policy weakening)
-- Performance metrics remain within acceptable bounds
-- No circular dependencies or conflicting rules
+- ძირითადი ფუნქციონალობა კვლავ მუშაობს (კვამლის ტესტები)
+- უსაფრთხოების ინვარიანტები შენარჩუნებულია (მაგ., უსაფრთხოების პოლიტიკის შესუსტება არ მომხდარა)
+- წარმადობის მეტრიკები მისაღებ ფარგლებში რჩება
+- წრიული დამოკიდებულებები ან კონფლიქტური წესები არ არსებობს
 
-### Regression Detection
+### რეგრესიის აღმოჩენა
 
-After a change is applied, the system monitors key metrics for a configurable period:
+ცვლილების გამოყენების შემდეგ სისტემა საკვანძო მეტრიკებს მონიტორინგს უკეთებს კონფიგურირებადი პერიოდის განმავლობაში:
 
-- Task completion rate
-- Error rate
-- Average response quality
-- User satisfaction signals
+- ამოცანის დასრულების მაჩვენებელი
+- შეცდომების მაჩვენებელი
+- პასუხის საშუალო ხარისხი
+- მომხმარებლის კმაყოფილების სიგნალები
 
-If any metric degrades beyond a threshold, the change is automatically rolled back.
+თუ ნებისმიერი მეტრიკა ზღურბლის მიღმა გაუარესდება, ცვლილება ავტომატურად უკუბრუნდება.
 
 ## კონფიგურაცია
 
 ```toml
 [self_evolution.safety]
 rollback_enabled = true
-rollback_window_hours = 168  # 7 days
+rollback_window_hours = 168  # 7 დღე
 sanity_check_timeout_secs = 30
 regression_monitoring_hours = 24
-max_regression_threshold = 0.1  # 10% degradation triggers rollback
+max_regression_threshold = 0.1  # 10% გაუარესება უკუქცევას იწვევს
 ```
 
-## CLI Commands
+## CLI ბრძანებები
 
 ```bash
-prx evolution status          # View active evolution state
-prx evolution rollback        # Rollback the last change
-prx evolution history         # View evolution history
-prx evolution approve <id>    # Approve a pending proposal
+prx evolution status          # აქტიური ევოლუციის მდგომარეობის ნახვა
+prx evolution rollback        # ბოლო ცვლილების უკუქცევა
+prx evolution history         # ევოლუციის ისტორიის ნახვა
+prx evolution approve <id>    # მოლოდინში მყოფი წინადადების დამტკიცება
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [Evolution Pipeline](./pipeline)
-- [Security Policy Engine](/ka/prx/security/policy-engine)
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [ევოლუციის პაიპლაინი](./pipeline)
+- [უსაფრთხოების პოლიტიკის ძრავა](/ka/prx/security/policy-engine)

@@ -1,49 +1,49 @@
 ---
 title: ჰოსტ ფუნქციები
-description: Reference for host functions available to PRX WASM plugins.
+description: PRX WASM დანამატებისთვის ხელმისაწვდომი ჰოსტ ფუნქციების მითითება.
 ---
 
-# Host Functions
+# ჰოსტ ფუნქციები
 
-Host functions are the API surface exposed by PRX to WASM plugins. They provide controlled access to host capabilities like HTTP requests, file operations, and agent state.
+ჰოსტ ფუნქციები PRX-ის მიერ WASM დანამატებისთვის გამოქვეყნებული API ზედაპირია. ისინი ჰოსტის შესაძლებლობებზე კონტროლირებულ წვდომას უზრუნველყოფს, როგორიცაა HTTP მოთხოვნები, ფაილის ოპერაციები და აგენტის მდგომარეობა.
 
-## Available Host Functions
+## ხელმისაწვდომი ჰოსტ ფუნქციები
 
 ### HTTP
 
-| Function | Description | Permission |
-|----------|-------------|-----------|
-| `http_request(method, url, headers, body)` | Make an HTTP request | `net.http` |
-| `http_get(url)` | Shorthand for GET request | `net.http` |
-| `http_post(url, body)` | Shorthand for POST request | `net.http` |
+| ფუნქცია | აღწერა | ნებართვა |
+|---------|--------|----------|
+| `http_request(method, url, headers, body)` | HTTP მოთხოვნის შესრულება | `net.http` |
+| `http_get(url)` | GET მოთხოვნის შემოკლება | `net.http` |
+| `http_post(url, body)` | POST მოთხოვნის შემოკლება | `net.http` |
 
-### Filesystem
+### ფაილური სისტემა
 
-| Function | Description | Permission |
-|----------|-------------|-----------|
-| `fs_read(path)` | Read a file | `fs.read` |
-| `fs_write(path, data)` | Write a file | `fs.write` |
-| `fs_list(path)` | List directory contents | `fs.read` |
+| ფუნქცია | აღწერა | ნებართვა |
+|---------|--------|----------|
+| `fs_read(path)` | ფაილის წაკითხვა | `fs.read` |
+| `fs_write(path, data)` | ფაილის ჩაწერა | `fs.write` |
+| `fs_list(path)` | დირექტორიის შინაარსის ჩამონათვალი | `fs.read` |
 
-### Agent State
+### აგენტის მდგომარეობა
 
-| Function | Description | Permission |
-|----------|-------------|-----------|
-| `memory_get(key)` | Read from agent memory | `agent.memory.read` |
-| `memory_set(key, value)` | Write to agent memory | `agent.memory.write` |
-| `config_get(key)` | Read plugin configuration | `agent.config` |
+| ფუნქცია | აღწერა | ნებართვა |
+|---------|--------|----------|
+| `memory_get(key)` | აგენტის მეხსიერებიდან წაკითხვა | `agent.memory.read` |
+| `memory_set(key, value)` | აგენტის მეხსიერებაში ჩაწერა | `agent.memory.write` |
+| `config_get(key)` | დანამატის კონფიგურაციის წაკითხვა | `agent.config` |
 
-### Logging
+### ჟურნალირება
 
-| Function | Description | Permission |
-|----------|-------------|-----------|
-| `log_info(msg)` | Log at info level | Always allowed |
-| `log_warn(msg)` | Log at warn level | Always allowed |
-| `log_error(msg)` | Log at error level | Always allowed |
+| ფუნქცია | აღწერა | ნებართვა |
+|---------|--------|----------|
+| `log_info(msg)` | info დონეზე ჟურნალირება | ყოველთვის ნებადართული |
+| `log_warn(msg)` | warn დონეზე ჟურნალირება | ყოველთვის ნებადართული |
+| `log_error(msg)` | error დონეზე ჟურნალირება | ყოველთვის ნებადართული |
 
-## Permission Manifest
+## ნებართვების მანიფესტი
 
-Each plugin declares required permissions in its manifest:
+ყოველი დანამატი საჭირო ნებართვებს მანიფესტში აცხადებს:
 
 ```toml
 [permissions]
@@ -52,8 +52,8 @@ fs.read = ["/data/*"]
 agent.memory.read = true
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Plugin Architecture](./architecture)
-- [PDK Reference](./pdk)
-- [Security Sandbox](/ka/prx/security/sandbox)
+- [დანამატის არქიტექტურა](./architecture)
+- [PDK მითითება](./pdk)
+- [უსაფრთხოების სენდბოქსი](/ka/prx/security/sandbox)

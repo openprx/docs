@@ -1,28 +1,28 @@
 ---
 title: ევრისტიკული მარშრუტიზატორი
-description: Rule-based LLM routing in PRX using query feature scoring and capability matching.
+description: წესებზე დაფუძნებული LLM მარშრუტიზაცია PRX-ში შეკითხვის ფუნქციების ქულებითა და შესაძლებლობების შესაბამისობით.
 ---
 
-# Heuristic Router
+# ევრისტიკული მარშრუტიზატორი
 
-The heuristic router uses a rule-based scoring system to select the optimal model for each query. It analyzes query features (length, complexity, tool requirements) and matches them against model capability profiles.
+ევრისტიკული მარშრუტიზატორი წესებზე დაფუძნებულ ქულების სისტემას იყენებს თითოეული შეკითხვისთვის ოპტიმალური მოდელის ასარჩევად. იგი ანალიზებს შეკითხვის ფუნქციებს (სიგრძე, სირთულე, ინსტრუმენტების მოთხოვნები) და მათ მოდელის შესაძლებლობების პროფილებთან ადარებს.
 
 ## როგორ მუშაობს
 
-1. **Feature extraction** -- analyze the query for length, keyword patterns, and tool requirements
-2. **Capability scoring** -- score each model's suitability based on extracted features
-3. **Cost weighting** -- apply cost preferences to favor cheaper models for simple queries
-4. **Selection** -- choose the highest-scoring model that meets minimum quality thresholds
+1. **ფუნქციების ამოღება** -- შეკითხვის ანალიზი სიგრძის, საკვანძო სიტყვების შაბლონებისა და ინსტრუმენტების მოთხოვნებისთვის
+2. **შესაძლებლობების ქულირება** -- თითოეული მოდელის შესაბამისობის ქულირება ამოღებული ფუნქციების მიხედვით
+3. **ხარჯების წონა** -- ხარჯების პრეფერენციების გამოყენება მარტივი შეკითხვებისთვის იაფი მოდელების უპირატესობით
+4. **არჩევა** -- ყველაზე მაღალი ქულის მოდელის არჩევა, რომელიც მინიმალურ ხარისხის ზღურბლებს აკმაყოფილებს
 
-## Scoring Factors
+## ქულირების ფაქტორები
 
-| Factor | Weight | Description |
-|--------|--------|-------------|
-| Capability match | 0.4 | Model's ability to handle the query type |
-| Elo rating | 0.2 | Historical model performance |
-| Cost efficiency | 0.2 | Tokens per dollar |
-| Latency | 0.1 | Average response time |
-| Context window | 0.1 | Fits the conversation context |
+| ფაქტორი | წონა | აღწერა |
+|---------|------|--------|
+| შესაძლებლობების შესაბამისობა | 0.4 | მოდელის უნარი შეკითხვის ტიპის დამუშავებისთვის |
+| Elo რეიტინგი | 0.2 | ისტორიული მოდელის წარმადობა |
+| ხარჯ-ეფექტურობა | 0.2 | ტოკენები დოლარზე |
+| შეყოვნება | 0.1 | საშუალო პასუხის დრო |
+| კონტექსტის ფანჯარა | 0.1 | საუბრის კონტექსტის თავსებადობა |
 
 ## კონფიგურაცია
 
@@ -37,8 +37,8 @@ elo_weight = 0.2
 cost_weight = 0.2
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Router Overview](./)
-- [KNN Router](./knn)
-- [Automix Router](./automix)
+- [მარშრუტიზატორის მიმოხილვა](./)
+- [KNN მარშრუტიზატორი](./knn)
+- [Automix მარშრუტიზატორი](./automix)

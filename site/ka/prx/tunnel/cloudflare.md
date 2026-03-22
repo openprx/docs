@@ -1,29 +1,29 @@
 ---
 title: Cloudflare გვირაბი
-description: Integrate PRX with Cloudflare Tunnel for zero-trust ingress using cloudflared.
+description: PRX-ის Cloudflare Tunnel-თან ინტეგრაცია ნულოვანი ნდობის შესვლისთვის cloudflared-ის გამოყენებით.
 ---
 
-# Cloudflare Tunnel
+# Cloudflare გვირაბი
 
-Cloudflare Tunnel (formerly Argo Tunnel) creates an encrypted, outbound-only connection from your PRX instance to Cloudflare's edge network. No public IP, open firewall ports, or port forwarding required. Cloudflare terminates TLS and routes traffic to your local agent through the tunnel.
+Cloudflare Tunnel (ყოფილი Argo Tunnel) ქმნის დაშიფრულ, მხოლოდ გამავალ კავშირს თქვენი PRX ინსტანციიდან Cloudflare-ის ზღვრულ ქსელამდე. საჯარო IP, ღია firewall პორტები ან პორტის გადამისამართება არ არის საჭირო. Cloudflare წყვეტს TLS-ს და ტრაფიკს ლოკალურ აგენტზე მარშრუტირებს გვირაბის მეშვეობით.
 
 ## მიმოხილვა
 
-Cloudflare Tunnel is the recommended backend for production PRX deployments because it provides:
+Cloudflare Tunnel არის რეკომენდებული ბექენდი PRX-ის პროდაქშენ განთავსებისთვის, რადგან უზრუნველყოფს:
 
-- **Zero-trust access** -- integrate with Cloudflare Access to require identity verification before reaching your agent
-- **Custom domains** -- use your own domain with automatic HTTPS certificates
-- **DDoS protection** -- traffic passes through Cloudflare's network, shielding your origin
-- **High reliability** -- Cloudflare maintains multiple edge connections for redundancy
-- **Free tier** -- Cloudflare Tunnels are available on the free plan
+- **ნულოვანი ნდობის წვდომა** -- ინტეგრაცია Cloudflare Access-თან, რათა მოითხოვოს იდენტობის ვერიფიკაცია აგენტთან მიღწევამდე
+- **მორგებული დომენები** -- საკუთარი დომენის გამოყენება ავტომატური HTTPS სერტიფიკატებით
+- **DDoS დაცვა** -- ტრაფიკი Cloudflare-ის ქსელზე გადის, რაც წყაროს იცავს
+- **მაღალი საიმედოობა** -- Cloudflare ინარჩუნებს მრავალ ზღვრულ კავშირს სარეზერვოსთვის
+- **უფასო დონე** -- Cloudflare Tunnels ხელმისაწვდომია უფასო გეგმაზე
 
 ## წინაპირობები
 
-1. A Cloudflare account (free tier is sufficient)
-2. `cloudflared` CLI installed on the machine running PRX
-3. A domain added to your Cloudflare account (for named tunnels)
+1. Cloudflare ანგარიში (უფასო დონე საკმარისია)
+2. `cloudflared` CLI დაყენებული PRX-ის გამშვებ მანქანაზე
+3. თქვენს Cloudflare ანგარიშზე დამატებული დომენი (სახელდებული გვირაბებისთვის)
 
-### Installing cloudflared
+### cloudflared-ის დაყენება
 
 ```bash
 # Debian / Ubuntu
@@ -37,15 +37,15 @@ sudo apt update && sudo apt install -y cloudflared
 # macOS
 brew install cloudflared
 
-# Binary download (all platforms)
+# ბინარის ჩამოტვირთვა (ყველა პლატფორმა)
 # https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/
 ```
 
 ## კონფიგურაცია
 
-### Quick Tunnel (No Domain Required)
+### სწრაფი გვირაბი (დომენი არ არის საჭირო)
 
-The simplest setup uses Cloudflare's quick tunnel, which assigns a random `*.trycloudflare.com` subdomain. No Cloudflare account configuration is needed beyond installing `cloudflared`:
+ყველაზე მარტივი დაყენება იყენებს Cloudflare-ის სწრაფ გვირაბს, რომელიც შემთხვევით `*.trycloudflare.com` ქვედომენს ანიჭებს. `cloudflared`-ის დაყენების გარდა Cloudflare ანგარიშის კონფიგურაცია არ არის საჭირო:
 
 ```toml
 [tunnel]
@@ -53,16 +53,16 @@ backend = "cloudflare"
 local_addr = "127.0.0.1:8080"
 
 [tunnel.cloudflare]
-# Quick tunnel mode: no token, no named tunnel.
-# A random trycloudflare.com URL is assigned on each start.
+# სწრაფი გვირაბის რეჟიმი: ტოკენის გარეშე, სახელდებული გვირაბის გარეშე.
+# შემთხვევითი trycloudflare.com URL ენიჭება ყოველ გაშვებაზე.
 mode = "quick"
 ```
 
-Quick tunnels are ideal for development and testing. The URL changes on each restart, so you will need to update webhook registrations accordingly.
+სწრაფი გვირაბები იდეალურია დეველოპმენტისა და ტესტირებისთვის. URL ყოველ გადატვირთვაზე იცვლება, ამიტომ webhook რეგისტრაციების შესაბამისად განახლება დაგჭირდებათ.
 
-### Named Tunnel (Persistent Domain)
+### სახელდებული გვირაბი (მუდმივი დომენი)
 
-For production, use a named tunnel with a stable hostname:
+პროდაქშენისთვის, გამოიყენეთ სახელდებული გვირაბი სტაბილური ჰოსტნეიმით:
 
 ```toml
 [tunnel]
@@ -72,60 +72,60 @@ local_addr = "127.0.0.1:8080"
 [tunnel.cloudflare]
 mode = "named"
 
-# The tunnel token obtained from `cloudflared tunnel create`.
-# Can also be set via CLOUDFLARE_TUNNEL_TOKEN environment variable.
+# გვირაბის ტოკენი, მიღებული `cloudflared tunnel create`-დან.
+# ასევე შეიძლება მითითდეს CLOUDFLARE_TUNNEL_TOKEN გარემოს ცვლადით.
 token = "eyJhIjoiNjY..."
 
-# The public hostname that routes to this tunnel.
-# Must be configured in the Cloudflare dashboard or via cloudflared CLI.
+# საჯარო ჰოსტნეიმი, რომელიც ამ გვირაბზე მარშრუტირდება.
+# უნდა იყოს კონფიგურირებული Cloudflare-ის დაშბორდში ან cloudflared CLI-ით.
 hostname = "agent.example.com"
 ```
 
-### Creating a Named Tunnel
+### სახელდებული გვირაბის შექმნა
 
 ```bash
-# 1. Authenticate cloudflared with your Cloudflare account
+# 1. cloudflared-ის ავთენტიფიკაცია Cloudflare ანგარიშით
 cloudflared tunnel login
 
-# 2. Create a named tunnel
+# 2. სახელდებული გვირაბის შექმნა
 cloudflared tunnel create prx-agent
-# Output: Created tunnel prx-agent with id <TUNNEL_ID>
+# გამოტანა: Created tunnel prx-agent with id <TUNNEL_ID>
 
-# 3. Create a DNS record pointing to the tunnel
+# 3. DNS ჩანაწერის შექმნა გვირაბზე მიმართული
 cloudflared tunnel route dns prx-agent agent.example.com
 
-# 4. Get the tunnel token (for config.toml)
+# 4. გვირაბის ტოკენის მიღება (config.toml-ისთვის)
 cloudflared tunnel token prx-agent
-# Output: eyJhIjoiNjY...
+# გამოტანა: eyJhIjoiNjY...
 ```
 
 ## კონფიგურაციის მითითება
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `mode` | string | `"quick"` | `"quick"` for random URLs, `"named"` for persistent hostnames |
-| `token` | string | -- | Named tunnel token (required for `mode = "named"`) |
-| `hostname` | string | -- | Public hostname for named tunnel |
-| `cloudflared_path` | string | `"cloudflared"` | Path to the `cloudflared` binary |
-| `protocol` | string | `"auto"` | Transport protocol: `"auto"`, `"quic"`, `"http2"` |
-| `edge_ip_version` | string | `"auto"` | IP version for edge connections: `"auto"`, `"4"`, `"6"` |
-| `retries` | integer | `5` | Number of connection retries before giving up |
-| `grace_period_secs` | integer | `30` | Seconds to wait before shutting down active connections |
-| `metrics_port` | integer | -- | If set, expose `cloudflared` metrics on this port |
-| `log_level` | string | `"info"` | `cloudflared` log level: `"debug"`, `"info"`, `"warn"`, `"error"` |
+| პარამეტრი | ტიპი | ნაგულისხმევი | აღწერა |
+|-----------|------|-------------|--------|
+| `mode` | string | `"quick"` | `"quick"` შემთხვევითი URL-ებისთვის, `"named"` მუდმივი ჰოსტნეიმებისთვის |
+| `token` | string | -- | სახელდებული გვირაბის ტოკენი (სავალდებულო `mode = "named"`-ისთვის) |
+| `hostname` | string | -- | საჯარო ჰოსტნეიმი სახელდებული გვირაბისთვის |
+| `cloudflared_path` | string | `"cloudflared"` | `cloudflared` ბინარის ბილიკი |
+| `protocol` | string | `"auto"` | ტრანსპორტის პროტოკოლი: `"auto"`, `"quic"`, `"http2"` |
+| `edge_ip_version` | string | `"auto"` | IP ვერსია ზღვრული კავშირებისთვის: `"auto"`, `"4"`, `"6"` |
+| `retries` | integer | `5` | კავშირის ხელახალი მცდელობების რაოდენობა უარის თქმამდე |
+| `grace_period_secs` | integer | `30` | წამები აქტიური კავშირების დახურვამდე ლოდინის |
+| `metrics_port` | integer | -- | დაყენებისას, `cloudflared` მეტრიკების გამოქვეყნება ამ პორტზე |
+| `log_level` | string | `"info"` | `cloudflared` ლოგის დონე: `"debug"`, `"info"`, `"warn"`, `"error"` |
 
-## Zero-Trust Access
+## ნულოვანი ნდობის წვდომა
 
-Cloudflare Access adds an identity layer in front of your tunnel. Users must authenticate (via SSO, email OTP, or service tokens) before reaching your PRX instance.
+Cloudflare Access ამატებს იდენტობის ფენას თქვენი გვირაბის წინ. მომხმარებლებმა უნდა გაიარონ ავთენტიფიკაცია (SSO-ით, ელ-ფოსტის OTP-ით ან სერვისის ტოკენებით) PRX ინსტანციამდე მიღწევამდე.
 
-### Setting Up Access Policies
+### წვდომის პოლიტიკების დაყენება
 
-1. Navigate to Cloudflare Zero Trust dashboard
-2. Create an Access Application for your tunnel hostname
-3. Add an Access Policy with the desired identity requirements
+1. გადასვლა Cloudflare Zero Trust დაშბორდზე
+2. Access Application-ის შექმნა თქვენი გვირაბის ჰოსტნეიმისთვის
+3. Access Policy-ის დამატება სასურველი იდენტობის მოთხოვნებით
 
 ```
-Cloudflare Access Policy Example:
+Cloudflare Access Policy მაგალითი:
   Application: agent.example.com
   Rule: Allow
   Include:
@@ -133,42 +133,42 @@ Cloudflare Access Policy Example:
     - Service Token: prx-webhook-token
 ```
 
-Service tokens are useful for automated webhook senders (GitHub, Slack) that cannot perform interactive authentication. Configure the token in your webhook provider's headers:
+სერვისის ტოკენები სასარგებლოა ავტომატიზებული webhook გამგზავნებისთვის (GitHub, Slack), რომლებიც ინტერაქტიულ ავთენტიფიკაციას ვერ ახორციელებენ. ტოკენი კონფიგურირეთ თქვენი webhook პროვაიდერის ჰედერებში:
 
 ```
 CF-Access-Client-Id: <client-id>
 CF-Access-Client-Secret: <client-secret>
 ```
 
-## Health Checks
+## ჯანმრთელობის შემოწმებები
 
-PRX monitors the Cloudflare Tunnel health by:
+PRX აკვირდება Cloudflare გვირაბის ჯანმრთელობას:
 
-1. Checking that the `cloudflared` child process is running
-2. Sending an HTTP GET to the public URL and verifying a 2xx response
-3. Parsing `cloudflared` metrics (if `metrics_port` is configured) for connection status
+1. `cloudflared` შვილი პროცესის მუშაობის შემოწმება
+2. HTTP GET-ის გაგზავნა საჯარო URL-ზე და 2xx პასუხის ვერიფიკაცია
+3. `cloudflared` მეტრიკების პარსინგი (`metrics_port`-ის კონფიგურაციისას) კავშირის სტატუსისთვის
 
-If the tunnel becomes unhealthy, PRX logs a warning and attempts to restart `cloudflared`. The restart follows an exponential backoff strategy: 5s, 10s, 20s, 40s, up to a maximum of 5 minutes between attempts.
+გვირაბის არაჯანსაღობისას, PRX ლოგავს გაფრთხილებას და ცდილობს `cloudflared`-ის გადატვირთვას. გადატვირთვა ექსპონენციური შეყოვნების სტრატეგიას მიჰყვება: 5წ, 10წ, 20წ, 40წ, მაქსიმუმ 5 წუთის ინტერვალამდე მცდელობებს შორის.
 
-## Logs and Debugging
+## ლოგები და გამართვა
 
-`cloudflared` stdout and stderr are captured by `TunnelProcess` and written to the PRX log at `DEBUG` level. To increase verbosity:
+`cloudflared`-ის stdout და stderr `TunnelProcess`-ის მიერ ფიქსირდება და PRX ლოგში `DEBUG` დონეზე იწერება. სიტყვიერების გასაზრდელად:
 
 ```toml
 [tunnel.cloudflare]
 log_level = "debug"
 ```
 
-Common log messages and their meanings:
+გავრცელებული ლოგ შეტყობინებები და მათი მნიშვნელობა:
 
-| Log Message | Meaning |
-|-------------|---------|
-| `Connection registered` | Tunnel established to Cloudflare edge |
-| `Retrying connection` | Edge connection dropped, attempting reconnect |
-| `Serve tunnel error` | Fatal error, tunnel will restart |
-| `Registered DNS record` | DNS route successfully created |
+| ლოგ შეტყობინება | მნიშვნელობა |
+|---------------|-----------|
+| `Connection registered` | გვირაბი დამყარდა Cloudflare-ის ზღვარზე |
+| `Retrying connection` | ზღვრული კავშირი გაწყდა, ხელახლა დაკავშირების მცდელობა |
+| `Serve tunnel error` | ფატალური შეცდომა, გვირაბი გადაიტვირთება |
+| `Registered DNS record` | DNS მარშრუტი წარმატებით შეიქმნა |
 
-## Example: Full Production Setup
+## მაგალითი: სრული პროდაქშენ დაყენება
 
 ```toml
 [tunnel]
@@ -188,24 +188,24 @@ log_level = "info"
 ```
 
 ```bash
-# Set the token via environment variable
+# ტოკენის მითითება გარემოს ცვლადით
 export CLOUDFLARE_TUNNEL_TOKEN="eyJhIjoiNjY..."
 
-# Start PRX -- tunnel starts automatically
+# PRX-ის გაშვება -- გვირაბი ავტომატურად იწყება
 prx start
 ```
 
-## Security Notes
+## უსაფრთხოების შენიშვნები
 
-- The tunnel token grants full access to the named tunnel. Store it in the PRX secrets manager or pass it via environment variable. Never commit it to version control.
-- Quick tunnels do not support Access policies. Use named tunnels for production.
-- `cloudflared` runs as a child process with the same user permissions as PRX. Consider running PRX under a dedicated service account with minimal privileges.
-- All traffic between `cloudflared` and Cloudflare's edge is encrypted with TLS 1.3 or QUIC.
+- გვირაბის ტოკენი ანიჭებს სრულ წვდომას სახელდებულ გვირაბზე. შეინახეთ PRX-ის საიდუმლოებების მენეჯერში ან გადაეცით გარემოს ცვლადით. არასოდეს ჩაატანოთ ვერსიის კონტროლში.
+- სწრაფი გვირაბები არ უჭერს მხარს Access პოლიტიკებს. გამოიყენეთ სახელდებული გვირაბები პროდაქშენისთვის.
+- `cloudflared` შვილ პროცესად ეშვება PRX-ის იგივე მომხმარებლის ნებართვებით. განიხილეთ PRX-ის გაშვება მინიმალური პრივილეგიების მქონე გამოყოფილი სერვისის ანგარიშით.
+- ყველა ტრაფიკი `cloudflared`-სა და Cloudflare-ის ზღვარს შორის დაშიფრულია TLS 1.3 ან QUIC-ით.
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Tunnel Overview](./)
+- [გვირაბის მიმოხილვა](./)
 - [Tailscale Funnel](./tailscale)
 - [ngrok](./ngrok)
-- [Security Overview](/ka/prx/security/)
-- [Secrets Management](/ka/prx/security/secrets)
+- [უსაფრთხოების მიმოხილვა](/ka/prx/security/)
+- [საიდუმლოებების მართვა](/ka/prx/security/secrets)

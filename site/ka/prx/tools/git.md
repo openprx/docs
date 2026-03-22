@@ -1,35 +1,28 @@
 ---
 title: Git ოპერაციები
-description: Version control tool supporting status, diff, commit, push, pull, log, and branch operations on workspace repositories.
+description: ვერსიების კონტროლის ინსტრუმენტი, რომელიც status, diff, commit, push, pull, log და branch ოპერაციებს უჭერს მხარს სამუშაო სივრცის რეპოზიტორიებზე.
 ---
 
-# Git Operations
+# Git ოპერაციები
 
-The `git_operations` tool provides PRX agents with version control capabilities through a unified interface. Rather than requiring the agent to invoke `git` commands through the shell tool (which is subject to sandbox restrictions), `git_operations` offers a structured, safe API for the most common Git workflows: checking status, viewing diffs, creating commits, pushing, pulling, viewing history, and managing branches.
+`git_operations` ინსტრუმენტი PRX აგენტებს ვერსიების კონტროლის შესაძლებლობებს ერთიანი ინტერფეისით აძლევს. shell ინსტრუმენტით `git` ბრძანებების გამოძახების ნაცვლად (რაც სენდბოქსის შეზღუდვების ქვეშ მოქმედებს), `git_operations` სტრუქტურირებულ, უსაფრთხო API-ს სთავაზობს ყველაზე გავრცელებული Git სამუშაო ნაკადებისთვის.
 
-The tool operates on the workspace repository, which is typically the project directory where the agent is working. It is registered in the `all_tools()` registry and is always available when the agent runs with the full tool set.
-
-By providing Git as a first-class tool rather than a shell command, PRX can apply fine-grained security policies, validate arguments, and produce structured output that the LLM can parse reliably.
+ინსტრუმენტი სამუშაო სივრცის რეპოზიტორიაზე მუშაობს. იგი `all_tools()` რეესტრში არის რეგისტრირებული და ყოველთვის ხელმისაწვდომია სრული ინსტრუმენტების ნაკრებით გაშვებისას.
 
 ## კონფიგურაცია
 
-The `git_operations` tool does not have a dedicated configuration section. Its behavior is controlled by the workspace path and the security policy:
-
 ```toml
-# Tool policy for git operations
 [security.tool_policy.tools]
 git_operations = "allow"    # "allow" | "deny" | "supervised"
 ```
 
-The workspace repository is determined by the current working directory of the agent session. If the agent is launched from within a Git repository, that repository is used. Otherwise, the tool returns an error indicating no repository is found.
-
 ## გამოყენება
 
-The `git_operations` tool accepts an `operation` parameter that specifies the Git action to perform:
+`git_operations` ინსტრუმენტი `operation` პარამეტრს იღებს, რომელიც შესასრულებელ Git მოქმედებას მიუთითებს:
 
 ### status
 
-Check the current repository status (staged, unstaged, untracked files):
+მიმდინარე რეპოზიტორიის სტატუსის შემოწმება:
 
 ```json
 {
@@ -40,25 +33,9 @@ Check the current repository status (staged, unstaged, untracked files):
 }
 ```
 
-Returns structured output showing:
-- Current branch name
-- Files staged for commit
-- Modified but unstaged files
-- Untracked files
-- Upstream tracking status
-
 ### diff
 
-View changes in the working tree or between commits:
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "diff"
-  }
-}
-```
+ცვლილებების ნახვა სამუშაო ხეში ან კომიტებს შორის:
 
 ```json
 {
@@ -70,19 +47,9 @@ View changes in the working tree or between commits:
 }
 ```
 
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "diff",
-    "args": ["HEAD~3..HEAD"]
-  }
-}
-```
-
 ### commit
 
-Create a commit with a message:
+კომიტის შექმნა შეტყობინებით:
 
 ```json
 {
@@ -94,187 +61,35 @@ Create a commit with a message:
 }
 ```
 
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "commit",
-    "message": "feat: add web search provider selection",
-    "args": ["--all"]
-  }
-}
-```
+### push, pull, log, branch
 
-### push
+სრული სიისთვის იხილეთ ინგლისურენოვანი დოკუმენტაცია. ყველა ოპერაცია `operation` პარამეტრით და არასავალდებულო `args` მასივით მუშაობს.
 
-Push commits to the remote repository:
+## პარამეტრები
 
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "push"
-  }
-}
-```
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "push",
-    "args": ["origin", "feature/web-search"]
-  }
-}
-```
-
-### pull
-
-Pull changes from the remote repository:
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "pull"
-  }
-}
-```
-
-### log
-
-View commit history:
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "log",
-    "args": ["--oneline", "-20"]
-  }
-}
-```
-
-### branch
-
-List, create, or switch branches:
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "branch"
-  }
-}
-```
-
-```json
-{
-  "name": "git_operations",
-  "arguments": {
-    "operation": "branch",
-    "args": ["feature/new-tool"]
-  }
-}
-```
-
-## Parameters
-
-| Parameter | Type | Required | Default | Description |
+| პარამეტრი | ტიპი | სავალდებულო | ნაგულისხმევი | აღწერა |
 |-----------|------|----------|---------|-------------|
-| `operation` | `string` | Yes | -- | Git operation: `"status"`, `"diff"`, `"commit"`, `"push"`, `"pull"`, `"log"`, `"branch"` |
-| `message` | `string` | Conditional | -- | Commit message (required for `"commit"` operation) |
-| `args` | `array` | No | `[]` | Additional arguments passed to the Git command |
-
-**Returns:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `bool` | `true` if the Git operation completed successfully |
-| `output` | `string` | Git command output (status text, diff content, log entries, etc.) |
-| `error` | `string?` | Error message if the operation failed |
-
-## Common Workflows
-
-### Feature Branch Workflow
-
-A typical agent-driven feature branch workflow:
-
-```
-1. [git_operations] operation="branch", args=["feature/add-search"]
-2. [file_write] write new files
-3. [git_operations] operation="status"  -- verify changes
-4. [git_operations] operation="diff"    -- review changes
-5. [git_operations] operation="commit", message="feat: add search functionality", args=["--all"]
-6. [git_operations] operation="push", args=["-u", "origin", "feature/add-search"]
-```
-
-### Code Review Preparation
-
-Inspect changes before committing:
-
-```
-1. [git_operations] operation="status"
-2. [git_operations] operation="diff", args=["--staged"]
-3. [git_operations] operation="log", args=["--oneline", "-5"]
-4. Agent reviews the diff and suggests improvements
-```
-
-### Conflict Resolution
-
-Check for and resolve merge conflicts:
-
-```
-1. [git_operations] operation="pull"
-2. If conflicts: [git_operations] operation="status"
-3. [file_read] read conflicted files
-4. [file_write] resolve conflicts
-5. [git_operations] operation="commit", message="merge: resolve conflicts in config.toml"
-```
+| `operation` | `string` | დიახ | -- | Git ოპერაცია: `"status"`, `"diff"`, `"commit"`, `"push"`, `"pull"`, `"log"`, `"branch"` |
+| `message` | `string` | პირობითი | -- | კომიტის შეტყობინება (`"commit"` ოპერაციისთვის სავალდებულო) |
+| `args` | `array` | არა | `[]` | Git ბრძანებისთვის გადაცემული დამატებითი არგუმენტები |
 
 ## უსაფრთხოება
 
-### Compared to Shell
+### Shell-თან შედარება
 
-Using `git_operations` instead of running `git` through the `shell` tool provides several security advantages:
+`git_operations`-ის გამოყენება shell ინსტრუმენტით `git`-ის გაშვების ნაცვლად რამდენიმე უსაფრთხოების უპირატესობას იძლევა:
 
-- **Argument validation**: Parameters are validated before execution, preventing injection attacks
-- **Structured output**: Results are parsed and returned in a predictable format
-- **No shell expansion**: Arguments are passed directly to Git without shell interpretation
-- **Fine-grained policy**: `git_operations` can be allowed while `shell` is denied or supervised
+- **არგუმენტების ვალიდაცია**: პარამეტრები შესრულებამდე ვალიდდება, ინჯექციის შეტევების პრევენციისთვის
+- **სტრუქტურირებული გამოსავალი**: შედეგები პროგნოზირებად ფორმატში იპარსება და ბრუნდება
+- **shell-ის გარეშე**: არგუმენტები პირდაპირ Git-ს გადაეცემა shell-ის ინტერპრეტაციის გარეშე
+- **დეტალური პოლიტიკა**: `git_operations` შეიძლება ნებადართული იყოს, სანამ `shell` უარყოფილია ან ზედამხედველობის ქვეშაა
 
-### Destructive Operation Protection
+### დესტრუქციული ოპერაციების დაცვა
 
-The tool includes safeguards against common destructive operations:
+ინსტრუმენტი მოიცავს დაცვებს გავრცელებული დესტრუქციული ოპერაციებისგან: force push გაფრთხილებით იწერება, `-D` (იძულებითი წაშლა) ოპერაციები აუდიტის ჟურნალში მოინიშნება.
 
-- **Force push**: `--force` and `--force-with-lease` arguments are logged with warnings
-- **Branch deletion**: `-D` (force delete) operations are flagged in the audit log
-- **Reset operations**: Hard resets are not directly exposed through the tool
+## დაკავშირებული გვერდები
 
-For maximum safety, mark `git_operations` as supervised:
-
-```toml
-[security.tool_policy.tools]
-git_operations = "supervised"
-```
-
-### Credential Handling
-
-The `git_operations` tool uses the system's Git credential storage (credential helper, SSH keys, etc.). It does not expose or log credentials. Remote operations (push, pull) rely on the pre-configured Git credentials on the host.
-
-### Audit Logging
-
-All Git operations are recorded in the audit log when enabled:
-
-- Operation type (status, commit, push, etc.)
-- Arguments
-- Success/failure status
-- Commit SHA (for commit operations)
-
-## დაკავშირებული
-
-- [Shell Execution](/ka/prx/tools/shell) -- alternative for advanced Git commands
-- [File Operations](/ka/prx/tools/file-operations) -- read/write files in the repository
-- [Sessions & Agents](/ka/prx/tools/sessions) -- delegate Git tasks to specialized agents
-- [Policy Engine](/ka/prx/security/policy-engine) -- access control for Git operations
-- [Tools Overview](/ka/prx/tools/) -- all tools and registry system
+- [Shell-ის შესრულება](/ka/prx/tools/shell) -- მოწინავე Git ბრძანებების ალტერნატივა
+- [ფაილის ოპერაციები](/ka/prx/tools/file-operations) -- რეპოზიტორიაში ფაილების წაკითხვა/ჩაწერა
+- [ინსტრუმენტების მიმოხილვა](/ka/prx/tools/) -- ყველა ინსტრუმენტი და რეესტრის სისტემა

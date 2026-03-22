@@ -1,41 +1,41 @@
 ---
-title: "L1: Memory Evolution"
-description: Layer 1 self-evolution in PRX covering memory compaction and topic clustering.
+title: "L1: მეხსიერების ევოლუცია"
+description: PRX-ში ფენა 1 თვით-ევოლუცია მეხსიერების კომპაქტიზაციისა და თემატური კლასტერიზაციის მოცვით.
 ---
 
-# L1: Memory Evolution
+# L1: მეხსიერების ევოლუცია
 
-Layer 1 is the most frequent and lowest-risk self-evolution layer. It operates on the agent's memory system, automatically compacting redundant entries and clustering related memories by topic.
+ფენა 1 ყველაზე ხშირი და ყველაზე დაბალი რისკის თვით-ევოლუციის ფენაა. იგი აგენტის მეხსიერების სისტემაზე ოპერირებს, ავტომატურად კომპაქტირებს ზედმეტ ჩანაწერებს და დაკავშირებულ მეხსიერებებს თემატურად აჯგუფებს.
 
 ## მიმოხილვა
 
-L1 evolution runs after every session (or on a configurable schedule) and performs:
+L1 ევოლუცია ყოველი სესიის შემდეგ (ან კონფიგურირებადი გრაფიკით) ეშვება და ასრულებს:
 
-- **Compaction** -- merge multiple related memory entries into concise summaries
-- **Topic clustering** -- group memories by semantic similarity
-- **Relevance scoring** -- adjust memory weights based on access frequency
-- **Pruning** -- remove memories that have become stale or contradicted
+- **კომპაქტიზაცია** -- რამდენიმე დაკავშირებული მეხსიერების ჩანაწერის ლაკონურ შეჯამებებში გაერთიანება
+- **თემატური კლასტერიზაცია** -- მეხსიერებების სემანტიკური მსგავსებით დაჯგუფება
+- **რელევანტურობის ქულირება** -- მეხსიერების წონების კორექტირება წვდომის სიხშირის მიხედვით
+- **გასხვლა** -- მოძველებული ან უკუგდებული მეხსიერებების ამოღება
 
 ## როგორ მუშაობს
 
-1. After a session ends, L1 analyzes the newly stored memories
-2. It identifies clusters of related entries using embedding similarity
-3. Clusters that exceed a size threshold are compacted into summaries
-4. Memory relevance scores are updated based on recall frequency
+1. სესიის დასრულების შემდეგ, L1 ანალიზებს ახლად შენახულ მეხსიერებებს
+2. ემბედინგის მსგავსების გამოყენებით ადგენს დაკავშირებული ჩანაწერების კლასტერებს
+3. ზომის ზღურბლს გადაჭარბებული კლასტერები შეჯამებებში კომპაქტირდება
+4. მეხსიერების რელევანტურობის ქულები გახსენების სიხშირის მიხედვით განახლდება
 
 ## კონფიგურაცია
 
 ```toml
 [self_evolution.l1]
 enabled = true
-schedule = "after_session"  # or "hourly", "daily"
+schedule = "after_session"  # ან "hourly", "daily"
 compaction_threshold = 10
 cluster_similarity = 0.8
 min_access_count = 2
 ```
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Self-Evolution Overview](./)
-- [Memory Hygiene](/ka/prx/memory/hygiene)
-- [L2: Prompt Optimization](./l2-prompt)
+- [თვით-ევოლუციის მიმოხილვა](./)
+- [მეხსიერების ჰიგიენა](/ka/prx/memory/hygiene)
+- [L2: პრომპტის ოპტიმიზაცია](./l2-prompt)

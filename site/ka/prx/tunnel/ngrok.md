@@ -1,49 +1,49 @@
 ---
-title: ngrok Integration
-description: Expose your PRX agent to the internet using ngrok for rapid development and webhook testing.
+title: ngrok ინტეგრაცია
+description: PRX აგენტის ინტერნეტში გამოქვეყნება ngrok-ის გამოყენებით სწრაფი დეველოპმენტისა და webhook ტესტირებისთვის.
 ---
 
-# ngrok Integration
+# ngrok ინტეგრაცია
 
-ngrok is a popular tunneling service that creates secure ingress to your local PRX instance. It is the fastest way to get started with webhooks and external integrations -- a single command gives you a public HTTPS URL pointing to your local agent.
+ngrok არის პოპულარული გვირაბის სერვისი, რომელიც უსაფრთხო შესვლას ქმნის თქვენს ლოკალურ PRX ინსტანციაზე. ეს არის ყველაზე სწრაფი გზა webhook-ებისა და გარე ინტეგრაციების დასაწყებად -- ერთი ბრძანება გაძლევთ საჯარო HTTPS URL-ს, რომელიც თქვენს ლოკალურ აგენტზე მიუთითებს.
 
 ## მიმოხილვა
 
-ngrok is best suited for:
+ngrok საუკეთესოდ შეეფერება:
 
-- **Development and testing** -- get a public URL in seconds with no account setup
-- **Webhook prototyping** -- quickly test Telegram, Discord, GitHub, or Slack integrations
-- **Demos and presentations** -- share a temporary public URL to showcase your agent
-- **Environments where Cloudflare or Tailscale are not available**
+- **დეველოპმენტს და ტესტირებას** -- საჯარო URL-ის მიღება წამებში ანგარიშის გარეშე
+- **Webhook პროტოტიპირებას** -- Telegram, Discord, GitHub ან Slack ინტეგრაციების სწრაფი ტესტირება
+- **დემოებს და პრეზენტაციებს** -- დროებითი საჯარო URL-ის გაზიარება აგენტის საჩვენებლად
+- **გარემოებს, სადაც Cloudflare ან Tailscale ხელმისაწვდომი არ არის**
 
-For production deployments, consider [Cloudflare Tunnel](./cloudflare) or [Tailscale Funnel](./tailscale) which offer better reliability, custom domains, and zero-trust access controls.
+პროდაქშენ განთავსებისთვის, განიხილეთ [Cloudflare გვირაბი](./cloudflare) ან [Tailscale Funnel](./tailscale), რომლებიც უკეთეს საიმედოობას, მორგებულ დომენებსა და ნულოვანი ნდობის წვდომის კონტროლებს გვთავაზობს.
 
 ## წინაპირობები
 
-1. ngrok CLI installed on the machine running PRX
-2. An ngrok account with an auth token (free tier is sufficient)
+1. ngrok CLI დაყენებული PRX-ის გამშვებ მანქანაზე
+2. ngrok ანგარიში auth ტოკენით (უფასო დონე საკმარისია)
 
-### Installing ngrok
+### ngrok-ის დაყენება
 
 ```bash
-# Debian / Ubuntu (via snap)
+# Debian / Ubuntu (snap-ით)
 sudo snap install ngrok
 
 # macOS
 brew install ngrok
 
-# Binary download (all platforms)
+# ბინარის ჩამოტვირთვა (ყველა პლატფორმა)
 # https://ngrok.com/download
 
-# Authenticate (one-time setup)
+# ავთენტიფიკაცია (ერთჯერადი დაყენება)
 ngrok config add-authtoken <YOUR_AUTH_TOKEN>
 ```
 
-Get your auth token from the [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken).
+თქვენი auth ტოკენი მიიღეთ [ngrok-ის დაშბორდიდან](https://dashboard.ngrok.com/get-started/your-authtoken).
 
 ## კონფიგურაცია
 
-### Basic Setup
+### ბაზისური დაყენება
 
 ```toml
 [tunnel]
@@ -51,18 +51,18 @@ backend = "ngrok"
 local_addr = "127.0.0.1:8080"
 
 [tunnel.ngrok]
-# Auth token. Can also be set via NGROK_AUTHTOKEN environment variable.
-# If omitted, ngrok uses the token from its local config file.
+# Auth ტოკენი. ასევე შეიძლება მითითდეს NGROK_AUTHTOKEN გარემოს ცვლადით.
+# გამოტოვებისას, ngrok ტოკენს თავისი ლოკალური კონფიგურაციიდან იყენებს.
 authtoken = ""
 
-# Region for the tunnel endpoint.
-# Options: "us", "eu", "ap", "au", "sa", "jp", "in"
+# რეგიონი გვირაბის ენდფოინთისთვის.
+# ვარიანტები: "us", "eu", "ap", "au", "sa", "jp", "in"
 region = "us"
 ```
 
-### Custom Domain (Paid Plans)
+### მორგებული დომენი (ფასიანი გეგმები)
 
-ngrok paid plans support persistent custom domains:
+ngrok-ის ფასიანი გეგმები მხარს უჭერს მუდმივ მორგებულ დომენებს:
 
 ```toml
 [tunnel]
@@ -72,45 +72,42 @@ local_addr = "127.0.0.1:8080"
 [tunnel.ngrok]
 authtoken = "${NGROK_AUTHTOKEN}"
 
-# Custom domain (requires ngrok paid plan)
+# მორგებული დომენი (მოითხოვს ngrok-ის ფასიან გეგმას)
 domain = "agent.example.com"
-
-# Alternatively, use a static ngrok subdomain (free on some plans)
-# subdomain = "my-prx-agent"
 ```
 
-### Reserved Domain
+### რეზერვირებული დომენი
 
-For stable URLs on the free tier, ngrok offers reserved domains:
+უფასო დონეზე სტაბილური URL-ებისთვის, ngrok გვთავაზობს რეზერვირებულ დომენებს:
 
 ```toml
 [tunnel.ngrok]
 authtoken = "${NGROK_AUTHTOKEN}"
 
-# Reserved domain assigned by ngrok (e.g., "example-agent.ngrok-free.app")
+# ngrok-ის მიერ მინიჭებული რეზერვირებული დომენი (მაგ., "example-agent.ngrok-free.app")
 domain = "example-agent.ngrok-free.app"
 ```
 
 ## კონფიგურაციის მითითება
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `authtoken` | string | -- | ngrok authentication token |
-| `region` | string | `"us"` | Tunnel region: `"us"`, `"eu"`, `"ap"`, `"au"`, `"sa"`, `"jp"`, `"in"` |
-| `domain` | string | -- | Custom domain or reserved domain (paid feature) |
-| `subdomain` | string | -- | Fixed subdomain on `ngrok-free.app` |
-| `ngrok_path` | string | `"ngrok"` | Path to the `ngrok` binary |
-| `inspect` | boolean | `true` | Enable the ngrok inspection dashboard (localhost:4040) |
-| `log_level` | string | `"info"` | ngrok log level: `"debug"`, `"info"`, `"warn"`, `"error"` |
-| `metadata` | string | -- | Arbitrary metadata string attached to the tunnel session |
-| `basic_auth` | string | -- | HTTP Basic Auth in `user:password` format |
-| `ip_restrictions` | list | `[]` | List of allowed CIDR ranges (e.g., `["203.0.113.0/24"]`) |
-| `circuit_breaker` | float | -- | Error rate threshold (0.0-1.0) to trigger circuit breaker |
-| `compression` | boolean | `false` | Enable response compression |
+| პარამეტრი | ტიპი | ნაგულისხმევი | აღწერა |
+|-----------|------|-------------|--------|
+| `authtoken` | string | -- | ngrok ავთენტიფიკაციის ტოკენი |
+| `region` | string | `"us"` | გვირაბის რეგიონი: `"us"`, `"eu"`, `"ap"`, `"au"`, `"sa"`, `"jp"`, `"in"` |
+| `domain` | string | -- | მორგებული ან რეზერვირებული დომენი (ფასიანი ფუნქცია) |
+| `subdomain` | string | -- | ფიქსირებული ქვედომენი `ngrok-free.app`-ზე |
+| `ngrok_path` | string | `"ngrok"` | `ngrok` ბინარის ბილიკი |
+| `inspect` | boolean | `true` | ngrok-ის შემოწმების დაშბორდის ჩართვა (localhost:4040) |
+| `log_level` | string | `"info"` | ngrok ლოგის დონე: `"debug"`, `"info"`, `"warn"`, `"error"` |
+| `metadata` | string | -- | თვითნებური მეტამონაცემების სტრიქონი, მიმაგრებული გვირაბის სესიაზე |
+| `basic_auth` | string | -- | HTTP Basic Auth `user:password` ფორმატში |
+| `ip_restrictions` | list | `[]` | ნებადართული CIDR დიაპაზონების სია (მაგ., `["203.0.113.0/24"]`) |
+| `circuit_breaker` | float | -- | შეცდომების სიჩქარის ზღურბლი (0.0-1.0) circuit breaker-ის გასააქტიურებლად |
+| `compression` | boolean | `false` | პასუხის კომპრესიის ჩართვა |
 
-## How PRX Manages ngrok
+## როგორ მართავს PRX ngrok-ს
 
-When the tunnel starts, PRX spawns ngrok as a child process:
+გვირაბის დაწყებისას, PRX ngrok-ს შვილ პროცესად უშვებს:
 
 ```bash
 ngrok http 127.0.0.1:8080 \
@@ -120,109 +117,39 @@ ngrok http 127.0.0.1:8080 \
   --log-format=json
 ```
 
-PRX then queries the ngrok local API (`http://127.0.0.1:4040/api/tunnels`) to retrieve the assigned public URL. This URL is stored and used for webhook registration and channel configuration.
+შემდეგ PRX ngrok-ის ლოკალურ API-ს (`http://127.0.0.1:4040/api/tunnels`) იკითხავს მინიჭებული საჯარო URL-ის მისაღებად. ეს URL ინახება და გამოიყენება webhook რეგისტრაციისა და არხის კონფიგურაციისთვის.
 
-### URL Extraction
+## უფასო დონის შეზღუდვები
 
-ngrok exposes a local API at port 4040. PRX polls this endpoint with a timeout:
+ngrok-ის უფასო დონეს რამდენიმე შეზღუდვა აქვს:
 
-```
-GET http://localhost:4040/api/tunnels
-```
+| შეზღუდვა | უფასო დონე | გავლენა PRX-ზე |
+|----------|-----------|---------------|
+| ერთდროული გვირაბები | 1 | მხოლოდ ერთი PRX ინსტანცია ngrok ანგარიშზე |
+| კავშირები წუთში | 40 | შეიძლება შეზღუდოს მაღალი ტრაფიკის webhook-ებს |
+| მორგებული დომენები | ხელმიუწვდომელი | URL ყოველ გადატვირთვაზე იცვლება |
+| IP შეზღუდვები | ხელმიუწვდომელი | წყარო IP-ების შეზღუდვა შეუძლებელია |
+| გამტარუნარიანობა | შეზღუდული | დიდი ფაილების გადაცემა შეიძლება შეზღუდულ იქნას |
+| შუამავალი გვერდი | ჩანს პირველ ვიზიტზე | შეიძლება ხელი შეუშალოს ზოგიერთ webhook პროვაიდერს |
 
-The response contains the public URL:
+## უსაფრთხოების გათვალისწინებები
 
-```json
-{
-  "tunnels": [
-    {
-      "public_url": "https://abc123.ngrok-free.app",
-      "config": {
-        "addr": "http://localhost:8080"
-      }
-    }
-  ]
-}
-```
-
-If the API is not available within `startup_timeout_secs`, PRX falls back to parsing stdout for the URL.
-
-## Free Tier Limitations
-
-The ngrok free tier has several limitations to be aware of:
-
-| Limitation | Free Tier | Impact on PRX |
-|------------|-----------|---------------|
-| Concurrent tunnels | 1 | Only one PRX instance per ngrok account |
-| Connections per minute | 40 | May throttle high-traffic webhooks |
-| Custom domains | Not available | URL changes on each restart |
-| IP restrictions | Not available | Cannot restrict source IPs |
-| Bandwidth | Limited | Large file transfers may be throttled |
-| Interstitial page | Shown on first visit | May interfere with some webhook providers |
-
-The interstitial page (ngrok's browser warning page) does not affect API/webhook traffic -- it only appears for browser-initiated requests. However, some webhook providers may reject responses that include it. Use a paid plan or a different backend for production.
-
-## ngrok Inspection Dashboard
-
-When `inspect = true` (the default), ngrok runs a local web dashboard at `http://localhost:4040`. This dashboard provides:
-
-- **Request inspector** -- view all incoming requests with headers, body, and response
-- **Replay** -- replay any request for debugging
-- **Tunnel status** -- connection health, region, and public URL
-
-This is invaluable for debugging webhook integrations during development.
-
-## Security Considerations
-
-- **Auth token protection** -- the ngrok auth token grants tunnel creation access to your account. Store it in the PRX secrets manager or pass it via the `NGROK_AUTHTOKEN` environment variable.
-- **Free tier URLs are public** -- anyone with the URL can reach your agent. Use `basic_auth` or `ip_restrictions` (paid) to restrict access.
-- **URL rotation** -- free tier URLs change on restart. If webhook providers cache the old URL, they will fail to deliver events. Use reserved domains or a different backend for stable URLs.
-- **TLS termination** -- ngrok terminates TLS at its edge. Traffic between ngrok and your local PRX travels through ngrok's infrastructure.
-- **Data inspection** -- ngrok's inspection dashboard shows request/response bodies. Disable it in production with `inspect = false` if sensitive data is transmitted.
-
-## Webhook Integration Pattern
-
-A common pattern for development: start PRX with ngrok, register the webhook URL, and test:
-
-```bash
-# 1. Start PRX (tunnel starts automatically)
-prx start
-
-# 2. PRX logs the public URL
-# [INFO] Tunnel started: https://abc123.ngrok-free.app
-
-# 3. Register the webhook URL with your service
-# Telegram: https://abc123.ngrok-free.app/webhook/telegram
-# GitHub:   https://abc123.ngrok-free.app/webhook/github
-
-# 4. Inspect requests at http://localhost:4040
-```
-
-## Comparison with Other Backends
-
-| Feature | ngrok | Cloudflare Tunnel | Tailscale Funnel |
-|---------|-------|-------------------|------------------|
-| Setup time | Seconds | Minutes | Minutes |
-| Custom domain | Paid | Free (with zone) | MagicDNS only |
-| Zero-trust | No | Yes (Access) | Yes (ACLs) |
-| Free tier | Yes (limited) | Yes | Yes (personal) |
-| Inspection dashboard | Yes | No | No |
-| Production ready | Paid plans | Yes | Yes |
+- **Auth ტოკენის დაცვა** -- ngrok auth ტოკენი ანიჭებს გვირაბის შექმნის წვდომას თქვენს ანგარიშზე. შეინახეთ PRX-ის საიდუმლოებების მენეჯერში ან გადაეცით `NGROK_AUTHTOKEN` გარემოს ცვლადით.
+- **უფასო დონის URL-ები საჯაროა** -- ნებისმიერს URL-ით შეუძლია თქვენს აგენტთან მიღწევა. გამოიყენეთ `basic_auth` ან `ip_restrictions` (ფასიანი) წვდომის შესაზღუდად.
+- **TLS-ის შეწყვეტა** -- ngrok წყვეტს TLS-ს მის ზღვარზე. ტრაფიკი ngrok-სა და ლოკალურ PRX-ს შორის ngrok-ის ინფრასტრუქტურაზე გადის.
 
 ## პრობლემების მოგვარება
 
-| Symptom | Cause | Resolution |
-|---------|-------|------------|
-| "authentication failed" | Invalid or missing auth token | Run `ngrok config add-authtoken <token>` |
-| URL not detected | ngrok API not responding on :4040 | Check that port 4040 is not in use by another process |
-| "tunnel session limit" | Free tier allows 1 tunnel | Stop other ngrok sessions or upgrade |
-| Webhooks return 502 | PRX gateway not listening | Verify `local_addr` matches your gateway |
-| Interstitial page shown | Free tier browser warning | Use `--domain` or upgrade to paid plan |
-| Random disconnections | Free tier connection limits | Upgrade or switch to Cloudflare/Tailscale |
+| სიმპტომი | მიზეზი | გადაწყვეტა |
+|----------|--------|-----------|
+| "authentication failed" | არასწორი ან აკლია auth ტოკენი | გაუშვით `ngrok config add-authtoken <token>` |
+| URL ვერ ამოიცნო | ngrok API არ პასუხობს :4040-ზე | შეამოწმეთ, რომ 4040 პორტს სხვა პროცესი არ იყენებს |
+| "tunnel session limit" | უფასო დონე 1 გვირაბს იძლევა | შეაჩერეთ სხვა ngrok სესიები ან განაახლეთ |
+| Webhook-ები 502 აბრუნებს | PRX გეითვეი არ ისმენს | შეამოწმეთ `local_addr`-ის შესაბამისობა გეითვეისთან |
 
-## Related Pages
+## დაკავშირებული გვერდები
 
-- [Tunnel Overview](./)
-- [Cloudflare Tunnel](./cloudflare)
+- [გვირაბის მიმოხილვა](./)
+- [Cloudflare გვირაბი](./cloudflare)
 - [Tailscale Funnel](./tailscale)
-- [Security Overview](/ka/prx/security/)
+- [უსაფრთხოების მიმოხილვა](/ka/prx/security/)

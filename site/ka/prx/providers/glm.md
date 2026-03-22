@@ -5,20 +5,20 @@ description: GLM-ისა და მასთან დაკავშირე
 
 # GLM (Zhipu AI)
 
-> Access Zhipu GLM models and a family of Chinese AI providers through a unified configuration. Includes aliases for Minimax, Moonshot (Kimi), Qwen (DashScope), and Z.AI.
+> Zhipu GLM მოდელებზე და ჩინური AI პროვაიდერების ოჯახზე წვდომა ერთიანი კონფიგურაციით. მოიცავს მეტსახელებს Minimax-ისთვის, Moonshot-ისთვის (Kimi), Qwen-ისთვის (DashScope) და Z.AI-სთვის.
 
 ## წინაპირობები
 
-- A Zhipu AI API key from [open.bigmodel.cn](https://open.bigmodel.cn/) (for GLM models), **or**
-- API keys for the specific provider you want to use (Minimax, Moonshot, Qwen, etc.)
+- Zhipu AI API გასაღები [open.bigmodel.cn](https://open.bigmodel.cn/)-დან (GLM მოდელებისთვის), **ან**
+- API გასაღებები იმ კონკრეტული პროვაიდერისთვის, რომლის გამოყენებაც გსურთ (Minimax, Moonshot, Qwen და სხვ.)
 
 ## სწრაფი დაყენება
 
-### 1. Get API Key
+### 1. API გასაღების მიღება
 
-1. Sign up at [open.bigmodel.cn](https://open.bigmodel.cn/)
-2. Navigate to the API Keys section
-3. Create a new key (format: `id.secret`)
+1. დარეგისტრირდით [open.bigmodel.cn](https://open.bigmodel.cn/)-ზე
+2. გადახვიდეთ API Keys განყოფილებაში
+3. შექმენით ახალი გასაღები (ფორმატი: `id.secret`)
 
 ### 2. კონფიგურაცია
 
@@ -31,7 +31,7 @@ model = "glm-4-plus"
 api_key = "${GLM_API_KEY}"
 ```
 
-Or set the environment variable:
+ან დააყენეთ გარემოს ცვლადი:
 
 ```bash
 export GLM_API_KEY="abc123.secretXYZ"
@@ -43,135 +43,135 @@ export GLM_API_KEY="abc123.secretXYZ"
 prx doctor models
 ```
 
-## Available Models
+## ხელმისაწვდომი მოდელები
 
-### GLM Models
+### GLM მოდელები
 
-| Model | Context | Vision | Tool Use | Notes |
+| მოდელი | კონტექსტი | ვიზუალი | ინსტრუმენტები | შენიშვნები |
 |-------|---------|--------|----------|-------|
-| `glm-4-plus` | 128K | Yes | Yes | Most capable GLM model |
-| `glm-4` | 128K | Yes | Yes | Standard GLM-4 |
-| `glm-4-flash` | 128K | Yes | Yes | Fast and cost-effective |
-| `glm-4v` | 128K | Yes | Yes | Vision-optimized |
+| `glm-4-plus` | 128K | დიახ | დიახ | ყველაზე შეძლებული GLM მოდელი |
+| `glm-4` | 128K | დიახ | დიახ | სტანდარტული GLM-4 |
+| `glm-4-flash` | 128K | დიახ | დიახ | სწრაფი და ეკონომიური |
+| `glm-4v` | 128K | დიახ | დიახ | ვიზუალისთვის ოპტიმიზებული |
 
-### Aliased Providers
+### მეტსახელებით მითითებული პროვაიდერები
 
-PRX also supports these providers as aliases that route through the OpenAI-compatible interface:
+PRX ასევე მხარს უჭერს ამ პროვაიდერებს მეტსახელებით, რომლებიც OpenAI-თავსებადი ინტერფეისის გავლით მუშაობენ:
 
-| Provider | Alias Names | Base URL | Key Models |
+| პროვაიდერი | მეტსახელები | საბაზისო URL | ძირითადი მოდელები |
 |----------|-------------|----------|------------|
-| **Minimax** | `minimax`, `minimax-intl`, `minimax-cn` | `api.minimax.io/v1` (intl), `api.minimaxi.com/v1` (CN) | `MiniMax-Text-01`, `abab6.5s` |
-| **Moonshot** | `moonshot`, `kimi`, `moonshot-intl`, `kimi-cn` | `api.moonshot.ai/v1` (intl), `api.moonshot.cn/v1` (CN) | `moonshot-v1-128k`, `moonshot-v1-32k` |
-| **Qwen** | `qwen`, `dashscope`, `qwen-intl`, `qwen-us` | `dashscope.aliyuncs.com` (CN), `dashscope-intl.aliyuncs.com` (intl) | `qwen-max`, `qwen-plus`, `qwen-turbo` |
-| **Z.AI** | `zai`, `z.ai`, `zai-cn` | `api.z.ai/api/coding/paas/v4` (global), `open.bigmodel.cn/api/coding/paas/v4` (CN) | Z.AI coding models |
+| **Minimax** | `minimax`, `minimax-intl`, `minimax-cn` | `api.minimax.io/v1` (საერთაშ.), `api.minimaxi.com/v1` (ჩინეთი) | `MiniMax-Text-01`, `abab6.5s` |
+| **Moonshot** | `moonshot`, `kimi`, `moonshot-intl`, `kimi-cn` | `api.moonshot.ai/v1` (საერთაშ.), `api.moonshot.cn/v1` (ჩინეთი) | `moonshot-v1-128k`, `moonshot-v1-32k` |
+| **Qwen** | `qwen`, `dashscope`, `qwen-intl`, `qwen-us` | `dashscope.aliyuncs.com` (ჩინეთი), `dashscope-intl.aliyuncs.com` (საერთაშ.) | `qwen-max`, `qwen-plus`, `qwen-turbo` |
+| **Z.AI** | `zai`, `z.ai`, `zai-cn` | `api.z.ai/api/coding/paas/v4` (გლობალური), `open.bigmodel.cn/api/coding/paas/v4` (ჩინეთი) | Z.AI კოდინგის მოდელები |
 
 ## კონფიგურაციის მითითება
 
-### GLM (Native Provider)
+### GLM (მშობლიური პროვაიდერი)
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
 |-------|------|---------|-------------|
-| `api_key` | string | required | GLM API key in `id.secret` format |
-| `model` | string | required | GLM model name |
+| `api_key` | string | სავალდებულო | GLM API გასაღები `id.secret` ფორმატში |
+| `model` | string | სავალდებულო | GLM მოდელის სახელი |
 
-### Aliased Providers (OpenAI-Compatible)
+### მეტსახელებით მითითებული პროვაიდერები (OpenAI-თავსებადი)
 
 | ველი | ტიპი | ნაგულისხმევი | აღწერა |
 |-------|------|---------|-------------|
-| `api_key` | string | required | Provider-specific API key |
-| `api_url` | string | auto-detected | Override the default base URL |
-| `model` | string | required | Model name |
+| `api_key` | string | სავალდებულო | პროვაიდერის სპეციფიკური API გასაღები |
+| `api_url` | string | ავტომატურად ამოცნობილი | ნაგულისხმევი საბაზისო URL-ის გადაფარვა |
+| `model` | string | სავალდებულო | მოდელის სახელი |
 
 ## ფუნქციები
 
-### JWT Authentication
+### JWT ავტენტიფიკაცია
 
-GLM uses JWT-based authentication rather than plain API keys. PRX automatically:
+GLM JWT-ზე დაფუძნებულ ავტენტიფიკაციას იყენებს უბრალო API გასაღებების ნაცვლად. PRX ავტომატურად:
 
-1. Splits the API key into `id` and `secret` components
-2. Generates a JWT token with:
-   - Header: `{"alg":"HS256","typ":"JWT","sign_type":"SIGN"}`
-   - Payload: `{"api_key":"<id>","exp":<expiry_ms>,"timestamp":<now_ms>}`
-   - Signature: HMAC-SHA256 with the secret key
-3. Caches the JWT for 3 minutes (token expires at 3.5 minutes)
-4. Sends it as `Authorization: Bearer <jwt>`
+1. ჰყოფს API გასაღებს `id` და `secret` კომპონენტებად
+2. წარმოქმნის JWT ტოკენს:
+   - ჰედერი: `{"alg":"HS256","typ":"JWT","sign_type":"SIGN"}`
+   - პეილოადი: `{"api_key":"<id>","exp":<expiry_ms>,"timestamp":<now_ms>}`
+   - ხელმოწერა: HMAC-SHA256 საიდუმლო გასაღებით
+3. ქეშირებს JWT-ს 3 წუთით (ტოკენის ვადა 3.5 წუთში იწურება)
+4. აგზავნის როგორც `Authorization: Bearer <jwt>`
 
-### Regional Endpoints
+### რეგიონული ენდფოინთები
 
-Most aliased providers offer both international and China-mainland endpoints:
+მეტსახელებით მითითებული პროვაიდერების უმეტესობა საერთაშორისო და ჩინეთის კონტინენტურ ენდფოინთებს სთავაზობს:
 
 ```toml
-# International (default for most)
+# საერთაშორისო (ნაგულისხმევი უმეტესისთვის)
 provider = "moonshot-intl"
 
-# China mainland
+# ჩინეთის კონტინენტი
 provider = "moonshot-cn"
 
-# Explicit regional variants
-provider = "qwen-us"      # US region
-provider = "qwen-intl"    # International
-provider = "qwen-cn"      # China mainland
+# ექსპლიციტური რეგიონული ვარიანტები
+provider = "qwen-us"      # აშშ რეგიონი
+provider = "qwen-intl"    # საერთაშორისო
+provider = "qwen-cn"      # ჩინეთის კონტინენტი
 ```
 
-### Minimax OAuth Support
+### Minimax OAuth მხარდაჭერა
 
-Minimax supports OAuth token authentication:
+Minimax მხარს უჭერს OAuth ტოკენის ავტენტიფიკაციას:
 
 ```bash
 export MINIMAX_OAUTH_TOKEN="..."
 export MINIMAX_OAUTH_REFRESH_TOKEN="..."
 ```
 
-Set `provider = "minimax-oauth"` or `provider = "minimax-oauth-cn"` to use OAuth instead of API key authentication.
+დააყენეთ `provider = "minimax-oauth"` ან `provider = "minimax-oauth-cn"` OAuth-ის გამოსაყენებლად API გასაღების ავტენტიფიკაციის ნაცვლად.
 
-### Qwen OAuth and Coding Modes
+### Qwen OAuth და კოდინგის რეჟიმები
 
-Qwen offers additional access modes:
+Qwen დამატებით წვდომის რეჟიმებს სთავაზობს:
 
-- **Qwen OAuth**: `provider = "qwen-oauth"` or `provider = "qwen-code"` for OAuth-based access
-- **Qwen Coding**: `provider = "qwen-coding"` or `provider = "dashscope-coding"` for the coding-specialized API endpoint
+- **Qwen OAuth**: `provider = "qwen-oauth"` ან `provider = "qwen-code"` OAuth-ზე დაფუძნებული წვდომისთვის
+- **Qwen Coding**: `provider = "qwen-coding"` ან `provider = "dashscope-coding"` კოდინგისთვის სპეციალიზებული API ენდფოინთისთვის
 
-## Provider Aliases Reference
+## პროვაიდერის მეტსახელების მითითება
 
-| Alias | Resolves To | Endpoint |
+| მეტსახელი | მიუთითებს | ენდფოინთი |
 |-------|-------------|----------|
-| `glm`, `zhipu`, `glm-global`, `zhipu-global` | GLM (global) | `api.z.ai/api/paas/v4` |
-| `glm-cn`, `zhipu-cn`, `bigmodel` | GLM (CN) | `open.bigmodel.cn/api/paas/v4` |
-| `minimax`, `minimax-intl`, `minimax-global` | MiniMax (intl) | `api.minimax.io/v1` |
-| `minimax-cn`, `minimaxi` | MiniMax (CN) | `api.minimaxi.com/v1` |
-| `moonshot`, `kimi`, `moonshot-cn`, `kimi-cn` | Moonshot (CN) | `api.moonshot.cn/v1` |
-| `moonshot-intl`, `kimi-intl`, `kimi-global` | Moonshot (intl) | `api.moonshot.ai/v1` |
-| `qwen`, `dashscope`, `qwen-cn` | Qwen (CN) | `dashscope.aliyuncs.com` |
-| `qwen-intl`, `dashscope-intl` | Qwen (intl) | `dashscope-intl.aliyuncs.com` |
-| `qwen-us`, `dashscope-us` | Qwen (US) | `dashscope-us.aliyuncs.com` |
-| `zai`, `z.ai` | Z.AI (global) | `api.z.ai/api/coding/paas/v4` |
-| `zai-cn`, `z.ai-cn` | Z.AI (CN) | `open.bigmodel.cn/api/coding/paas/v4` |
+| `glm`, `zhipu`, `glm-global`, `zhipu-global` | GLM (გლობალური) | `api.z.ai/api/paas/v4` |
+| `glm-cn`, `zhipu-cn`, `bigmodel` | GLM (ჩინეთი) | `open.bigmodel.cn/api/paas/v4` |
+| `minimax`, `minimax-intl`, `minimax-global` | MiniMax (საერთაშ.) | `api.minimax.io/v1` |
+| `minimax-cn`, `minimaxi` | MiniMax (ჩინეთი) | `api.minimaxi.com/v1` |
+| `moonshot`, `kimi`, `moonshot-cn`, `kimi-cn` | Moonshot (ჩინეთი) | `api.moonshot.cn/v1` |
+| `moonshot-intl`, `kimi-intl`, `kimi-global` | Moonshot (საერთაშ.) | `api.moonshot.ai/v1` |
+| `qwen`, `dashscope`, `qwen-cn` | Qwen (ჩინეთი) | `dashscope.aliyuncs.com` |
+| `qwen-intl`, `dashscope-intl` | Qwen (საერთაშ.) | `dashscope-intl.aliyuncs.com` |
+| `qwen-us`, `dashscope-us` | Qwen (აშშ) | `dashscope-us.aliyuncs.com` |
+| `zai`, `z.ai` | Z.AI (გლობალური) | `api.z.ai/api/coding/paas/v4` |
+| `zai-cn`, `z.ai-cn` | Z.AI (ჩინეთი) | `open.bigmodel.cn/api/coding/paas/v4` |
 
 ## პრობლემების მოგვარება
 
 ### "GLM API key not set or invalid format"
 
-The GLM API key must be in `id.secret` format (contains exactly one dot). Verify your key format:
+GLM API გასაღები `id.secret` ფორმატში უნდა იყოს (ზუსტად ერთ წერტილს შეიცავს). შეამოწმეთ თქვენი გასაღების ფორმატი:
 ```
-abc123.secretXYZ  # correct
-abc123secretXYZ   # wrong - missing dot
+abc123.secretXYZ  # სწორი
+abc123secretXYZ   # არასწორი - წერტილი აკლია
 ```
 
-### JWT generation fails
+### JWT წარმოქმნა ვერ ხერხდება
 
-Ensure your system clock is accurate. JWT tokens include a timestamp and expire after 3.5 minutes.
+დარწმუნდით, რომ თქვენი სისტემის საათი ზუსტია. JWT ტოკენები მოიცავს დროის ნიშნულს და 3.5 წუთის შემდეგ ვადა ეწურება.
 
-### MiniMax "role: system" rejected
+### MiniMax "role: system" უარყოფილია
 
-MiniMax does not accept `role: system` messages. PRX automatically merges system message content into the first user message when using MiniMax providers.
+MiniMax არ იღებს `role: system` შეტყობინებებს. PRX ავტომატურად აერთიანებს სისტემური შეტყობინების კონტენტს პირველ მომხმარებლის შეტყობინებაში MiniMax პროვაიდერების გამოყენებისას.
 
-### Qwen/DashScope timeout
+### Qwen/DashScope-ის დროის ამოწურვა
 
-Qwen's DashScope API requires HTTP/1.1 (not HTTP/2). PRX automatically forces HTTP/1.1 for DashScope endpoints. If you experience timeouts, ensure your network allows HTTP/1.1 connections.
+Qwen-ის DashScope API მოითხოვს HTTP/1.1-ს (არა HTTP/2-ს). PRX ავტომატურად აიძულებს HTTP/1.1-ს DashScope ენდფოინთებისთვის. თუ დროის ამოწურვას განიცდით, დარწმუნდით, რომ თქვენი ქსელი HTTP/1.1 კავშირებს იძლევა.
 
-### Regional endpoint errors
+### რეგიონული ენდფოინთის შეცდომები
 
-If you get connection errors, try switching between regional endpoints:
-- China users: Use `*-cn` variants
-- International users: Use `*-intl` or base variants
-- US-based users: Try `qwen-us` for Qwen
+თუ კავშირის შეცდომებს იღებთ, სცადეთ რეგიონულ ენდფოინთებს შორის გადართვა:
+- ჩინეთის მომხმარებლები: გამოიყენეთ `*-cn` ვარიანტები
+- საერთაშორისო მომხმარებლები: გამოიყენეთ `*-intl` ან საბაზისო ვარიანტები
+- აშშ-ში მყოფი მომხმარებლები: სცადეთ `qwen-us` Qwen-ისთვის
