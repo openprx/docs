@@ -2,7 +2,7 @@
 
 ## 前置要求
 
-- Rust 工具链（2021 edition 或更高版本）
+- Rust 工具链（2024 edition 或更高版本）
 - 一个能发送 Webhook 事件的 OpenPR 实例
 
 ## 从源码构建

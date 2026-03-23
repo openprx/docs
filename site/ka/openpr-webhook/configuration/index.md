@@ -118,6 +118,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # Set true when AI manages state via MCP
+# mcp_instructions = "..."               # Custom MCP instructions (overrides default)
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config path
+
+[agents.cli.env_vars]                      # Per-agent environment variables
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## სექციების ცნობარი
@@ -173,6 +180,16 @@ Header-ის მნიშვნელობა უნდა იყოს ფო
 |--------|--------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | დააყენეთ `1`, `true`, `yes`, ან `on` tunnel, CLI და callback ფუნქციების გამორთვისთვის კონფიგურაციის მიუხედავად. სასარგებლოა გადაუდებელი დაბლოკვისთვის. |
 | `RUST_LOG` | აკონტროლებს ლოგის დეტალობას. ნაგულისხმევი: `openpr_webhook=info`. მაგალითები: `openpr_webhook=debug`, `openpr_webhook=trace` |
+
+### Agent-ზე ინდივიდუალური გარემოს ცვლადები
+
+CLI agent-ები მხარს უჭერენ პერსონალური გარემოს ცვლადების ინექციას `[agents.cli.env_vars]`-ის მეშვეობით. ეს ცვლადები გადაეცემა executor subprocess-ს და სასარგებლოა MCP ავთენტიფიკაციის მისაწოდებლად:
+
+| ცვლადი | აღწერა |
+|--------|--------|
+| `OPENPR_API_URL` | OpenPR API-ის ბაზის URL (MCP სერვერის მიერ გამოიყენება) |
+| `OPENPR_BOT_TOKEN` | ბოტის ავთენტიფიკაციის ტოკენი (`opr_` პრეფიქსით) |
+| `OPENPR_WORKSPACE_ID` | სამიზნე workspace-ის UUID |
 
 ## safe mode
 

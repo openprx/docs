@@ -7,7 +7,7 @@ description: Установка OpenPR-Webhook из исходного кода 
 
 ## Предварительные требования
 
-- Rust toolchain (edition 2021 или новее)
+- Rust toolchain (edition 2024 или новее)
 - Запущенный экземпляр OpenPR, который может отправлять webhook-события
 
 ## Сборка из исходного кода

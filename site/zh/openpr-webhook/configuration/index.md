@@ -113,6 +113,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # 设为 true 时由 AI 通过 MCP 管理状态
+# mcp_instructions = "..."               # 自定义 MCP 指令（覆盖默认值）
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config 路径
+
+[agents.cli.env_vars]                      # 代理级环境变量
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## 各节详解
@@ -168,6 +175,16 @@ callback_token = "bearer-token"
 |------|------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | 设为 `1`、`true`、`yes` 或 `on` 可强制禁用隧道、CLI 和回调功能，无论配置文件如何设置。用于紧急锁定场景。 |
 | `RUST_LOG` | 控制日志详细程度。默认：`openpr_webhook=info`。示例：`openpr_webhook=debug`、`openpr_webhook=trace` |
+
+### 代理级环境变量
+
+CLI 代理支持通过 `[agents.cli.env_vars]` 注入自定义环境变量。这些变量会传入执行器子进程，适用于提供 MCP 认证所需的凭据：
+
+| 变量 | 说明 |
+|------|------|
+| `OPENPR_API_URL` | OpenPR API 基础 URL（供 MCP server 使用） |
+| `OPENPR_BOT_TOKEN` | 机器人认证令牌（`opr_` 前缀） |
+| `OPENPR_WORKSPACE_ID` | 目标工作区 UUID |
 
 ## 安全模式
 

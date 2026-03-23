@@ -164,7 +164,7 @@ args = ["--format", "json"]  # Optional additional arguments
 | エグゼキュータ | バイナリ | コマンドパターン |
 |----------|--------|-----------------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 このホワイトリストにないエグゼキュータは拒否されます。
@@ -197,6 +197,17 @@ update_state_on_fail = "todo"          # Set issue state on failure/timeout
 callback = "mcp"                       # Callback mode: "mcp" or "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # Optional Bearer token for callback
+
+# MCP クローズドループ (v0.3.0+)
+skip_callback_state = true             # コールバックの状態更新をスキップ（AIがMCP経由で管理）
+# mcp_instructions = "..."            # カスタムMCPツール指示（デフォルトを上書き）
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config のパス
+
+# エージェントごとの環境変数
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **フィールド：**
@@ -214,6 +225,10 @@ callback_token = "bearer-token"        # Optional Bearer token for callback
 | `callback` | いいえ | `mcp` | コールバックプロトコル（`mcp`または`api`） |
 | `callback_url` | いいえ | -- | コールバックを送信するURL |
 | `callback_token` | いいえ | -- | コールバック認証のBearerトークン |
+| `skip_callback_state` | いいえ | `false` | コールバックの状態更新をスキップ（AIがMCP経由で状態を管理する場合） |
+| `mcp_instructions` | いいえ | 組み込み | プロンプトに追記するカスタムMCPツール指示 |
+| `mcp_config_path` | いいえ | -- | MCPコンフィグファイルへのパス（`--mcp-config`でclause-codeに渡す） |
+| `env_vars` | いいえ | `{}` | エグゼキュータサブプロセスに注入する追加環境変数 |
 
 **プロンプトテンプレートのプレースホルダー（cli固有）：**
 
@@ -262,3 +277,52 @@ CLIツール実行（timeout_secsまで）
     |
     +-- タイムアウト --> [update_state_on_fail] --> イシュー状態 = "todo"
 ```
+
+`skip_callback_state = true`の場合、上記の状態遷移はすべて抑制されます。AIエージェントがMCPツールを通じてイシュー状態を直接管理することが期待されます。
+
+---
+
+### MCP クローズドループ自動化
+
+AIエージェントがOpenPR MCPツールを利用できる場合、イシューのフルコンテキストを自律的に読み取り、問題を修正し、結果を書き戻すことができます。これにより完全なクローズドループが形成されます。
+
+**動作の仕組み：**
+
+1. openpr-webhookがボットタスクのWebhookイベントを受信する
+2. `prompt_template`からプロンプトを構築し、MCPの指示（デフォルトまたはカスタム）を追記する
+3. CLIエグゼキュータが注入された`env_vars`（例：`OPENPR_BOT_TOKEN`）付きで実行される
+4. AIエージェントがMCPツールを使用してイシューの詳細を読み取り、コードを修正し、コメントを投稿し、状態を更新する
+5. コールバックが実行メタデータ（所要時間、終了コード）を報告するが、状態更新はスキップする
+
+**デフォルトMCP指示**（`mcp_instructions`、`mcp_config_path`、または`env_vars`が設定されている場合に自動追記）：
+
+```
+1. work_items.get を work_item_id="{issue_id}" で呼び出してイシューの全詳細を読み取る
+2. comments.list を work_item_id="{issue_id}" で呼び出してすべてのコメントを読み取る
+3. work_items.list_labels を work_item_id="{issue_id}" で呼び出してラベルを読み取る
+4. 修正完了後、comments.create を呼び出してサマリーを投稿する
+5. 成功した場合、work_items.update を呼び出して状態を "done" に設定する
+```
+
+カスタムの`mcp_instructions`フィールドでこれらを上書きできます。
+
+**環境変数**（`env_vars`）：
+
+エグゼキュータサブプロセスにエージェントごとの環境変数を注入します。異なるエージェントに異なるAPI URL、トークン、ワークスペースIDを提供する際に便利です：
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**MCPコンフィグパス**（`mcp_config_path`）：
+
+`claude-code`エグゼキュータで、エージェントがグローバルでないMCP設定を必要とする場合、パスを指定します：
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+これにより`--mcp-config /etc/openpr-webhook/mcp-config.json`がclaudeコマンドに追加されます。

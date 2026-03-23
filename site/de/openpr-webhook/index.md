@@ -46,6 +46,8 @@ OpenPR-Plattform
 - **Nachrichtenvorlagen** mit Platzhaltervariablen für flexible Benachrichtigungsformatierung
 - **Zustandsübergänge** -- Issue-Status bei Taskstart, Erfolg oder Fehler automatisch aktualisieren
 - **WSS-Tunnel** (Phase B) -- aktive WebSocket-Verbindung zu einer Steuerungsebene für Push-basierte Task-Verteilung
+- **MCP Closed-Loop-Automatisierung** -- KI-Agenten lesen vollständige Issue-Informationen und schreiben Ergebnisse via OpenPR-MCP-Tools zurück
+- **Umgebungsvariablen pro Agent** -- `OPENPR_BOT_TOKEN`, `OPENPR_API_URL` usw. je Agent injizieren
 - **Sicherheitsorientierte Standards** -- gefährliche Funktionen (Tunnel, CLI, Callback) sind standardmäßig DEAKTIVIERT, hinter Feature-Flags und Safe Mode gesichert
 
 ## Unterstützte Agenten-Typen

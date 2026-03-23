@@ -95,7 +95,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# Agent 3: KI-Coding-Agent
+# Agent 3: KI-Coding-Agent mit MCP Closed-Loop
 [[agents]]
 id = "coder"
 name = "Code Agent"
@@ -105,9 +105,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # KI aktualisiert Status direkt via MCP
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 In diesem Setup kann OpenPR verschiedene Events an verschiedene Agenten weiterleiten, indem das Feld `bot_name` in der Webhook-Nutzlast gesetzt wird.

@@ -7,7 +7,7 @@ description: Compilar OpenPR-Webhook desde fuente con Rust y configurarlo para r
 
 ## Requisitos Previos
 
-- Toolchain de Rust (edición 2021 o posterior)
+- Toolchain de Rust (edición 2024 o posterior)
 - Una instancia de OpenPR en ejecución que pueda enviar eventos webhook
 
 ## Compilar desde Fuente

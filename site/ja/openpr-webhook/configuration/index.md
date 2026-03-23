@@ -118,6 +118,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # AIがMCP経由で状態を管理する場合はtrueに設定
+# mcp_instructions = "..."               # カスタムMCP指示（デフォルトを上書き）
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config のパス
+
+[agents.cli.env_vars]                      # エージェントごとの環境変数
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## セクションリファレンス
@@ -173,6 +180,16 @@ callback_token = "bearer-token"
 |----------|-------------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | `1`、`true`、`yes`、または`on`に設定すると、設定に関わらずトンネル、CLI、コールバック機能を無効化。緊急ロックダウンに便利。 |
 | `RUST_LOG` | ログの詳細度を制御。デフォルト：`openpr_webhook=info`。例：`openpr_webhook=debug`、`openpr_webhook=trace` |
+
+### エージェントごとの環境変数
+
+CLIエージェントは`[agents.cli.env_vars]`を通じてカスタム環境変数の注入をサポートします。これらはエグゼキュータサブプロセスに渡され、MCP認証の提供に便利です：
+
+| 変数 | 説明 |
+|----------|-------------|
+| `OPENPR_API_URL` | OpenPR APIのベースURL（MCPサーバーが使用） |
+| `OPENPR_BOT_TOKEN` | ボット認証トークン（`opr_`プレフィックス） |
+| `OPENPR_WORKSPACE_ID` | 対象ワークスペースのUUID |
 
 ## セーフモード
 

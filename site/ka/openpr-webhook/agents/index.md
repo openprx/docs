@@ -95,7 +95,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# Agent 3: AI coding agent
+# Agent 3: AI კოდირების agent MCP closed-loop-ით
 [[agents]]
 id = "coder"
 name = "Code Agent"
@@ -105,9 +105,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # AI MCP-ის მეშვეობით სტატუსს პირდაპირ განაახლებს
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ამ კონფიგურაციაში OpenPR-ს შეუძლია სხვადასხვა მოვლენები სხვადასხვა agent-ებზე გადაამისამართოს webhook payload-ში `bot_name` ველის დაყენებით.

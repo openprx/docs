@@ -95,7 +95,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# Agent 3: AI coding agent
+# Agent 3: MCP 폐루프를 사용하는 AI 코딩 에이전트
 [[agents]]
 id = "coder"
 name = "Code Agent"
@@ -105,9 +105,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # AI가 MCP를 통해 직접 상태 업데이트
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 이 설정에서 OpenPR은 웹훅 페이로드의 `bot_name` 필드를 설정하여 다른 이벤트를 다른 에이전트로 라우팅할 수 있습니다.

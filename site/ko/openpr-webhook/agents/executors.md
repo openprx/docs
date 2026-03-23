@@ -164,7 +164,7 @@ args = ["--format", "json"]  # Optional additional arguments
 | 실행기 | 바이너리 | 명령 패턴 |
 |--------|--------|----------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 이 화이트리스트에 없는 실행기는 거부됩니다.
@@ -197,6 +197,17 @@ update_state_on_fail = "todo"          # Set issue state on failure/timeout
 callback = "mcp"                       # Callback mode: "mcp" or "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # Optional Bearer token for callback
+
+# MCP 폐루프 (v0.3.0+)
+skip_callback_state = true             # 콜백 상태 업데이트 건너뜀 (AI가 MCP로 관리)
+# mcp_instructions = "..."            # 커스텀 MCP 도구 지침 (기본값 덮어씀)
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config 경로
+
+# 에이전트별 환경 변수
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **필드:**
@@ -214,6 +225,10 @@ callback_token = "bearer-token"        # Optional Bearer token for callback
 | `callback` | 아니오 | `mcp` | 콜백 프로토콜 (`mcp` 또는 `api`) |
 | `callback_url` | 아니오 | -- | 콜백을 전송할 URL |
 | `callback_token` | 아니오 | -- | 콜백 인증을 위한 Bearer 토큰 |
+| `skip_callback_state` | 아니오 | `false` | 콜백에서 상태 업데이트 건너뜀 (AI가 MCP를 통해 상태 관리 시) |
+| `mcp_instructions` | 아니오 | 내장값 | 프롬프트에 추가되는 커스텀 MCP 도구 지침 |
+| `mcp_config_path` | 아니오 | -- | MCP 설정 파일 경로 (`--mcp-config`로 claude-code에 전달) |
+| `env_vars` | 아니오 | `{}` | 실행기 서브프로세스에 주입되는 추가 환경 변수 |
 
 **프롬프트 템플릿 플레이스홀더 (cli 전용):**
 
@@ -262,3 +277,52 @@ CLI tool runs (up to timeout_secs)
     |
     +-- timeout --> [update_state_on_fail] --> issue state = "todo"
 ```
+
+`skip_callback_state = true`인 경우, 위의 모든 상태 전환이 억제됩니다 — AI 에이전트가 MCP 도구를 통해 직접 이슈 상태를 관리합니다.
+
+---
+
+### MCP 폐루프 자동화
+
+AI 에이전트가 OpenPR MCP 도구를 사용할 수 있는 경우, 전체 이슈 컨텍스트를 자율적으로 읽고, 문제를 수정하고, 결과를 다시 기록하여 완전한 폐루프를 형성할 수 있습니다.
+
+**동작 방식:**
+
+1. openpr-webhook이 봇 태스크 웹훅 이벤트를 수신합니다
+2. `prompt_template`에서 프롬프트를 구성하고 MCP 지침(기본값 또는 커스텀)을 추가합니다
+3. CLI 실행기가 주입된 `env_vars`(예: `OPENPR_BOT_TOKEN`)와 함께 실행됩니다
+4. AI 에이전트가 MCP 도구를 사용하여 이슈 세부 정보를 읽고, 코드를 수정하고, 댓글을 게시하고, 상태를 업데이트합니다
+5. 콜백이 실행 메타데이터(소요 시간, 종료 코드)를 보고하되 상태 업데이트는 건너뜁니다
+
+**기본 MCP 지침** (`mcp_instructions`, `mcp_config_path`, 또는 `env_vars`가 설정된 경우 자동으로 추가됩니다):
+
+```
+1. Call work_items.get with work_item_id="{issue_id}" to read full issue details
+2. Call comments.list with work_item_id="{issue_id}" to read all comments
+3. Call work_items.list_labels with work_item_id="{issue_id}" to read labels
+4. After completing the fix, call comments.create to post a summary
+5. Call work_items.update to set state to "done" if successful
+```
+
+커스텀 `mcp_instructions` 필드로 이 내용을 덮어쓸 수 있습니다.
+
+**환경 변수** (`env_vars`):
+
+에이전트별 환경 변수를 실행기 서브프로세스에 주입합니다. 서로 다른 에이전트에 다른 API URL, 토큰, 또는 워크스페이스 ID를 제공하는 데 유용합니다:
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**MCP 설정 경로** (`mcp_config_path`):
+
+`claude-code` 실행기의 경우, 에이전트에 전역이 아닌 MCP 설정이 필요하면 경로를 지정합니다:
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+이 설정은 claude 명령에 `--mcp-config /etc/openpr-webhook/mcp-config.json`을 추가합니다.

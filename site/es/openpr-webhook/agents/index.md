@@ -95,7 +95,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# Agent 3: AI coding agent
+# Agente 3: agente de codificación IA con bucle cerrado MCP
 [[agents]]
 id = "coder"
 name = "Code Agent"
@@ -105,9 +105,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # La IA actualiza el estado vía MCP directamente
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 En esta configuración, OpenPR puede enrutar diferentes eventos a diferentes agentes estableciendo el campo `bot_name` en el payload webhook.

@@ -113,6 +113,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # Définir à true quand l'IA gère l'état via MCP
+# mcp_instructions = "..."               # Instructions MCP personnalisées (remplace les valeurs par défaut)
+# mcp_config_path = "/path/to/mcp.json"  # Chemin --mcp-config pour claude-code
+
+[agents.cli.env_vars]                      # Variables d'environnement par agent
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## Référence des sections
@@ -168,6 +175,16 @@ Voir [Types d'agents](../agents/index.md) et [Référence des exécuteurs](../ag
 |----------|-------------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | Définir à `1`, `true`, `yes` ou `on` pour désactiver les fonctionnalités tunnel, CLI et callback indépendamment de la configuration. Utile pour un verrouillage d'urgence. |
 | `RUST_LOG` | Contrôle la verbosité des journaux. Défaut : `openpr_webhook=info`. Exemples : `openpr_webhook=debug`, `openpr_webhook=trace` |
+
+### Variables d'environnement par agent
+
+Les agents CLI supportent l'injection de variables d'environnement personnalisées via `[agents.cli.env_vars]`. Celles-ci sont passées au sous-processus exécuteur et sont utiles pour fournir l'authentification MCP :
+
+| Variable | Description |
+|----------|-------------|
+| `OPENPR_API_URL` | URL de base de l'API OpenPR (utilisée par le serveur MCP) |
+| `OPENPR_BOT_TOKEN` | Jeton d'authentification bot (préfixe `opr_`) |
+| `OPENPR_WORKSPACE_ID` | UUID de l'espace de travail cible |
 
 ## Mode sécurisé
 

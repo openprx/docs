@@ -45,6 +45,8 @@ Plataforma OpenPR
 - **Plantillas de mensajes** con variables de marcador de posición para formateo flexible de notificaciones
 - **Transiciones de estado** -- actualiza automáticamente el estado de la incidencia al iniciar, completar o fallar una tarea
 - **Túnel WSS** (Fase B) -- conexión WebSocket activa a un plano de control para despacho de tareas basado en push
+- **Automatización en bucle cerrado MCP** -- los agentes IA leen el contexto completo de la incidencia y escriben resultados de vuelta mediante herramientas MCP de OpenPR
+- **Variables de entorno por agente** -- inyecta `OPENPR_BOT_TOKEN`, `OPENPR_API_URL`, etc. por agente
 - **Valores predeterminados seguros** -- las funciones peligrosas (túnel, cli, callback) están DESACTIVADAS por defecto, controladas por indicadores de características y modo seguro
 
 ## Tipos de Agentes Soportados

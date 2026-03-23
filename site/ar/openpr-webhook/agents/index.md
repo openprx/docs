@@ -95,7 +95,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# Agent 3: AI coding agent
+# Agent 3: AI coding agent with MCP closed-loop
 [[agents]]
 id = "coder"
 name = "Code Agent"
@@ -105,9 +105,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # يُدير الذكاء الاصطناعي الحالة مباشرة عبر MCP
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 في هذا الإعداد، يمكن لـ OpenPR توجيه الأحداث المختلفة إلى وكلاء مختلفين بضبط حقل `bot_name` في حمولة webhook.

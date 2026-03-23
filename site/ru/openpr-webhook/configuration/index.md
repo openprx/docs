@@ -118,6 +118,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # Установить true, когда AI управляет состоянием через MCP
+# mcp_instructions = "..."               # Пользовательские MCP-инструкции (переопределяет стандартные)
+# mcp_config_path = "/path/to/mcp.json"  # Путь к конфигурации MCP для claude-code --mcp-config
+
+[agents.cli.env_vars]                      # Переменные окружения для каждого агента
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## Справочник секций
@@ -173,6 +180,16 @@ callback_token = "bearer-token"
 |-----------|----------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | Установите `1`, `true`, `yes` или `on` для отключения функций туннеля, CLI и обратного вызова независимо от конфигурации. Полезно для аварийной блокировки. |
 | `RUST_LOG` | Управляет детализацией логирования. По умолчанию: `openpr_webhook=info`. Примеры: `openpr_webhook=debug`, `openpr_webhook=trace` |
+
+### Переменные окружения для каждого агента
+
+CLI-агенты поддерживают внедрение пользовательских переменных окружения через `[agents.cli.env_vars]`. Они передаются в subprocess исполнителя и полезны для предоставления MCP-аутентификации:
+
+| Переменная | Описание |
+|-----------|----------|
+| `OPENPR_API_URL` | Базовый URL API OpenPR (используется MCP-сервером) |
+| `OPENPR_BOT_TOKEN` | Токен аутентификации бота (с префиксом `opr_`) |
+| `OPENPR_WORKSPACE_ID` | UUID целевого рабочего пространства |
 
 ## Безопасный режим
 

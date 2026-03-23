@@ -164,7 +164,7 @@ args = ["--format", "json"]  # Optional additional arguments
 | المنفذ | الثنائي | نمط الأمر |
 |--------|--------|----------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 أي منفذ غير موجود في هذه القائمة البيضاء يُرفض.
@@ -197,6 +197,17 @@ update_state_on_fail = "todo"          # Set issue state on failure/timeout
 callback = "mcp"                       # Callback mode: "mcp" or "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # Optional Bearer token for callback
+
+# MCP closed-loop (v0.3.0+)
+skip_callback_state = true             # تخطي تحديثات حالة استدعاء الرجوع (يُدير الذكاء الاصطناعي الحالة عبر MCP)
+# mcp_instructions = "..."            # تعليمات أداة MCP مخصصة (تتجاوز الافتراضي)
+# mcp_config_path = "/path/to/mcp.json"  # مسار --mcp-config لـ claude-code
+
+# متغيرات بيئة لكل وكيل
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **الحقول:**
@@ -214,6 +225,10 @@ callback_token = "bearer-token"        # Optional Bearer token for callback
 | `callback` | لا | `mcp` | بروتوكول استدعاء الرجوع (`mcp` أو `api`) |
 | `callback_url` | لا | -- | URL لإرسال استدعاءات الرجوع إليه |
 | `callback_token` | لا | -- | رمز Bearer لمصادقة استدعاء الرجوع |
+| `skip_callback_state` | لا | `false` | تخطي تحديثات الحالة في استدعاءات الرجوع (عندما يُدير الذكاء الاصطناعي الحالة عبر MCP) |
+| `mcp_instructions` | لا | مدمج | تعليمات أداة MCP مخصصة تُلحق بالمطالبة |
+| `mcp_config_path` | لا | -- | مسار ملف إعداد MCP (يُمرَّر إلى claude-code عبر `--mcp-config`) |
+| `env_vars` | لا | `{}` | متغيرات بيئة إضافية تُحقن في عملية المنفذ الفرعية |
 
 **placeholders قالب المطالبة (خاص بـ cli):**
 
@@ -262,3 +277,52 @@ CLI tool runs (up to timeout_secs)
     |
     +-- timeout --> [update_state_on_fail] --> issue state = "todo"
 ```
+
+عند `skip_callback_state = true`، تُكبَت جميع انتقالات الحالة أعلاه -- يُتوقع من وكيل الذكاء الاصطناعي إدارة حالة المهمة مباشرة عبر أدوات MCP.
+
+---
+
+### أتمتة الحلقة المغلقة عبر MCP
+
+عندما يمتلك وكيل الذكاء الاصطناعي أدوات OpenPR MCP، يمكنه بشكل مستقل قراءة السياق الكامل للمهمة وإصلاح المشكلة وكتابة النتائج مباشرة -- مشكّلاً حلقة مغلقة كاملة.
+
+**كيف يعمل:**
+
+1. يستقبل openpr-webhook حدث webhook مهمة بوت
+2. يبني مطالبة من `prompt_template` ويُلحق تعليمات MCP (الافتراضية أو المخصصة)
+3. يعمل منفذ CLI مع `env_vars` المُحقنة (مثل `OPENPR_BOT_TOKEN`)
+4. يستخدم وكيل الذكاء الاصطناعي أدوات MCP لقراءة تفاصيل المهمة وإصلاح الكود ونشر التعليقات وتحديث الحالة
+5. يُبلّغ استدعاء الرجوع عن بيانات وصفية للتنفيذ (المدة، رمز الخروج) لكنه يتخطى تحديثات الحالة
+
+**تعليمات MCP الافتراضية** (تُلحق تلقائياً عند إعداد `mcp_instructions` أو `mcp_config_path` أو `env_vars`):
+
+```
+1. Call work_items.get with work_item_id="{issue_id}" to read full issue details
+2. Call comments.list with work_item_id="{issue_id}" to read all comments
+3. Call work_items.list_labels with work_item_id="{issue_id}" to read labels
+4. After completing the fix, call comments.create to post a summary
+5. Call work_items.update to set state to "done" if successful
+```
+
+يمكنك تجاوز هذه بحقل `mcp_instructions` مخصص.
+
+**متغيرات البيئة** (`env_vars`):
+
+تُحقن متغيرات بيئة لكل وكيل في عملية المنفذ الفرعية. مفيدة لتوفير عناوين URL مختلفة للـ API أو رموز أو معرفات مساحات عمل لوكلاء مختلفين:
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**مسار إعداد MCP** (`mcp_config_path`):
+
+بالنسبة لمنفذ `claude-code`، إذا احتاج الوكيل إلى إعداد MCP غير عام، حدد المسار:
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+يضيف هذا `--mcp-config /etc/openpr-webhook/mcp-config.json` إلى أمر claude.

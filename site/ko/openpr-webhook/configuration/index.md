@@ -118,6 +118,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # AI가 MCP를 통해 상태 관리 시 true로 설정
+# mcp_instructions = "..."               # 커스텀 MCP 지침 (기본값 덮어씀)
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config 경로
+
+[agents.cli.env_vars]                      # 에이전트별 환경 변수
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## 섹션 레퍼런스
@@ -173,6 +180,16 @@ callback_token = "bearer-token"
 |------|------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | `1`, `true`, `yes`, 또는 `on`으로 설정하면 설정에 관계없이 터널, CLI, 콜백 기능을 비활성화합니다. 긴급 잠금에 유용합니다. |
 | `RUST_LOG` | 로그 상세도를 제어합니다. 기본값: `openpr_webhook=info`. 예시: `openpr_webhook=debug`, `openpr_webhook=trace` |
+
+### 에이전트별 환경 변수
+
+CLI 에이전트는 `[agents.cli.env_vars]`를 통해 커스텀 환경 변수 주입을 지원합니다. 이 변수들은 실행기 서브프로세스에 전달되며 MCP 인증 정보를 제공하는 데 유용합니다:
+
+| 변수 | 설명 |
+|------|------|
+| `OPENPR_API_URL` | OpenPR API 기본 URL (MCP 서버가 사용) |
+| `OPENPR_BOT_TOKEN` | 봇 인증 토큰 (`opr_` 접두사) |
+| `OPENPR_WORKSPACE_ID` | 대상 워크스페이스 UUID |
 
 ## 안전 모드
 

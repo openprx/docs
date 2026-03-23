@@ -90,7 +90,7 @@ agent_type = "webhook"
 [agents.webhook]
 url = "https://hooks.slack.com/services/T.../B.../xxx"
 
-# 代理 3：AI 编码代理
+# 代理 3：带 MCP 闭环的 AI 编码代理
 [[agents]]
 id = "coder"
 name = "AI 编码代理"
@@ -100,9 +100,11 @@ agent_type = "cli"
 executor = "claude-code"
 workdir = "/opt/projects/backend"
 timeout_secs = 600
-update_state_on_start = "in_progress"
-update_state_on_success = "done"
-update_state_on_fail = "todo"
+skip_callback_state = true  # AI 通过 MCP 直接更新状态
+
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 在此配置中，OpenPR 可以通过在 Webhook 负载中设置 `bot_name` 字段，将不同事件路由到不同代理。

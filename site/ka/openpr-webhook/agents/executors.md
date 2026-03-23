@@ -164,7 +164,7 @@ args = ["--format", "json"]  # Optional additional arguments
 | Executor | Binary | ბრძანების შაბლონი |
 |----------|--------|-------------------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 ამ whitelist-ის გარეთ არსებული ნებისმიერი executor უარყოფილია.
@@ -197,6 +197,17 @@ update_state_on_fail = "todo"          # Set issue state on failure/timeout
 callback = "mcp"                       # Callback mode: "mcp" or "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # Optional Bearer token for callback
+
+# MCP closed-loop (v0.3.0+)
+skip_callback_state = true             # Skip callback state updates (AI manages via MCP)
+# mcp_instructions = "..."            # Custom MCP tool instructions (overrides default)
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config path
+
+# Per-agent environment variables
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **ველები:**
@@ -214,6 +225,10 @@ callback_token = "bearer-token"        # Optional Bearer token for callback
 | `callback` | არა | `mcp` | Callback პროტოკოლი (`mcp` ან `api`) |
 | `callback_url` | არა | -- | Callback-ების გასაგზავნი URL |
 | `callback_token` | არა | -- | Callback auth-ისთვის Bearer ტოკენი |
+| `skip_callback_state` | არა | `false` | Callback-ში state განახლების გამოტოვება (AI MCP-ის მეშვეობით state-ს თვითონ მართავს) |
+| `mcp_instructions` | არა | ჩაშენებული | prompt-ს დამატებული MCP ინსტრუმენტების პერსონალური ინსტრუქციები |
+| `mcp_config_path` | არა | -- | MCP კონფიგ ფაილის გზა (claude-code-ს `--mcp-config`-ით გადაეცემა) |
+| `env_vars` | არა | `{}` | executor subprocess-ში ინექცირებული დამატებითი გარემოს ცვლადები |
 
 **Prompt შაბლონის placeholder-ები (cli-სპეციფიკური):**
 
@@ -262,3 +277,52 @@ CLI tool runs (up to timeout_secs)
     |
     +-- timeout --> [update_state_on_fail] --> issue state = "todo"
 ```
+
+`skip_callback_state = true`-ის შემთხვევაში ზემოთ ჩამოთვლილი ყველა state გადასვლა გაუქმებულია — AI agent-ს მოეთხოვება issue-ს state-ი MCP ინსტრუმენტებით პირდაპირ მართოს.
+
+---
+
+### MCP Closed-Loop ავტომატიზაცია
+
+როდესაც AI agent-ს OpenPR MCP ინსტრუმენტები აქვს ხელმისაწვდომი, მას შეუძლია ავტონომიურად წაიკითხოს issue-ს სრული კონტექსტი, გამოასწოროს პრობლემა და შედეგები დაწეროს უკან — სრული closed loop-ის ჩამოყალიბებით.
+
+**მუშაობის პრინციპი:**
+
+1. openpr-webhook იღებს bot-task webhook მოვლენას
+2. ამზადებს prompt-ს `prompt_template`-დან და ამატებს MCP ინსტრუქციებს (ნაგულისხმევ ან პერსონალურ)
+3. CLI executor გაუშვებს ინექცირებული `env_vars`-ებით (მაგ., `OPENPR_BOT_TOKEN`)
+4. AI agent იყენებს MCP ინსტრუმენტებს issue-ის დეტალების წასაკითხად, კოდის გამოსასწორებლად, კომენტარების დასაპოსტად და state-ის განახლებისთვის
+5. callback-ი ასახავს შესრულების მეტამონაცემებს (ხანგრძლივობა, exit code), მაგრამ state განახლებებს გამოტოვებს
+
+**ნაგულისხმევი MCP ინსტრუქციები** (ავტომატურად ემატება, როდესაც `mcp_instructions`, `mcp_config_path` ან `env_vars` კონფიგურირებულია):
+
+```
+1. Call work_items.get with work_item_id="{issue_id}" to read full issue details
+2. Call comments.list with work_item_id="{issue_id}" to read all comments
+3. Call work_items.list_labels with work_item_id="{issue_id}" to read labels
+4. After completing the fix, call comments.create to post a summary
+5. Call work_items.update to set state to "done" if successful
+```
+
+შეგიძლიათ გადაწეროთ პერსონალური `mcp_instructions` ველით.
+
+**გარემოს ცვლადები** (`env_vars`):
+
+ინექცირებს agent-ზე ინდივიდუალური გარემოს ცვლადებს executor subprocess-ში. სასარგებლოა სხვადასხვა agent-ებისთვის სხვადასხვა API URL-ების, ტოკენების ან workspace ID-ების მისაწოდებლად:
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**MCP კონფიგ გზა** (`mcp_config_path`):
+
+`claude-code` executor-ისთვის, თუ agent-ს სჭირდება არა-გლობალური MCP კონფიგურაცია, მიუთითეთ გზა:
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+ეს ამატებს `--mcp-config /etc/openpr-webhook/mcp-config.json`-ს claude ბრძანებას.

@@ -7,7 +7,7 @@ description: "Rust 툴체인으로 소스에서 OpenPR-Webhook 빌드. 의존성
 
 ## 사전 요구사항
 
-- Rust 툴체인 (edition 2021 이상)
+- Rust 툴체인 (edition 2024 이상)
 - 웹훅 이벤트를 전송할 수 있는 실행 중인 OpenPR 인스턴스
 
 ## 소스에서 빌드

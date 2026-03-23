@@ -7,7 +7,7 @@ description: "OpenPR-Webhook aus dem Quellcode erstellen und als systemd-Dienst 
 
 ## Voraussetzungen
 
-- Rust-Toolchain (Edition 2021 oder neuer)
+- Rust-Toolchain (Edition 2024 oder neuer)
 - Eine laufende OpenPR-Instanz, die Webhook-Events senden kann
 
 ## Aus dem Quellcode erstellen

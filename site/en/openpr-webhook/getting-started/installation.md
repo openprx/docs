@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Rust toolchain (edition 2021 or later)
+- Rust toolchain (edition 2024 or later)
 - A running OpenPR instance that can send webhook events
 
 ## Build from Source

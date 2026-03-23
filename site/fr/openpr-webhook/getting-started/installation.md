@@ -2,7 +2,7 @@
 
 ## Prérequis
 
-- Chaîne d'outils Rust (édition 2021 ou ultérieure)
+- Chaîne d'outils Rust (édition 2024 ou ultérieure)
 - Une instance OpenPR en cours d'exécution capable d'envoyer des événements webhook
 
 ## Compilation depuis les sources

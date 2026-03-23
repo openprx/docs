@@ -40,6 +40,8 @@ Plateforme OpenPR
 - **Modèles de messages** avec variables de substitution pour un formatage flexible des notifications
 - **Transitions d'état** -- met à jour automatiquement l'état du ticket au démarrage, au succès ou à l'échec de la tâche
 - **Tunnel WSS** (Phase B) -- connexion WebSocket active vers un plan de contrôle pour le dispatch de tâches en mode push
+- **Automatisation en boucle fermée MCP** -- les agents IA lisent le contexte complet du ticket et écrivent les résultats via les outils MCP OpenPR
+- **Variables d'environnement par agent** -- injecter `OPENPR_BOT_TOKEN`, `OPENPR_API_URL`, etc. par agent
 - **Sécurité par défaut** -- les fonctionnalités dangereuses (tunnel, cli, callback) sont DÉSACTIVÉES par défaut, conditionnées par des flags de fonctionnalité et le mode sécurisé
 
 ## Types d'agents pris en charge

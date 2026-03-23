@@ -159,7 +159,7 @@ Exécute des agents de code IA pour traiter des tickets. C'est le type d'exécut
 | Exécuteur | Binaire | Modèle de commande |
 |----------|--------|-----------------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 Tout exécuteur absent de cette liste blanche est rejeté.
@@ -192,6 +192,17 @@ update_state_on_fail = "todo"          # Définir l'état du ticket en cas d'éc
 callback = "mcp"                       # Mode callback : "mcp" ou "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # Jeton Bearer optionnel pour le callback
+
+# Boucle fermée MCP (v0.3.0+)
+skip_callback_state = true             # Ignorer les mises à jour d'état du callback (l'IA gère via MCP)
+# mcp_instructions = "..."            # Instructions MCP personnalisées (remplace les valeurs par défaut)
+# mcp_config_path = "/path/to/mcp.json"  # Chemin --mcp-config pour claude-code
+
+# Variables d'environnement par agent
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **Champs :**
@@ -209,6 +220,10 @@ callback_token = "bearer-token"        # Jeton Bearer optionnel pour le callback
 | `callback` | Non | `mcp` | Protocole de callback (`mcp` ou `api`) |
 | `callback_url` | Non | -- | URL vers laquelle envoyer les callbacks |
 | `callback_token` | Non | -- | Jeton Bearer pour l'authentification du callback |
+| `skip_callback_state` | Non | `false` | Ignorer les mises à jour d'état dans les callbacks (quand l'IA gère l'état via MCP) |
+| `mcp_instructions` | Non | intégré | Instructions d'outil MCP personnalisées ajoutées au prompt |
+| `mcp_config_path` | Non | -- | Chemin vers le fichier de config MCP (passé à claude-code via `--mcp-config`) |
+| `env_vars` | Non | `{}` | Variables d'environnement supplémentaires injectées dans le sous-processus exécuteur |
 
 **Espaces réservés du modèle de prompt (spécifiques à cli) :**
 
@@ -257,3 +272,52 @@ Outil CLI s'exécute (jusqu'à timeout_secs)
     |
     +-- expiration --> [update_state_on_fail] --> état du ticket = "todo"
 ```
+
+Quand `skip_callback_state = true`, toutes les transitions d'état ci-dessus sont supprimées -- l'agent IA est censé gérer l'état du ticket directement via les outils MCP.
+
+---
+
+### Automatisation en boucle fermée MCP
+
+Quand l'agent IA dispose des outils MCP OpenPR, il peut de manière autonome lire le contexte complet du ticket, corriger le problème et écrire les résultats -- formant une boucle fermée complète.
+
+**Fonctionnement :**
+
+1. openpr-webhook reçoit un événement webhook de tâche bot
+2. Il construit un prompt depuis `prompt_template` et ajoute les instructions MCP (par défaut ou personnalisées)
+3. L'exécuteur CLI s'exécute avec les `env_vars` injectées (par ex. `OPENPR_BOT_TOKEN`)
+4. L'agent IA utilise les outils MCP pour lire les détails du ticket, corriger le code, poster des commentaires et mettre à jour l'état
+5. Le callback rapporte les métadonnées d'exécution (durée, code de sortie) mais ignore les mises à jour d'état
+
+**Instructions MCP par défaut** (ajoutées automatiquement quand `mcp_instructions`, `mcp_config_path` ou `env_vars` sont configurés) :
+
+```
+1. Call work_items.get with work_item_id="{issue_id}" to read full issue details
+2. Call comments.list with work_item_id="{issue_id}" to read all comments
+3. Call work_items.list_labels with work_item_id="{issue_id}" to read labels
+4. After completing the fix, call comments.create to post a summary
+5. Call work_items.update to set state to "done" if successful
+```
+
+Vous pouvez les remplacer avec un champ `mcp_instructions` personnalisé.
+
+**Variables d'environnement** (`env_vars`) :
+
+Injectez des variables d'environnement par agent dans le sous-processus exécuteur. Utile pour fournir différentes URL d'API, jetons ou ID d'espace de travail à différents agents :
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**Chemin de config MCP** (`mcp_config_path`) :
+
+Pour l'exécuteur `claude-code`, si l'agent a besoin d'une configuration MCP non globale, spécifiez le chemin :
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+Cela ajoute `--mcp-config /etc/openpr-webhook/mcp-config.json` à la commande claude.

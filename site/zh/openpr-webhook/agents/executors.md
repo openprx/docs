@@ -159,7 +159,7 @@ args = ["--format", "json"]  # 可选：额外的命令行参数
 | 执行器 | 二进制文件 | 命令格式 |
 |--------|-----------|----------|
 | `codex` | `codex` | `codex exec --full-auto "{prompt}"` |
-| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions "{prompt}"` |
+| `claude-code` | `claude` | `claude --print --permission-mode bypassPermissions [--mcp-config path] "{prompt}"` |
 | `opencode` | `opencode` | `opencode run "{prompt}"` |
 
 不在此白名单中的执行器会被拒绝。
@@ -192,6 +192,17 @@ update_state_on_fail = "todo"          # 失败/超时时设置工单状态
 callback = "mcp"                       # 回调模式："mcp" 或 "api"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"        # 可选：回调认证的 Bearer Token
+
+# MCP 闭环（v0.3.0+）
+skip_callback_state = true             # 跳过回调状态更新（由 AI 通过 MCP 管理）
+# mcp_instructions = "..."            # 自定义 MCP 工具指令（覆盖默认值）
+# mcp_config_path = "/path/to/mcp.json"  # claude-code --mcp-config 路径
+
+# 代理级环境变量
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_xxx"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
 ```
 
 **字段说明：**
@@ -209,6 +220,10 @@ callback_token = "bearer-token"        # 可选：回调认证的 Bearer Token
 | `callback` | 否 | `mcp` | 回调协议（`mcp` 或 `api`） |
 | `callback_url` | 否 | -- | 回调目标 URL |
 | `callback_token` | 否 | -- | 回调认证 Bearer Token |
+| `skip_callback_state` | 否 | `false` | 跳过回调中的状态更新（当 AI 通过 MCP 自行管理状态时使用） |
+| `mcp_instructions` | 否 | 内置 | 追加到提示词的自定义 MCP 工具指令 |
+| `mcp_config_path` | 否 | -- | MCP 配置文件路径（通过 `--mcp-config` 传给 claude-code） |
+| `env_vars` | 否 | `{}` | 注入到执行器子进程的额外环境变量 |
 
 **提示词模板占位符（cli 专用）：**
 
@@ -257,3 +272,52 @@ CLI 工具运行（最长 timeout_secs）
     |
     +-- 超时 --> [update_state_on_fail] --> 工单状态 = "todo"
 ```
+
+当 `skip_callback_state = true` 时，以上所有状态转换均被抑制 —— 此时期望 AI 代理通过 MCP 工具直接管理工单状态。
+
+---
+
+### MCP 闭环自动化
+
+当 AI 代理具备 OpenPR MCP 工具时，它可以自主读取完整工单上下文、修复问题并将结果写回，形成完整的闭环。
+
+**工作流程：**
+
+1. openpr-webhook 接收到机器人任务 Webhook 事件
+2. 根据 `prompt_template` 构建提示词，并追加 MCP 指令（默认或自定义）
+3. CLI 执行器携带注入的 `env_vars`（如 `OPENPR_BOT_TOKEN`）启动
+4. AI 代理使用 MCP 工具读取工单详情、修复代码、发表评论并更新状态
+5. 回调上报执行元数据（耗时、退出码），但跳过状态更新
+
+**默认 MCP 指令**（当配置了 `mcp_instructions`、`mcp_config_path` 或 `env_vars` 时自动追加）：
+
+```
+1. 调用 work_items.get，参数 work_item_id="{issue_id}"，读取完整工单详情
+2. 调用 comments.list，参数 work_item_id="{issue_id}"，读取所有评论
+3. 调用 work_items.list_labels，参数 work_item_id="{issue_id}"，读取标签
+4. 完成修复后，调用 comments.create 发表摘要评论
+5. 调用 work_items.update 将状态设置为 "done"（成功时）
+```
+
+可通过自定义 `mcp_instructions` 字段覆盖以上默认值。
+
+**环境变量**（`env_vars`）：
+
+为执行器子进程注入代理级环境变量。适用于为不同代理提供不同的 API URL、令牌或工作区 ID：
+
+```toml
+[agents.cli.env_vars]
+OPENPR_API_URL = "http://localhost:3000"
+OPENPR_BOT_TOKEN = "opr_bot_token_here"
+OPENPR_WORKSPACE_ID = "e5166fd1-..."
+```
+
+**MCP 配置路径**（`mcp_config_path`）：
+
+对于 `claude-code` 执行器，若代理需要独立的 MCP 配置（而非全局配置），可指定路径：
+
+```toml
+mcp_config_path = "/etc/openpr-webhook/mcp-config.json"
+```
+
+这会向 claude 命令追加 `--mcp-config /etc/openpr-webhook/mcp-config.json` 参数。

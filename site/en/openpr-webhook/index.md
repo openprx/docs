@@ -40,6 +40,8 @@ OpenPR Platform
 - **Message templates** with placeholder variables for flexible notification formatting
 - **State transitions** -- automatically update issue state on task start, success, or failure
 - **WSS Tunnel** (Phase B) -- active WebSocket connection to a control plane for push-based task dispatch
+- **MCP closed-loop automation** -- AI agents read full issue context and write results back via OpenPR MCP tools
+- **Per-agent environment variables** -- inject `OPENPR_BOT_TOKEN`, `OPENPR_API_URL`, etc. per agent
 - **Safety-first defaults** -- dangerous features (tunnel, cli, callback) are OFF by default, gated behind feature flags and safe mode
 
 ## Supported Agent Types

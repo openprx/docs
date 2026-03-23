@@ -118,6 +118,13 @@ update_state_on_fail = "todo"
 callback = "mcp"
 callback_url = "http://127.0.0.1:8090/mcp/rpc"
 callback_token = "bearer-token"
+skip_callback_state = false               # اضبط إلى true عندما يُدير الذكاء الاصطناعي الحالة عبر MCP
+# mcp_instructions = "..."               # تعليمات MCP مخصصة (تتجاوز الافتراضي)
+# mcp_config_path = "/path/to/mcp.json"  # مسار --mcp-config لـ claude-code
+
+[agents.cli.env_vars]                      # متغيرات بيئة لكل وكيل
+# OPENPR_API_URL = "http://localhost:3000"
+# OPENPR_BOT_TOKEN = "opr_xxx"
 ```
 
 ## مرجع الأقسام
@@ -173,6 +180,16 @@ callback_token = "bearer-token"
 |---------|-------|
 | `OPENPR_WEBHOOK_SAFE_MODE` | اضبط إلى `1` أو `true` أو `yes` أو `on` لتعطيل ميزات النفق وCLI والاستدعاء بغض النظر عن الإعداد. مفيد للقفل الطارئ. |
 | `RUST_LOG` | يتحكم في تفصيل السجل. الافتراضي: `openpr_webhook=info`. أمثلة: `openpr_webhook=debug`، `openpr_webhook=trace` |
+
+### متغيرات البيئة لكل وكيل
+
+تدعم وكلاء CLI حقن متغيرات بيئة مخصصة عبر `[agents.cli.env_vars]`. تُمرَّر هذه إلى عملية المنفذ الفرعية وهي مفيدة لتوفير مصادقة MCP:
+
+| المتغير | الوصف |
+|---------|-------|
+| `OPENPR_API_URL` | عنوان URL الأساس لـ OpenPR API (يُستخدم من قِبل خادم MCP) |
+| `OPENPR_BOT_TOKEN` | رمز مصادقة البوت (بادئة `opr_`) |
+| `OPENPR_WORKSPACE_ID` | UUID مساحة العمل الهدف |
 
 ## الوضع الآمن
 
