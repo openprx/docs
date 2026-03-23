@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'محرك الشجرة السببية',
+    collapsed: true,
+    items: [
+      { text: 'نظرة عامة', link: '/ar/prx/causal-tree/' },
+      { text: 'مرجع التكوين', link: '/ar/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'الجدولة (Xin)',
     collapsed: true,
     items: [

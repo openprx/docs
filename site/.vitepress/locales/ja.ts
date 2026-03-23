@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: '因果ツリーエンジン',
+    collapsed: true,
+    items: [
+      { text: '概要', link: '/ja/prx/causal-tree/' },
+      { text: '設定リファレンス', link: '/ja/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'スケジューリング (Xin)',
     collapsed: true,
     items: [

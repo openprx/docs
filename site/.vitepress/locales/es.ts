@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'Motor de Arbol Causal',
+    collapsed: true,
+    items: [
+      { text: 'Vision general', link: '/es/prx/causal-tree/' },
+      { text: 'Configuracion', link: '/es/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'Programacion (Xin)',
     collapsed: true,
     items: [

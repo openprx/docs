@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'მიზეზობრივი ხის ძრავა',
+    collapsed: true,
+    items: [
+      { text: 'მიმოხილვა', link: '/ka/prx/causal-tree/' },
+      { text: 'კონფიგურაცია', link: '/ka/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'დაგეგმვა (Xin)',
     collapsed: true,
     items: [

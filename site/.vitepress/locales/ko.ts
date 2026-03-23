@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: '인과 트리 엔진',
+    collapsed: true,
+    items: [
+      { text: '개요', link: '/ko/prx/causal-tree/' },
+      { text: '설정 레퍼런스', link: '/ko/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: '스케줄링 (Xin)',
     collapsed: true,
     items: [

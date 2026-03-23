@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'Kausale Baum-Engine',
+    collapsed: true,
+    items: [
+      { text: 'Uberblick', link: '/de/prx/causal-tree/' },
+      { text: 'Konfiguration', link: '/de/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'Zeitplanung (Xin)',
     collapsed: true,
     items: [

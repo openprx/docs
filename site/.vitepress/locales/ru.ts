@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: 'Каузальное дерево',
+    collapsed: true,
+    items: [
+      { text: 'Обзор', link: '/ru/prx/causal-tree/' },
+      { text: 'Конфигурация', link: '/ru/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: 'Планирование (Xin)',
     collapsed: true,
     items: [

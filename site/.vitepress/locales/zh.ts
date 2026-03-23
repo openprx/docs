@@ -175,6 +175,14 @@ const prxSidebar: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
+    text: '因果树引擎',
+    collapsed: true,
+    items: [
+      { text: '概述', link: '/zh/prx/causal-tree/' },
+      { text: '配置参考', link: '/zh/prx/causal-tree/configuration' },
+    ],
+  },
+  {
     text: '定时调度 (Xin)',
     collapsed: true,
     items: [
