@@ -16,7 +16,7 @@ description: 5 分钟内开始使用 PRX-SD 进行恶意软件扫描。安装、
 使用安装脚本下载并安装最新发行版：
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 验证安装：

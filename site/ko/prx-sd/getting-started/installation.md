@@ -27,13 +27,13 @@ PRX-SD는 네 가지 설치 방법을 지원합니다. 워크플로우에 가장
 설치 스크립트는 플랫폼에 맞는 최신 릴리스 바이너리를 다운로드하여 `/usr/local/bin`에 설치합니다.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 특정 버전을 설치하려면:
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 스크립트는 다음 환경 변수를 지원합니다:

@@ -78,16 +78,16 @@ On macOS and Windows, block mode is not available and this setting is ignored.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `update_server_url` | `string` | `"https://update.prx-sd.dev/v1"` | URL of the signature update server. The engine fetches `<url>/manifest.json` to check for updates. Override this to use a private mirror or air-gapped update server. |
+| `update_server_url` | `string \| null` | `null` | URL of a custom signature update server. When `null`, PRX-SD fetches updates from the `openprx/prx-sd-signatures` GitHub repository using the GitHub API. When set to a URL, the legacy manifest-based update server protocol is used instead. |
 
 ### Examples
 
 ```bash
-# Use a private mirror
+# Use a private update server (legacy protocol)
 sd config set update_server_url "https://internal-mirror.example.com/prx-sd/v1"
 
-# Reset to official server
-sd config set update_server_url "https://update.prx-sd.dev/v1"
+# Reset to GitHub default
+sd config set update_server_url null
 ```
 
 ## Quarantine Settings (`quarantine.*`)
@@ -131,7 +131,7 @@ For reference, here is the full default configuration:
     "block_mode": false,
     "channel_capacity": 4096
   },
-  "update_server_url": "https://update.prx-sd.dev/v1",
+  "update_server_url": null,
   "quarantine": {
     "auto_quarantine": false,
     "max_vault_size_mb": 1024

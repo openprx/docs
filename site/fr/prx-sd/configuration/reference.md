@@ -78,7 +78,7 @@ Sur macOS et Windows, le mode blocage n'est pas disponible et ce paramètre est 
 
 | Clé | Type | Défaut | Description |
 |-----|------|--------|-------------|
-| `update_server_url` | `string` | `"https://update.prx-sd.dev/v1"` | URL du serveur de mise à jour des signatures. Le moteur récupère `<url>/manifest.json` pour vérifier les mises à jour. Remplacez ceci pour utiliser un miroir privé ou un serveur de mise à jour en réseau isolé. |
+| `update_server_url` | `string` | `null` | URL du serveur de mise à jour des signatures. Le moteur récupère `<url>/manifest.json` pour vérifier les mises à jour. Remplacez ceci pour utiliser un miroir privé ou un serveur de mise à jour en réseau isolé. |
 
 ### Exemples
 
@@ -87,7 +87,7 @@ Sur macOS et Windows, le mode blocage n'est pas disponible et ce paramètre est 
 sd config set update_server_url "https://internal-mirror.example.com/prx-sd/v1"
 
 # Réinitialiser au serveur officiel
-sd config set update_server_url "https://update.prx-sd.dev/v1"
+sd config set update_server_url null
 ```
 
 ## Paramètres de quarantaine (`quarantine.*`)
@@ -131,7 +131,7 @@ Pour référence, voici la configuration par défaut complète :
     "block_mode": false,
     "channel_capacity": 4096
   },
-  "update_server_url": "https://update.prx-sd.dev/v1",
+  "update_server_url": null,
   "quarantine": {
     "auto_quarantine": false,
     "max_vault_size_mb": 1024

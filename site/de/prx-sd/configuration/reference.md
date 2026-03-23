@@ -78,7 +78,7 @@ Unter macOS und Windows ist der Block-Modus nicht verfügbar und diese Einstellu
 
 | Schlüssel | Typ | Standard | Beschreibung |
 |-----------|-----|----------|--------------|
-| `update_server_url` | `string` | `"https://update.prx-sd.dev/v1"` | URL des Signatur-Update-Servers. Die Engine holt `<url>/manifest.json`, um auf Updates zu prüfen. Überschreiben Sie dies, um einen privaten Spiegel oder einen Air-Gap-Update-Server zu verwenden. |
+| `update_server_url` | `string` | `null` | URL des Signatur-Update-Servers. Die Engine holt `<url>/manifest.json`, um auf Updates zu prüfen. Überschreiben Sie dies, um einen privaten Spiegel oder einen Air-Gap-Update-Server zu verwenden. |
 
 ### Beispiele
 
@@ -87,7 +87,7 @@ Unter macOS und Windows ist der Block-Modus nicht verfügbar und diese Einstellu
 sd config set update_server_url "https://internal-mirror.example.com/prx-sd/v1"
 
 # Auf offiziellen Server zurücksetzen
-sd config set update_server_url "https://update.prx-sd.dev/v1"
+sd config set update_server_url null
 ```
 
 ## Quarantäne-Einstellungen (`quarantine.*`)
@@ -131,7 +131,7 @@ Als Referenz hier die vollständige Standardkonfiguration:
     "block_mode": false,
     "channel_capacity": 4096
   },
-  "update_server_url": "https://update.prx-sd.dev/v1",
+  "update_server_url": null,
   "quarantine": {
     "auto_quarantine": false,
     "max_vault_size_mb": 1024

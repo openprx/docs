@@ -34,6 +34,8 @@ Traditional antivirus products are closed-source, resource-heavy, and difficult 
 
 - **Cross-Platform** -- Linux (x86_64, aarch64), macOS (Apple Silicon, Intel), and Windows (WSL2). Native file-type detection for PE, ELF, Mach-O, PDF, Office, and archive formats.
 
+- **Linux-Exclusive Security** -- Process memory scanning, kernel rootkit detection, eBPF syscall tracing, and fanotify pre-execution blocking provide deep system-level protection on Linux.
+
 - **WASM Plugin System** -- Extend detection logic, add custom scanners, or integrate proprietary threat feeds through WebAssembly plugins.
 
 </div>
@@ -74,7 +76,16 @@ graph TB
 ## Quick Install
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
+```
+
+```bash
+# macOS / Linux (Homebrew)
+brew install openprx/tap/sd
+
+# Windows (Scoop)
+scoop bucket add openprx https://github.com/openprx/scoop-bucket
+scoop install sd
 ```
 
 Or install via Cargo:
@@ -106,6 +117,11 @@ See the [Installation Guide](./getting-started/installation) for all methods inc
 | [YARA Rules](./detection/yara-rules) | 38,800+ rules from 8 sources |
 | [Heuristic Analysis](./detection/heuristics) | File-type-aware behavioral analysis |
 | [Supported File Types](./detection/file-types) | File format matrix and magic detection |
+| [Real-Time Monitoring](./realtime/monitor) | Watch directories for changes |
+| [Daemon Mode](./realtime/daemon) | Run as background service |
+| [Quarantine](./quarantine/) | Encrypted quarantine vault |
+| [Configuration](./configuration/) | Engine settings reference |
+| [Alerting](./alerts/webhook) | Webhook and email alerts |
 
 ## Project Info
 

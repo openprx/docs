@@ -21,7 +21,7 @@ description: PRX-SD 常见问题的解决方案，包括签名更新、扫描性
 1. **检查与更新服务器的连接**：
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. 如果有网络限制，**使用离线更新脚本**：

@@ -78,7 +78,7 @@ sd config set monitor.channel_capacity 16384
 
 | 键 | 类型 | 默认值 | 说明 |
 |----|------|--------|------|
-| `update_server_url` | `string` | `"https://update.prx-sd.dev/v1"` | 签名更新服务器 URL。引擎通过 `<url>/manifest.json` 检查更新。可覆盖此值以使用私有镜像或离线更新服务器。 |
+| `update_server_url` | `string` | `null` | 签名更新服务器 URL。引擎通过 `<url>/manifest.json` 检查更新。可覆盖此值以使用私有镜像或离线更新服务器。 |
 
 ### 示例
 
@@ -87,7 +87,7 @@ sd config set monitor.channel_capacity 16384
 sd config set update_server_url "https://internal-mirror.example.com/prx-sd/v1"
 
 # 重置为官方服务器
-sd config set update_server_url "https://update.prx-sd.dev/v1"
+sd config set update_server_url null
 ```
 
 ## 隔离区设置 (`quarantine.*`)
@@ -131,7 +131,7 @@ sd config set quarantine.auto_quarantine false
     "block_mode": false,
     "channel_capacity": 4096
   },
-  "update_server_url": "https://update.prx-sd.dev/v1",
+  "update_server_url": null,
   "quarantine": {
     "auto_quarantine": false,
     "max_vault_size_mb": 1024

@@ -16,7 +16,7 @@ description: 5分でPRX-SDのマルウェアスキャンを開始します。イ
 インストールスクリプトで最新リリースをダウンロードしてインストール：
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 インストールを確認：

@@ -74,7 +74,7 @@ graph TB
 ## Schnellinstallation
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 Oder über Cargo installieren:

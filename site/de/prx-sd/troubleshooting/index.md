@@ -21,7 +21,7 @@ Diese Seite behandelt die häufigsten Probleme beim Ausführen von PRX-SD sowie 
 1. **Konnektivität zum Update-Server prüfen:**
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **Offline-Update-Skript verwenden**, wenn Netzwerkeinschränkungen bestehen:

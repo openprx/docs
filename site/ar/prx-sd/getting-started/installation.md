@@ -27,13 +27,13 @@ description: تثبيت PRX-SD على لينكس أو ماك أو إس أو وي
 يُنزّل سكريبت التثبيت أحدث إصدار ثنائي لمنصتك ويضعه في `/usr/local/bin`.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 لتثبيت إصدار محدد:
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 يدعم السكريبت متغيرات البيئة التالية:

@@ -27,13 +27,13 @@ Das **Installationsskript** ist der schnellste Einstieg. Es erkennt Ihre Plattfo
 Das Installationsskript lädt die neueste Release-Binärdatei für Ihre Plattform herunter und legt sie in `/usr/local/bin` ab.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 Um eine bestimmte Version zu installieren:
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 Das Skript unterstützt folgende Umgebungsvariablen:

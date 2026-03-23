@@ -5,7 +5,7 @@ description: Install PRX-SD on Linux, macOS, or Windows WSL2 using the install s
 
 # Installation
 
-PRX-SD supports four installation methods. Choose the one that best fits your workflow.
+PRX-SD supports six installation methods. Choose the one that best fits your workflow.
 
 ::: tip Recommended
 The **install script** is the fastest way to get started. It detects your platform, downloads the correct binary, and places it in your PATH.
@@ -24,27 +24,48 @@ The **install script** is the fastest way to get started. It detects your platfo
 
 ## Method 1: Install Script (Recommended)
 
-The install script downloads the latest release binary for your platform and places it in `/usr/local/bin`.
+The install script downloads the latest release binary for your platform and places it in your PATH.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 To install a specific version:
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version v0.2.3
 ```
 
 The script supports the following environment variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `INSTALL_DIR` | `/usr/local/bin` | Custom installation directory |
-| `VERSION` | `latest` | Specific release version |
-| `ARCH` | auto-detected | Override architecture (`x86_64`, `aarch64`) |
+| `PRX_SD_PREFIX` | `/usr/local` or `~/.local` | Installation prefix directory |
+| `PRX_SD_DATA_DIR` | `~/.prx-sd` | Data directory for signatures and config |
+| `PRX_SD_VERSION` | `latest` | Specific release version |
 
-## Method 2: Cargo Install
+The script also supports CLI flags: `--prefix DIR`, `--data-dir DIR`, `--version VER`, `--uninstall`
+
+## Method 2: Homebrew (macOS/Linux)
+
+If you have Homebrew installed, you can install PRX-SD from the OpenPRX tap:
+
+```bash
+brew install openprx/tap/sd
+```
+
+Homebrew handles dependency resolution and places `sd` in your Homebrew prefix. Upgrades are managed with `brew upgrade sd`.
+
+## Method 3: Scoop (Windows)
+
+On Windows, install via Scoop by adding the OpenPRX bucket first:
+
+```bash
+scoop bucket add openprx https://github.com/openprx/scoop-bucket
+scoop install sd
+```
+
+## Method 4: Cargo Install
 
 If you have Rust installed, you can install directly from crates.io:
 
@@ -65,7 +86,7 @@ xcode-select --install
 ```
 :::
 
-## Method 3: Build from Source
+## Method 5: Build from Source
 
 Clone the repository and build in release mode:
 
@@ -102,7 +123,7 @@ To build the desktop GUI:
 cargo build --release --features gui
 ```
 
-## Method 4: Docker
+## Method 6: Docker
 
 Pull the official Docker image:
 
@@ -145,6 +166,12 @@ sudo sysctl -p
 
 Rootkit detection and memory scanning require root privileges.
 
+PRX-SD includes several Linux-exclusive features that require root privileges:
+- **Memory Scanning** (`sd scan-memory`) — Scan running process memory via `/proc/pid/mem`
+- **Rootkit Detection** (`sd check-rootkit`) — Hidden process detection, kernel module verification, LD_PRELOAD checks
+- **eBPF Monitoring** — Kernel-level syscall tracing (requires `--features ebpf` build flag)
+- **fanotify Blocking** — Pre-execution blocking of malicious binaries (via `sd config set monitor.block_mode true`)
+
 ### macOS
 
 PRX-SD uses FSEvents for real-time monitoring on macOS. Both Apple Silicon (aarch64) and Intel (x86_64) are supported. The install script automatically detects your architecture.
@@ -171,7 +198,7 @@ sd --version
 Expected output:
 
 ```
-prx-sd 0.5.0
+prx-sd 0.2.3
 ```
 
 Check the full system status including signature database:
@@ -184,17 +211,33 @@ This displays the installed version, signature counts, YARA rule counts, and dat
 
 ## Uninstalling
 
-### Script / Cargo Install
+### Via Install Script
+
+```bash
+# Via install script (interactive - asks about data directory)
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --uninstall
+```
+
+### Via Homebrew
+
+```bash
+brew uninstall sd
+```
+
+### Via Scoop
+
+```bash
+scoop uninstall sd
+```
+
+### Via Cargo Install
 
 ```bash
 # Remove the binary
-sudo rm /usr/local/bin/sd
-# Or if installed via Cargo
 cargo uninstall prx-sd
 
 # Remove signature database and configuration
-rm -rf ~/.config/prx-sd
-rm -rf ~/.local/share/prx-sd
+rm -rf ~/.prx-sd
 ```
 
 ### Docker

@@ -16,7 +16,7 @@ Vous avez besoin d'un système Linux ou macOS avec `curl` installé. Consultez l
 Téléchargez et installez la dernière version avec le script d'installation :
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 Vérifiez l'installation :

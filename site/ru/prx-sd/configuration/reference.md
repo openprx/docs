@@ -78,7 +78,7 @@ sd config set monitor.channel_capacity 16384
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|-------------|----------|
-| `update_server_url` | `string` | `"https://update.prx-sd.dev/v1"` | URL сервера обновления сигнатур. Движок получает `<url>/manifest.json` для проверки обновлений. Переопределите для использования частного зеркала или изолированного сервера обновлений. |
+| `update_server_url` | `string` | `null` | URL сервера обновления сигнатур. Движок получает `<url>/manifest.json` для проверки обновлений. Переопределите для использования частного зеркала или изолированного сервера обновлений. |
 
 ### Примеры
 
@@ -87,7 +87,7 @@ sd config set monitor.channel_capacity 16384
 sd config set update_server_url "https://internal-mirror.example.com/prx-sd/v1"
 
 # Сбросить на официальный сервер
-sd config set update_server_url "https://update.prx-sd.dev/v1"
+sd config set update_server_url null
 ```
 
 ## Настройки карантина (`quarantine.*`)
@@ -131,7 +131,7 @@ sd config set quarantine.auto_quarantine false
     "block_mode": false,
     "channel_capacity": 4096
   },
-  "update_server_url": "https://update.prx-sd.dev/v1",
+  "update_server_url": null,
   "quarantine": {
     "auto_quarantine": false,
     "max_vault_size_mb": 1024

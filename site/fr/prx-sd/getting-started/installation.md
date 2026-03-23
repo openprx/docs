@@ -27,13 +27,13 @@ Le **script d'installation** est la méthode la plus rapide pour démarrer. Il d
 Le script d'installation télécharge le dernier binaire de version pour votre plateforme et le place dans `/usr/local/bin`.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 Pour installer une version spécifique :
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 Le script supporte les variables d'environnement suivantes :

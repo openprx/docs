@@ -27,13 +27,13 @@ PRX-SD поддерживает четыре метода установки. В
 Скрипт установки скачивает последний выпущенный бинарный файл для вашей платформы и помещает его в `/usr/local/bin`.
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 Для установки конкретной версии:
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 Скрипт поддерживает следующие переменные окружения:

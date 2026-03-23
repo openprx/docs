@@ -18,10 +18,10 @@ This page covers the most common issues encountered when running PRX-SD, along w
 
 **Solutions:**
 
-1. **Check connectivity** to the update server:
+1. **Check connectivity** to GitHub (the default update source):
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **Use the offline update script** if you have network restrictions:

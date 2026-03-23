@@ -21,7 +21,7 @@ Esta página cubre los problemas más comunes al ejecutar PRX-SD, junto con sus 
 1. **Verifica la conectividad** con el servidor de actualizaciones:
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **Usa el script de actualización sin conexión** si tienes restricciones de red:

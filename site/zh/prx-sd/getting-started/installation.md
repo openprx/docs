@@ -27,13 +27,13 @@ PRX-SD 支持四种安装方式，请选择最适合你工作流程的方法。
 安装脚本会下载适用于你平台的最新发行版二进制文件，并放入 `/usr/local/bin`。
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash
 ```
 
 安装指定版本：
 
 ```bash
-curl -fsSL https://openprx.dev/install-sd.sh | bash -s -- --version 0.5.0
+curl -fsSL https://raw.githubusercontent.com/openprx/prx-sd/main/install.sh | bash -s -- --version 0.5.0
 ```
 
 脚本支持以下环境变量：

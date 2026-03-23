@@ -21,7 +21,7 @@ Cette page couvre les problèmes les plus courants rencontrés lors de l'exécut
 1. **Vérifier la connectivité** au serveur de mise à jour :
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **Utiliser le script de mise à jour hors ligne** si vous avez des restrictions réseau :

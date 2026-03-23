@@ -21,7 +21,7 @@ description: "حلول للمشكلات الشائعة في PRX-SD بما فيه
 1. **التحقق من الاتصال** بخادم التحديث:
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **استخدام سكريبت التحديث غير المتصل** إذا كانت لديك قيود على الشبكة:

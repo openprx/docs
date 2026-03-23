@@ -21,7 +21,7 @@ description: "PRX-SD-ის გავრცელებული პრობლ
 1. **კავშირის შემოწმება** განახლების სერვერთან:
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. **ოფლაინ-განახლების სკრიპტის გამოყენება** ქსელის შეზღუდვების შემთხვევაში:

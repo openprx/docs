@@ -21,7 +21,7 @@ description: "シグネチャ更新、スキャンパフォーマンス、権限
 1. 更新サーバーへの**接続を確認**：
 
 ```bash
-curl -fsSL https://update.prx-sd.dev/v1/manifest.json
+curl -fsSL https://api.github.com/repos/openprx/prx-sd-signatures/commits?per_page=1
 ```
 
 2. ネットワーク制限がある場合は**オフライン更新スクリプト**を使用：
